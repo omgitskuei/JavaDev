@@ -1,30 +1,33 @@
 package development;
 
 import java.util.ArrayList;
+import java.util.Currency;
+import java.util.Set;
 
 import util.CheckSubstring;
-import util.GetUserInput;
+import util.GetRuntimeInput;
+import util.Sort;
 
 public class TestUtil {
 
 	public static void main(String[] args) {
 		// Get Input
-		GetUserInput g = new GetUserInput();
-		System.out.println("Input string:");
-		String input = g.getUserInputBR();
+		GetRuntimeInput util = new GetRuntimeInput();
+		String input = util.getConsoleInputBR("Input String:");
 		
 		// Create new instance of Whatever you're testing's class
-		CheckSubstring c = new CheckSubstring();
+		CheckSubstring u = new CheckSubstring();
 		
-		// Test logic
-		ArrayList<String> checkThisArrayList = new ArrayList<String>();
-		for (int index = 0; index < input.length(); index++) {
-			checkThisArrayList.add(input.substring(index, index+1));
-			
-		}
+		int count = u.countNums(input);
 		
-		int s = c.countNums(input);
-		System.out.println(s);
+		System.out.println(count);
+		
+		// Get the number of decimals used for INPUT ISO 4217 Currency code (TWD for taiwan)
+		//Currency t = Currency.getInstance("USD");
+		//int decimals = t.getDefaultFractionDigits();
+		
+		//System.out.println(decimals);
+		
 	}
 
 }

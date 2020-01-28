@@ -1,14 +1,14 @@
 package development;
 import java.util.ArrayList;
 
-import util.GetUserInput;
+import util.CheckSubstring;
+import util.GetRuntimeInput;
 
 public class ValidateEmail {
 
 	public static void main(String[] args) {
-		System.out.println("Enter Email:");
-		GetUserInput g = new GetUserInput();
-		String input = g.getUserInputBR();
+		GetRuntimeInput util = new GetRuntimeInput();
+		String input = util.getConsoleInputBR("Enter Email:");
 		
 		validateEmail(input);
 	}
@@ -52,15 +52,8 @@ public class ValidateEmail {
 					// A valid email cannot begin or end on "."
 					if (!(dotIndexes.contains(0) || dotIndexes.contains(email.length()-1))) {
 						// Domain must comply with LDH rule (letters, digits, hyphen)
-						if ( !(domain.contains("!") && domain.contains("@") && domain.contains("#")
-								&& domain.contains("$") && domain.contains("%") && domain.contains("^")
-								&& domain.contains("&") && domain.contains("*") && domain.contains("(")
-								&& domain.contains(")") && domain.contains("~") && domain.contains("+")
-								&& domain.contains("=") && domain.contains("[") && domain.contains("]")
-								&& domain.contains("{") && domain.contains("}") && domain.contains("|")
-								&& domain.contains(";") && domain.contains("'") && domain.contains(",")
-								&& domain.contains("?") && domain.contains("/") && domain.contains("\\")
-								&& domain.contains("<") && domain.contains(">") && domain.contains("`"))) {
+						CheckSubstring util = new CheckSubstring();
+						if (util.countSpecialCharacters(domain)==0) {
 							// Domain must contain one "."
 							if (domain.contains(".")) {
 								boolean noConsecutiveDotsFlag = true;

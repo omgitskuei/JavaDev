@@ -3,13 +3,12 @@ package development;
 import java.util.ArrayList;
 
 import util.CheckSubstring;
-import util.GetUserInput;
+import util.GetRuntimeInput;
 
 public class ValidatePwd {
 	public static void main(String[] args) {
-		System.out.println("Enter pwd:");
-		GetUserInput g = new GetUserInput();
-		String input = g.getUserInputBR();
+		GetRuntimeInput g = new GetRuntimeInput();
+		String input = g.getConsoleInputBR("Enter pwd:");
 
 		validatePwd(input);
 	}
