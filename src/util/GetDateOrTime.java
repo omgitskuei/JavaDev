@@ -6,19 +6,26 @@ import java.util.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-public class Timestamp {
-	
-	// Generate current date 
+public class GetDateOrTime {
+	// Local fields
+
+	// Constructors
+	public GetDateOrTime() {
+		System.out.println("BEGIN: util.GetDateOrTime");
+	}
+
+	// Methods
+	// Generate current date
 	public Date generateDate() {
-		// Generate current date 
+		// Generate current date
 		Date newDate = new Date();
 		// Format the new date
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		// Console trail
-		System.out.println("Timestamp generated: "+dateFormat.format(newDate)); //prints out current Date
+		System.out.println("GetDateOrTime generated: " + dateFormat.format(newDate)); // prints out current Date
 		return newDate;
 	}
-	
+
 	// Generate current local date
 	public LocalDate generateLocalDate() {
 		// Generate current local date based on system clock
@@ -26,10 +33,11 @@ public class Timestamp {
 		// Format the new local date
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		// Console trail
-		System.out.println("Timestamp generated: "+dateFormat.format(generatedLocalDate)); //prints out current Date
+		System.out.println("GetDateOrTime generated: " + dateFormat.format(generatedLocalDate)); // prints out current
+																									// Date
 		return generatedLocalDate;
 	}
-	
+
 	// Take the passed LocalDate and convert it to Date, return Date type
 	public Date convertLocalDateToDate(LocalDate thisLocalDate) {
 		Date convertedDate = Date.from(thisLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -38,7 +46,7 @@ public class Timestamp {
 		System.out.println("Result: " + convertedDate);
 		return convertedDate;
 	}
-	
+
 	// Take the passed date and convert it to LocalDate, return LocalDate type
 	public LocalDate convertDateToLocalDate(Date thisDate) {
 		LocalDate convertedLocalDate = thisDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
