@@ -11,7 +11,14 @@ public class DatatypeConversion {
 
 	// Constructors
 	public DatatypeConversion() {
-		System.out.println("BEGIN: util.DatatypeConversion");
+		System.out.println("BEGIN: util.DatatypeConversion()");
+	}
+	
+	public static void main(String args[]) {
+		DatatypeConversion util = new DatatypeConversion();
+		Date s = new Date();
+		String e = util.dateToString(s);
+		System.out.println(e);
 	}
 	
 	// Methods
@@ -56,6 +63,8 @@ public class DatatypeConversion {
 	
 	// Convert int to ...
 	public String intToString(int convertThis) {
+		// Two ways
+		// String result = Integer.toString(convertThis);
 		String result = String.valueOf(convertThis);
 		return result;
 	}

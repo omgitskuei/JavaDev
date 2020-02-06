@@ -11,7 +11,13 @@ public class GetDateOrTime {
 
 	// Constructors
 	public GetDateOrTime() {
-		System.out.println("BEGIN: util.GetDateOrTime");
+		System.out.println("BEGIN: util.GetDateOrTime()");
+	}
+	
+	public static void main(String args[]) {
+		GetDateOrTime u = new GetDateOrTime();
+		LocalDate s = u.convertDateToLocalDate(new Date());
+		System.out.println(s);
 	}
 
 	// Methods

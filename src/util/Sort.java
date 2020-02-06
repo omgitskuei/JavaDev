@@ -7,9 +7,28 @@ public class Sort {
 
 	// Constructors
 	public Sort() {
-		System.out.println("BEGIN: util.Sort");
+		System.out.println("BEGIN: util.Sort()");
 	}
 
+	public static void main(String args[]) {
+		Sort u = new Sort();
+		
+		ArrayList<Integer> sortThis = new ArrayList<Integer>();
+
+		sortThis.add(3);
+		sortThis.add(2);
+		sortThis.add(6);
+		sortThis.add(2);
+		sortThis.add(1);
+		sortThis.add(1);
+		sortThis.add(1);
+		sortThis.add(1);
+		sortThis.add(1);
+
+		u.bubbleSort(sortThis, true);
+	}
+	
+	
 	// Methods
 
 	// Selection Sort

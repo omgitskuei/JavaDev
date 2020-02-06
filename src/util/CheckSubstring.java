@@ -5,13 +5,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CheckSubstring {
-
 	// Local Fields
 	
 	// Constructors
 	public CheckSubstring() {
 		System.out.println("BEGIN: util.CheckSubstring");
 	}
+	
+	public static void main(String args[]) {
+		CheckSubstring util = new CheckSubstring();
+		System.out.println(util.countCapLetters("WqSsd3")); // only count++ for CapLetters
+	}
+	
+	
 	// Methods
 	public int countSpecialCharacters(String checkThisString) {
 		System.out.println("BEGIN: util.CheckSubstring.countSpecialCharacters");
