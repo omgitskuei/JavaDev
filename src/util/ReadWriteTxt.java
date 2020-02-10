@@ -23,9 +23,9 @@ public class ReadWriteTxt {
 	}
 
 	// -- Specify file path upon initialization
-	public ReadWriteTxt(String filePath) {
+	public ReadWriteTxt(String filePath) {		// Constructor injection
 		System.out.println("BEGIN: util.ReadWriteTxt(String)");
-		this.filePath = filePath;
+		this.filePath = filePath;				// Save the reference to the passed-in filepath inside this client
 	}
 
 	// -- Pass true to add more lines to file
@@ -42,8 +42,10 @@ public class ReadWriteTxt {
 	public static void main(String args[]) {
 
 		ReadWriteTxt data = new ReadWriteTxt("D:\\log.txt"); // Appends new contents to end of file contents
+		//data.filePath = "D:\\log.txt";
 		//data.appendToFile = false;
-
+		
+		
 		try {
 			data.writeFile("This is wOAH");
 			data.writeFile("This is amazing");

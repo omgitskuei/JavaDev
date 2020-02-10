@@ -1,0 +1,70 @@
+Polymorphism - 多型 duo1-xing2
+
+Definition:
+Object-oriented polymorphism allows a variable to refer to objects whose class is not known at compile time.
+
+Recipe:
+	Create an interface or abstract class. Other classes will 'implements' this class so it is called their 'parent'
+	Create other classes. These classes will 'implements' the parent, and are called its 'children';
+		eg. Triangle is child, Shape is parent
+			public class Triangle implements Shape
+	Whatever methods the parent has, the child must also have. THIS IS CALLED inheriting from the parent.
+	The child can have more/other methods besides the ones the parent has.
+		eg. draw() is inherited by Triangle and Circle from Shape
+			public class Shape {
+				public void draw();
+			}
+			public class Triangle implements Shape{
+				public void draw();
+				public void area();
+			}
+			public class Circle implements Shape{
+				public void draw();
+				public void circumference();
+			}
+	These overriding methods in the child class will need a "@Override" annotation at the start of each method. 
+	In the application, Instantiate the parent but 'new' the child.
+		eg. draw() from Triangle class will be executed
+			public class PolymorhphismApp {
+				public static void main(String args[]) {
+					Shape shape = new Triangle();
+					shape.draw();
+				}
+			}
+	This example still uses hard coded Triangle object, so we can improve it with further modularity;
+		eg. We separate the draw into it's own method that takes Any shape
+			public void myDrawMethod(Shape thisShape) {
+				thisShape.draw();
+			}
+		Depending on what object (Triangle/Circle) is passed, its draw() is executed.
+	But somewhere else, a Triange/Circle needs to be instantiated
+		eg. Shape shape1 = new Triangle();
+			myDrawMethod(shape1);
+	We can further remove dependency by adding a get/set in between the object-definition class Shape.java and the caller PolymorphismApp.java
+		eg. Drawing.java has an instance of the parent class Shape, the Shape object can be any one of its children
+			public class Drawing() {
+				public void drawShape() {
+					shape.draw();
+				}
+			}
+		Drawing doesn't care if the shape passed is actually a Triangle or a Circle so long as it is a child of parent Shape
+	We can now change PolymorhphismApp to use the Drawing class and therefore can take any shape.
+		eg. 
+			public class PolymorhphismApp {
+				public static void main(String args[]) {
+					Triangle a = new Triangle();		// In theory, this line would be in a different class
+					Drawing d = new Drawing();
+					d.setShape(a);						// Simply use some passed object, now the App class doesn't care which Shape either
+					d.drawShape();
+				}
+			}
+	
+Why bother:
+	This is incredibly helpful if you have multiple versions of the same method but tied to different classes.
+	Notice how each child have their own draw() method.
+	I don't want my application tied to a specific class because I want to separate the App class's dependency.
+	If I were to make a new child called Square, I'd have to modify less code if dependencies are separated.
+	I use the parent class in order to use the methods of the class, and then at runtime I supply different children of the parent class
+	And the methods of the children get executed.
+	Drawing class never needs to change
+	Dependency is INJECTED into Drawing class by a whole other class. Inject, as in 'not hard-coded'

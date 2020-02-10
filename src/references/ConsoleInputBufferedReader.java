@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 
 public class ConsoleInputBufferedReader {
 
+	// Take one line of user input (using BufferedReader)
+	// Print input out
 	public static void main(String[] args) {
 		
 		// Local variables

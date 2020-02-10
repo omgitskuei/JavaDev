@@ -3,6 +3,8 @@ import java.util.Scanner;
 
 public class ConsoleInputScanner {
 	
+	// Take one line of user input (using Scanner)
+	// Print input out
 	public static void main(String[] args) {
 		
 		Scanner scan = new Scanner(System.in);
