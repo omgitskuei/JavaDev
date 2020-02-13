@@ -3,13 +3,13 @@ package util;
 import java.util.Currency;
 import java.util.Locale;
 
-public class CurrencyData {
+public class CurrencyData_WIP {
 	// Local fields
 	
 	
 	// Constructors
-	public CurrencyData() {
-		System.out.println("BEGIN: util.CurrencyData");
+	public CurrencyData_WIP() {
+		System.out.println("BEGIN: util.CurrencyData_WIP");
 	}
 	public static void main(String[] args) {
 		

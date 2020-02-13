@@ -14,6 +14,7 @@ public class GetDateOrTime {
 		System.out.println("BEGIN: util.GetDateOrTime()");
 	}
 	
+	// Executable
 	public static void main(String args[]) {
 		GetDateOrTime u = new GetDateOrTime();
 		LocalDate s = u.convertDateToLocalDate(new Date());
@@ -21,7 +22,7 @@ public class GetDateOrTime {
 	}
 
 	// Methods
-	// Generate current date
+	// --Generate current date
 	public Date generateDate() {
 		// Generate current date
 		Date newDate = new Date();
@@ -32,7 +33,7 @@ public class GetDateOrTime {
 		return newDate;
 	}
 
-	// Generate current local date
+	// --Generate current local date
 	public LocalDate generateLocalDate() {
 		// Generate current local date based on system clock
 		LocalDate generatedLocalDate = LocalDate.now();
@@ -44,7 +45,7 @@ public class GetDateOrTime {
 		return generatedLocalDate;
 	}
 
-	// Take the passed LocalDate and convert it to Date, return Date type
+	// --Take the passed LocalDate and convert it to Date, return Date type
 	public Date convertLocalDateToDate(LocalDate thisLocalDate) {
 		Date convertedDate = Date.from(thisLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 		// Console trail
@@ -53,7 +54,7 @@ public class GetDateOrTime {
 		return convertedDate;
 	}
 
-	// Take the passed date and convert it to LocalDate, return LocalDate type
+	// --Take the passed date and convert it to LocalDate, return LocalDate type
 	public LocalDate convertDateToLocalDate(Date thisDate) {
 		LocalDate convertedLocalDate = thisDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		// Console trail

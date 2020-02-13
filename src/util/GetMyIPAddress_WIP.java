@@ -8,13 +8,13 @@ import java.io.*;
 import java.util.*; 
 import java.net.InetAddress; 
   
-public class GetMyIPAddress 
+public class GetMyIPAddress_WIP 
 { 
 	// Local Fields
 	
 	// Constructors
-	public GetMyIPAddress() {
-		System.out.println("BEGIN: util.GetMyIPAddress()");
+	public GetMyIPAddress_WIP() {
+		System.out.println("BEGIN: util.GetMyIPAddress_WIP()");
 	}
 	
     public static void main(String args[]) throws Exception 

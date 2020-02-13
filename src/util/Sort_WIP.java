@@ -2,16 +2,16 @@ package util;
 
 import java.util.ArrayList;
 
-public class Sort {
+public class Sort_WIP {
 	// Local Fields
 
 	// Constructors
-	public Sort() {
-		System.out.println("BEGIN: util.Sort()");
+	public Sort_WIP() {
+		System.out.println("BEGIN: util.Sort_WIP()");
 	}
 
 	public static void main(String args[]) {
-		Sort u = new Sort();
+		Sort_WIP u = new Sort_WIP();
 		
 		ArrayList<Integer> sortThis = new ArrayList<Integer>();
 
@@ -31,14 +31,14 @@ public class Sort {
 	
 	// Methods
 
-	// Selection Sort
+	// Selection Sort_WIP
 	// Time Complexity: O(n2) as there are two nested loops.
 	// Auxiliary Space: O(1)
 	// The good thing about selection sort is it never makes more than O(n) swaps
 	// and can be useful when memory write is a costly operation.
 	public void selectionSort(int arr[], boolean ascendingOrder) {
 		int n = arr.length;
-		System.out.println("BEGIN: util.Sort.selectionSort");
+		System.out.println("BEGIN: util.Sort_WIP.selectionSort");
 		// One by one move boundary of unsorted subarray
 		for (int i = 0; i < n - 1; i++) {
 			// Find the minimum element in unsorted array
@@ -63,7 +63,7 @@ public class Sort {
 		}
 	}
 
-	// Bubble Sort
+	// Bubble Sort_WIP
 	// Time Complexity: O(n) Best case occurs when array is already sorted. O(n*n) Average Case & Worst case occurs when array is reverse sorted.
 	// Auxiliary Space: O(1)
 	// Can be optimized to break if no swaps happen
@@ -71,7 +71,7 @@ public class Sort {
 		// Local Variables
 		int temp = 0;
 		boolean swapped = false;
-		System.out.println("BEGIN: util.Sort.bubbleSort");
+		System.out.println("BEGIN: util.Sort_WIP.bubbleSort");
 		try {
 			// Two forLoops to iterate down whole arrayList
 			for (int index = 0; index < sortThis.size() - 1; index++) {
@@ -113,6 +113,6 @@ public class Sort {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("FINISH: util.Sort.bubbleSort");
+		System.out.println("FINISH: util.Sort_WIP.bubbleSort");
 	}
 }

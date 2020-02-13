@@ -37,7 +37,7 @@ public class ReadWriteTxt {
 		this.appendToFile = appendToFile; // true for append, false for overwrite
 	}
 
-	// -- Executable
+	// Executable
 	public static void main(String args[]) {
 		// Print project root
 		System.out.println("Present Project Directory : " + System.getProperty("user.dir"));

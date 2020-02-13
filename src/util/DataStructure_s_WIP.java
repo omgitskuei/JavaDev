@@ -1,12 +1,12 @@
 package util;
 
-public class DataStructure_ {
+public class DataStructure_s_WIP {
 	// Local Fields
 	
 	
 	// Constructors
-	public DataStructure_() {
-		System.out.println("BEGIN: util.DataStructure_()");
+	public DataStructure_s_WIP() {
+		System.out.println("BEGIN: util.DataStructure_s_WIP()");
 	}
 	
 	public static void main(String[] args) {
