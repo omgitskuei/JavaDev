@@ -10,11 +10,12 @@ public class GetRuntimeInput {
 	private String input;
 
 	// Constructors
+	// - Just opens reader
 	public GetRuntimeInput() {
 		System.out.println("BEGIN: util.GetRuntimeInput()");
 		openReader();
 	}
-
+	// - Takes prompt, save user input, close reader
 	public GetRuntimeInput(String prompt) {
 		System.out.println("BEGIN: util.GetRuntimeInput(String)");
 		try {
@@ -34,7 +35,7 @@ public class GetRuntimeInput {
 	private void openReader(){
 		bReader = new BufferedReader(new InputStreamReader(System.in));
 	}
-	public void getInput(String prompt) {
+	public void promptForInput(String prompt) {
 		try {
 			// Print prompt
 			System.out.println(prompt);
@@ -59,16 +60,15 @@ public class GetRuntimeInput {
 
 	// Executable
 	public static void main(String args[]) throws IOException {
-		// 2 ways to execute class
-		// note, cannot un-comment both 1) AND 2)
-		// 1) 
+		// 2 ways to execute class:
+		// 1) Only ask for input once
 		GetRuntimeInput util1 = new GetRuntimeInput("Input String:");
-		String input1 = util1.input;
+		String input1 = util1.returnInput();
+		util1.closeReader();
 
-		// 2) Persist values
+		// 2) Repeatedly ask for input with same reader, close reader later
 		GetRuntimeInput util = new GetRuntimeInput();
-		util.openReader();
-		util.getInput("Input String:");
+		util.promptForInput("Input String:");
 		String input = util.returnInput();
 		util.closeReader();
 	}

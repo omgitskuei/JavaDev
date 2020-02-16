@@ -52,7 +52,8 @@ public class GetHashingSHA256 {
 	// Executable
 	public static void main(String[] args) {
 		GetRuntimeInput util0 = new GetRuntimeInput();
-		String input = util0.getInputOnce("Input String:");
+		util0.promptForInput("Input String:");
+		String input = util0.returnInput();
 		// Two ways of using this util;
 		// 1) Goood for calculating hash result right away
 		GetHashingSHA256 util1 = new GetHashingSHA256(input);

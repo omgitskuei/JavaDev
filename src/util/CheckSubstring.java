@@ -9,7 +9,7 @@ public class CheckSubstring {
 	
 	// Constructors
 	public CheckSubstring() {
-		System.out.println("BEGIN: util.CheckSubstring");
+		System.out.println("BEGIN: util.CheckSubstring()");
 	}
 	
 	public static void main(String args[]) {
@@ -20,7 +20,7 @@ public class CheckSubstring {
 	
 	// Methods
 	public int countSpecialCharacters(String checkThisString) {
-		System.out.println("BEGIN: util.CheckSubstring.countSpecialCharacters");
+		System.out.println("	BEGIN: util.CheckSubstring.countSpecialCharacters");
 		// Define counter
 		int counter = 0;
 		// Define "Special characters" in regex pattern
@@ -35,12 +35,12 @@ public class CheckSubstring {
 				counter++;
 			}
 		}
-		System.out.println("FINISH: util.CheckSubstring.countSpecialCharacters");
+		System.out.println("	FINISH: util.CheckSubstring.countSpecialCharacters");
 		return counter;
 	}
 
 	public int countSpaces(String checkThisString) {
-		System.out.println("BEGIN: util.CheckSubstring.countSpaces");
+		System.out.println("	BEGIN: util.CheckSubstring.countSpaces");
 		// Define counter
 		int counter = 0;
 		// For each letter of String checkThisString, ...
@@ -52,12 +52,12 @@ public class CheckSubstring {
 				counter++;
 			}
 		}
-		System.out.println("FINISH: util.CheckSubstring.countSpaces");
+		System.out.println("	FINISH: util.CheckSubstring.countSpaces");
 		return counter;
 	}
 	
 	public int countCapLetters(String checkThisString) {
-		System.out.println("BEGIN: util.CheckSubstring.countCapLetters");
+		System.out.println("	BEGIN: util.CheckSubstring.countCapLetters");
 		// Define counter
 		int counter = 0;
 		// Define "Capital letters" in regex pattern
@@ -72,12 +72,12 @@ public class CheckSubstring {
 				counter++;
 			}
 		}
-		System.out.println("FINISH: util.CheckSubstring.countCapLetters");
+		System.out.println("	FINISH: util.CheckSubstring.countCapLetters");
 		return counter;
 	}
 
 	public int countLowLetters(String checkThisString) {
-		System.out.println("BEGIN: util.CheckSubstring.countLowLetters");
+		System.out.println("	BEGIN: util.CheckSubstring.countLowLetters");
 		// Define counter
 		int counter = 0;
 		// Define "Lower-case letters" in regex pattern
@@ -92,12 +92,12 @@ public class CheckSubstring {
 				counter++;
 			}
 		}
-		System.out.println("FINISH: util.CheckSubstring.countLowLetters");
+		System.out.println("	FINISH: util.CheckSubstring.countLowLetters");
 		return counter;
 	}
 
 	public int countNums(String checkThisString) {
-		System.out.println("BEGIN: util.CheckSubstring.countNums");
+		System.out.println("	BEGIN: util.CheckSubstring.countNums");
 		// Define counter
 		int counter = 0;
 		// Define "Capital letters" in regex pattern
@@ -112,23 +112,32 @@ public class CheckSubstring {
 				counter++;
 			}
 		}
-		System.out.println("FINISH: util.CheckSubstring.countNums");
+		System.out.println("	FINISH: util.CheckSubstring.countNums");
 		return counter;
 	}
 	
 	// Note The passed String only contains ONE dot in it.
 	public ArrayList<String> delimitAtDot(String delimitThisString) {
-		System.out.println("BEGIN: util.CheckSubstring.delimitAtDot");
-		// Split passed string along dot
-		int dotIndex = delimitThisString.indexOf(".");
-		String beforeDot = delimitThisString.substring(0, dotIndex);
-		String afterDot = delimitThisString.substring(dotIndex+1, delimitThisString.length());
+		System.out.println("	BEGIN: util.CheckSubstring.delimitAtDot");
+		System.out.println("		Passed string: "+delimitThisString);
 		// Declare new ArrayList for return
 		ArrayList<String> delimitedString = new ArrayList<String>();
-		// Add two halves of passed string to ArrayList for return
-		delimitedString.add(beforeDot);
-		delimitedString.add(afterDot);
-		System.out.println("FINISH: util.CheckSubstring.delimitAtDot");
+		if (delimitThisString.contains(".")) {
+			
+			// Split passed string along dot
+			int dotIndex = delimitThisString.indexOf(".");
+			String beforeDot = delimitThisString.substring(0, dotIndex);
+			String afterDot = delimitThisString.substring(dotIndex+1, delimitThisString.length());
+			System.out.println("			Added substring: "+beforeDot);
+			System.out.println("			Added substring: "+afterDot);
+			// Add two halves of passed string to ArrayList for return
+			delimitedString.add(beforeDot);
+			delimitedString.add(afterDot);
+			
+		} else {
+			System.out.println("			No dot (.) in passed string ");
+		}
+		System.out.println("	FINISH: util.CheckSubstring.delimitAtDot");
 		return delimitedString;
 	}
 }

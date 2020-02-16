@@ -16,9 +16,10 @@ public class TestUtil {
 			
 			boolean s = false;
 			while (s!=true) {
-				util.getInput("Input:");
-				util.
-				s = validatePwd(input);
+				util.promptForInput("Input:");
+				String result = util.returnInput();
+				util.closeReader();
+				s = validatePwd(result);
 			}
 			
 			

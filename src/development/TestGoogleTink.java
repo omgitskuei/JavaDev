@@ -21,7 +21,7 @@ public class TestGoogleTink {
 		try {
 			// Get Input
 			GetRuntimeInput util = new GetRuntimeInput();
-			util.getInput("What");
+			util.promptForInput("What");
 			String input = util.returnInput();
 			util.closeReader();
 
