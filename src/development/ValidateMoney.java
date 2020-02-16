@@ -1,5 +1,6 @@
 package development;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Currency;
 
@@ -8,9 +9,11 @@ import util.GetRuntimeInput;
 
 public class ValidateMoney {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		GetRuntimeInput util = new GetRuntimeInput();
-		String input = util.getConsoleInputBR("Enter Money Amount:");
+		util.getInput("Enter Money Amount:");
+		String input = util.returnInput();
+		util.closeReader();
 		
 		float thisMoney = Float.parseFloat(input);
 		
