@@ -32,7 +32,7 @@ public class ValidateString {
 				String input = util.returnInput();
 
 				// result = !(util1.validateEmail(input));
-				// result = !(util1.validatePwd(input));
+				result = !(util1.validatePwd(input));
 
 				failsafe--;
 				System.out.println("Tries left: " + failsafe);

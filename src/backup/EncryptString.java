@@ -93,7 +93,9 @@ public class EncryptString {
 	public static void main(String args[]) {
 		// Get Input
 		GetRuntimeInput util = new GetRuntimeInput();
-		String plainText = util.getInputOnce("Input String:");
+		util.promptForInput("Input String:");
+		String plainText = util.returnInput();
+		util.closeReader();
 
 		EncryptString util1 = new EncryptString();
 		Aead aead = util1.newCleartextAEADKeyset();

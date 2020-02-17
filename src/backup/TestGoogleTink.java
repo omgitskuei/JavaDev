@@ -20,8 +20,8 @@ public class TestGoogleTink {
 	public static void main(String[] args) {
 		try {
 			// Get Input
-			GetRuntimeInput util = new GetRuntimeInput();
-			String input = util.getInputOnce("Input String:");
+			GetRuntimeInput util = new GetRuntimeInput("Input String:");
+			String input = util.returnInput();
 
 			// Before using any of Tink APIs we need to initialize them.
 			// If we need to use all implementations of ALL PRIMITIVES in Tink, use this:
