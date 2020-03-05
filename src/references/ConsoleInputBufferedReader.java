@@ -16,7 +16,7 @@ public class ConsoleInputBufferedReader {
 		try {
 			
 			s = br.readLine();
-			//int i = Integer.parseInt(s);
+			//int i = Integer.parseInt(UsingSuper);
 			
 			System.out.println(s);
 			br.close();

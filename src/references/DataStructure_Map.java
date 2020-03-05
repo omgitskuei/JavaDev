@@ -1,4 +1,4 @@
-package util;
+package references;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -102,10 +102,10 @@ public class DataStructure_Map {
 
 	public void runTestTreeMap() {
 		// Since TreeMaps are sorted by keys, the object for key has to be able to
-		// compare with each other, that's why it has to implement Comparable interface.
+		// compare with each other, that'UsingSuper why it has to implement Comparable interface.
 		// For example, you use String as key, because String implements Comparable
 		// interface.
-		// Let's change the Dog, and make it comparable.
+		// Let'UsingSuper change the Dog, and make it comparable.
 
 		Cat d1 = new Cat("red", 30);
 		Cat d2 = new Cat("black", 20);

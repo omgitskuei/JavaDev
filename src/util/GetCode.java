@@ -43,8 +43,11 @@ public class GetCode {
 //			GetRuntimeInput console = new GetRuntimeInput();
 //			String input = console.getConsoleInputBR("Input length:");
 //			int length = Integer.parseInt(input);
-
-		GetCode gen = new GetCode(50, true, true, true, true);
+		GetRuntimeInput getInput = new GetRuntimeInput("Enter code length");
+		String length = getInput.returnInput();
+		getInput.closeReader();
+		
+		GetCode gen = new GetCode(length, true, true, true, true);
 
 		// Note: the math.Random() formula;
 		// int randomNum = (int) ((Math.random() * (max - min)) + min);

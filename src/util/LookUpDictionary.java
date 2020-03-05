@@ -61,7 +61,7 @@ public class LookUpDictionary {
 			// ... and add that line to the ArrayList fileContent.
 			fileContent.add(aLine);
 		}
-		// Because it's a whileLoop, the end of fileContent will be a NULL
+		// Because it'UsingSuper a whileLoop, the end of fileContent will be a NULL
 		// ... So, the last index value needs to be removed
 		fileContent.remove(fileContent.size() - 1);
 		System.out.println("      Completed reading File, Total Lines: "+fileContent.size());

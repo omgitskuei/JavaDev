@@ -2,13 +2,15 @@ package util;
 
 public class RepeatUntilCorrect {
 	// Local fields
-	
+	private final static int maxRepeat = 3;
 	
 	// Constructors
 	
 	
 	// Executable - Repeat prompt user until input is valid
 	public static void main(String[] args) {
+		RepeatUntilCorrect s = new RepeatUntilCorrect();
+		s.repeatTest(maxRepeat);
 		
 	}
 	
@@ -22,7 +24,9 @@ public class RepeatUntilCorrect {
 				util.promptForInput("Input String:");
 				String input = util.returnInput();
 				// Define what is "valid"
-				//result = ;		// 'true' to break loop
+				
+				//result = ;		// <-------------- 'true' boolean test to break loop
+				
 				// Fail-safe to stop infinite-loops
 				maxRepeat--;
 				System.out.println("Tries left: "+maxRepeat);

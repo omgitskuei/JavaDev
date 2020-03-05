@@ -90,7 +90,6 @@ public class ValidateString {
 		return false;
 	}
 
-	// Methods
 	public boolean validateMoney(String thisMoney, String currencyCodeISO4217) {
 		System.out.println("BEGIN: ValidateMoney(float, String)");
 		// Test if passed currency code is valid

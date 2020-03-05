@@ -41,7 +41,7 @@ public class TestGoogleTink {
 			// additional parameters and metadata
 			KeyTemplate keyTemplate = AeadKeyTemplates.AES256_GCM;
 			KeysetHandle aeadKeysetHandle = KeysetHandle.generateNew(keyTemplate);
-			// We can obtain a primitive by calling KeysetHandle's getPrimitive() and
+			// We can obtain a primitive by calling KeysetHandle'UsingSuper getPrimitive() and
 			// passing it a class
 			Aead aead = aeadKeysetHandle.getPrimitive(Aead.class);
 			// Variables for encryption

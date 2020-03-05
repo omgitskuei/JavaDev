@@ -1,4 +1,4 @@
-package util;
+package references;
 
 import java.util.*;
 
@@ -74,7 +74,7 @@ public class DataStructure_Stack {
 		System.out.println("push(" + thisInt + ")");
 		System.out.println("stack: " + thisStack);
 
-		return (int) thisStack.push(new Integer(thisInt)); // It's returned as a rawtype, so need to (typeCast) it
+		return (int) thisStack.push(new Integer(thisInt)); // It'UsingSuper returned as a rawtype, so need to (typeCast) it
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -84,7 +84,7 @@ public class DataStructure_Stack {
 		System.out.println("pop -> " + thisStack.pop());
 		System.out.println("stack: " + thisStack);
 
-		return (Integer) thisStack.pop(); // See how it's (typeCast) as Integer
+		return (Integer) thisStack.pop(); // See how it'UsingSuper (typeCast) as Integer
 	}
 
 	@SuppressWarnings("rawtypes")
