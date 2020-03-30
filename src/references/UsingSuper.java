@@ -2,13 +2,13 @@ package references;
 
 class Animal {
 	void eat() {
-		System.out.println("eating...");
+		System.out.println("Animal's eat()");
 	}
 }
 
 class Dog extends Animal {
 	void eat() {
-		System.out.println("eating bread...");
+		System.out.println("Dog's eat()");
 	}
 
 	void bark() {
@@ -24,6 +24,7 @@ class Dog extends Animal {
 public class UsingSuper {
 	public static void main(String args[]) {
 		Dog d = new Dog();
-		d.work();
+		// Dog extends Animal's work() uses Animal's eat method
+		d.work();					// super = Animal, super.eat() outputs "Animal's eat()"
 	}
 }

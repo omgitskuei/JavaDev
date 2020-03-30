@@ -3,6 +3,7 @@ package references;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -33,13 +34,28 @@ public class DataStructure_Map {
 
 	// Constructors
 	public DataStructure_Map() {
-		System.out.println("BEGIN: util.DataStructure_Map");
+		System.out.println("BEGIN: JavaTestEnvironment.src.references.DataStructure_Map");
 	}
 
 	// Executable
 	public static void main(String[] args) {
 		DataStructure_Map thisClass = new DataStructure_Map();
-		thisClass.runTestHashMap();
+//		thisClass.runTestHashMap();
+		
+		Map<String, Object> person = new HashMap<String, Object>();
+		person.put("name", "Chris");
+		person.put("favorite color", "red");
+		person.put("age", "22");
+		Map<String, Object> skills = new HashMap<String, Object>();
+		skills.put("cooking", "expert");
+		skills.put("singing", "novice");
+		Map<String, Object> languages = new HashMap<String, Object>();
+		languages.put("java", "expert");
+		languages.put("python", "novice");
+		skills.put("coding", languages);
+		
+		person.put("skills", skills);
+		System.out.println(person);
 	}
 
 	// Methods

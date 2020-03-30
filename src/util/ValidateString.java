@@ -92,7 +92,7 @@ public class ValidateString {
 
 	public boolean validateMoney(String thisMoney, String currencyCodeISO4217) {
 		System.out.println("BEGIN: ValidateMoney(float, String)");
-		// Test if passed currency code is valid
+		// CustomClasses if passed currency code is valid
 		try {
 			Currency localCurrency = Currency.getInstance(currencyCodeISO4217);
 			System.out.println("	Passed a Currency code of [" + currencyCodeISO4217 + "]");

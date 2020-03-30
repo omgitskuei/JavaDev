@@ -8,6 +8,6 @@ public class Triangle implements Shape{
 	}
 	
 	public void area() {
-		System.out.println("This is the area: "+"y");
+		System.out.println("UsingThis is the area: "+"y");
 	}
 }

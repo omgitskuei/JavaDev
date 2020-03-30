@@ -2,7 +2,9 @@ package development;
 
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import util.CheckSubstring;
 import util.GetRuntimeInput;
@@ -11,29 +13,70 @@ public class TestUtil {
 
 	public static void main(String[] args) {
 		try {
-			GetRuntimeInput util = new GetRuntimeInput();
-			// String input = util.getInputOnce("Input:");
 			
-			boolean s = false;
-			while (s!=true) {
-				util.promptForInput("Input:");
-				String result = util.returnInput();
-				util.closeReader();
-				s = validatePwd(result);
-			}
+			String w = "123.22";
+			int s = (int) Double.parseDouble(w);
 			
-			
-			System.out.println(s);
-			
-			
-			
-			
+//			ArrayList<String> cartSliced = new ArrayList<String>();
+//			cartSliced.add("ProductID");	//0
+//			cartSliced.add("26");
+//			cartSliced.add("ProductName");
+//			cartSliced.add("蔥");			//3
+//			cartSliced.add("ProductCount");
+//			cartSliced.add("3");			//5
+//			cartSliced.add("ProductPrice");
+//			cartSliced.add("20");			//7
+//			
+//			cartSliced.add("ProductID");	//8
+//			cartSliced.add("30");
+//			cartSliced.add("ProductName");
+//			cartSliced.add("山藥");			//11
+//			cartSliced.add("ProductCount");
+//			cartSliced.add("1");			//13
+//			cartSliced.add("ProductPrice");
+//			cartSliced.add("100");			//15
+//			
+//			cartSliced.add("ProductID");	//16
+//			cartSliced.add("27");
+//			cartSliced.add("ProductName");
+//			cartSliced.add("洋蔥");					//19, name
+//			cartSliced.add("ProductCount");
+//			cartSliced.add("3");					//21, count
+//			cartSliced.add("ProductPrice");
+//			cartSliced.add("18");					//23, unit price
+//			
+//			ArrayList<Object> lineItems = new ArrayList<Object>();
+//			
+//			int iteration = cartSliced.size()/8;
+//			
+//			int count = 0;
+//			for (int i = 0; i < iteration; ++i) {
+//				HashMap<String,Object> lineItem = makeOrderItem(cartSliced.get(3+8*count), "", Integer.parseInt(cartSliced.get(7+8*count)), "TWD", Integer.parseInt(cartSliced.get(5+8*count)));
+//				
+//				System.out.println(cartSliced.get(3+8*count));
+//				System.out.println(cartSliced.get(7+8*count));
+//				System.out.println(cartSliced.get(5+8*count));
+//				lineItems.add(lineItem);
+//				count++;
+//			}
+//			
+//			System.out.println(lineItems);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	public static HashMap<String,Object> makeOrderItem (String name, String description, int amount, String currency, int quantity) {
+		HashMap<String, Object> orderItem = new HashMap<String, Object>();
+		orderItem.put("name", name);
+		orderItem.put("description", description);
+		orderItem.put("amount", amount);
+		orderItem.put("currency", currency);
+		orderItem.put("quantity", quantity);
+		return orderItem;
+	}
+	
 	public static boolean validatePwd(String pwd) {
 		System.out.println("Begin: validatePwd(String)");
 		try {
