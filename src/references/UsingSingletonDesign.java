@@ -11,7 +11,7 @@ public class UsingSingletonDesign {
 	// 3) static factory method
 
 	// Static member - Lazy Initialization
-	private static UsingSingletonDesign instance;
+//	private static UsingSingletonDesign instance;
 	// Static member - Eager Initialization
 //	private static UsingSingletonDesign instance = new UsingSingletonDesign();
 
@@ -26,19 +26,25 @@ public class UsingSingletonDesign {
 
 	// Getter/Setters
 	public void setID(int newID) {
-		instance.id = newID;
+		SingletonHelper.instance.id = newID;
 	}
 
 	public int getID() {
-		return instance.id;
+		return SingletonHelper.instance.id;
 	}
 
-	// Factory Method - Lazy Initialization
-	public static synchronized UsingSingletonDesign getInstance() {
-		if (instance == null) {
-			instance = new UsingSingletonDesign();
-		}
-		return instance;
+	// Bill Pugh Singleton Implementation
+	private static class SingletonHelper{
+		private static final UsingSingletonDesign instance = new UsingSingletonDesign();
+	}
+	
+	public static UsingSingletonDesign getInstance() {
+		// Factory Method - Lazy Initialization
+//		if (instance == null) {
+//			instance = new UsingSingletonDesign();
+//		} 
+		//  Bill Pugh Singleton Implementation doesn't require synchronization
+		return SingletonHelper.instance;
 	}
 	// Factory Method - Eager Initialization
 //	public static synchronized UsingSingletonDesign getInstance() {
