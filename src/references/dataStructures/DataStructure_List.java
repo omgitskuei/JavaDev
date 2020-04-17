@@ -1,4 +1,4 @@
-package references;
+package references.dataStructures;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

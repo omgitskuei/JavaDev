@@ -1,20 +1,25 @@
-package util;
+package references.sort;
 
 import java.util.ArrayList;
 
-public class Sort_WIP {
+public class BubbleSort {
 	// Local Fields
 
 	// Constructors
-	public Sort_WIP() {
-		System.out.println("BEGIN: util.Sort_WIP()");
+	public BubbleSort() {
+		System.out.println("BEGIN: util.BubbleSort()");
 	}
 
 	public static void main(String args[]) {
-		Sort_WIP u = new Sort_WIP();
+		BubbleSort instance = new BubbleSort();
 		
-		ArrayList<Integer> sortThis = new ArrayList<Integer>();
+		ArrayList<Integer> sortThis = instance.makeData();
 
+		instance.bubbleSort(sortThis, true);
+	}
+
+	private ArrayList<Integer> makeData() {
+		ArrayList<Integer> sortThis = new ArrayList<Integer>();
 		sortThis.add(3);
 		sortThis.add(2);
 		sortThis.add(6);
@@ -24,57 +29,23 @@ public class Sort_WIP {
 		sortThis.add(1);
 		sortThis.add(1);
 		sortThis.add(1);
-
-		u.bubbleSort(sortThis, true);
+		return sortThis;
 	}
 	
-	
-	// Methods
-
-	// Selection Sort_WIP
-	// Time Complexity: O(n2) as there are two nested loops.
-	// Auxiliary Space: O(1)
-	// The good thing about selection sort is it never makes more than O(n) swaps
-	// and can be useful when memory write is a costly operation.
-	public void selectionSort(int arr[], boolean ascendingOrder) {
-		int n = arr.length;
-		System.out.println("BEGIN: util.Sort_WIP.selectionSort");
-		// One by one move boundary of unsorted subarray
-		for (int i = 0; i < n - 1; i++) {
-			// Find the minimum element in unsorted array
-			int min_idx = i;
-			for (int j = i + 1; j < n; j++) {
-				if (ascendingOrder==true) {
-					if (arr[j] < arr[min_idx]) {
-						min_idx = j;
-					}
-				} else {
-					if (arr[j] > arr[min_idx]) {
-						min_idx = j;
-					}
-				}
-				
-			}
-			// Swap the found minimum element with the first
-			// element
-			int temp = arr[min_idx];
-			arr[min_idx] = arr[i];
-			arr[i] = temp;
-		}
-	}
-
-	// Bubble Sort_WIP
+	// Bubble Sort
 	// Time Complexity: O(n) Best case occurs when array is already sorted. O(n*n) Average Case & Worst case occurs when array is reverse sorted.
 	// Auxiliary Space: O(1)
 	// Can be optimized to break if no swaps happen
 	public void bubbleSort(ArrayList<Integer> sortThis, boolean ascendingOrder) {
 		// Local Variables
+		int countActions = 0;
 		int temp = 0;
 		boolean swapped = false;
-		System.out.println("BEGIN: util.Sort_WIP.bubbleSort");
+		System.out.println("BEGIN: util.BubbleSort.bubbleSort(ArrayList<Integer>, boolean)");
 		try {
 			// Two forLoops to iterate down whole arrayList
 			for (int index = 0; index < sortThis.size() - 1; index++) {
+				countActions++;
 				System.out.println("Current ArrayList: "+sortThis);
 				swapped = false;
 				for (int index1 = 0; index1 < sortThis.size() - 1; index1++) {
@@ -113,6 +84,7 @@ public class Sort_WIP {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("FINISH: util.Sort_WIP.bubbleSort");
+		System.out.println(countActions);
+		System.out.println("FINISH: util.BubbleSort.bubbleSort(ArrayList<Integer>, boolean)");
 	}
 }
