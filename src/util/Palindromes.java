@@ -19,7 +19,7 @@ public class Palindromes {
 	}
 
 	public boolean isPalindrome1(String text) {
-		// Flip the text backwards and compare
+		// Flip the text backwards and then compare
 		text = text.replaceAll("\\s+", "").toLowerCase();
 		String backwards = "";
 		for (int index = 0; index < text.length(); index++) {
@@ -33,6 +33,7 @@ public class Palindromes {
 	}
 
 	public boolean isPalindromeUsingStringBuilder(String text) {
+		// use java.lang.StringBuilder.reverse()
 		text = text.replaceAll("\\s+", "").toLowerCase();
 		StringBuilder plain = new StringBuilder(text);
 		StringBuilder reverse = plain.reverse();
