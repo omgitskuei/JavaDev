@@ -1,4 +1,4 @@
-package references;
+package references.string;
 
 public class UsingStringFormat {
 

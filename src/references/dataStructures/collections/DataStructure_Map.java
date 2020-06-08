@@ -32,9 +32,12 @@ public class DataStructure_Map {
 	// - - ordered by keys.
 	private TreeMap<String, String> tMap;
 
+	private Map<String, String> map;
+	
 	// Constructors
 	public DataStructure_Map() {
 		System.out.println("BEGIN: JavaTestEnvironment.src.references.DataStructure_Map");
+		this.hMap = new HashMap<>();
 	}
 
 	// Executable
@@ -56,6 +59,13 @@ public class DataStructure_Map {
 		
 		person.put("skills", skills);
 		System.out.println(person);
+		
+		
+		thisClass.hMap.put("1", "value 1");
+		thisClass.hMap.put("2", "value 2");
+		if(thisClass.hMap.containsValue("value 1")) {
+			System.out.println("wow, spicy");
+		}
 	}
 
 	// Methods

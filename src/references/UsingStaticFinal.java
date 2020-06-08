@@ -10,7 +10,7 @@ public class UsingStaticFinal {
 		String currentFormat = "";
 		String formattedDate = "";
 		
-		currentFormat = DateFormatLibrary.dateFormatDashes;
+		currentFormat = DateFormatLibrary.dateFormatDashes;			// missing final
 		formattedDate = date.format(DateTimeFormatter.ofPattern(currentFormat));
 		System.out.println(formattedDate);
 		
@@ -22,6 +22,6 @@ public class UsingStaticFinal {
 
 class DateFormatLibrary {
 	public static final java.lang.String dateFormatSlashes = "yyyy/MM/dd";
-	public static final java.lang.String dateFormatDashes = "yyyy-MM-dd";
+	public static java.lang.String dateFormatDashes = "yyyy-MM-dd";
 	public static final java.lang.String dateFormatDots = "yyyy.MM.dd";
 }
