@@ -3,18 +3,31 @@ package references;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Final is a non-access modifier, only applicable to variable, method, and
+ * class for various effects; 1. final Variables; applied to create Constant
+ * Variables 2. final Methods; applied to prevent Method Overriding 3. final
+ * Class; applied to prevent Inheritance
+ * 
+ * Static is ...
+ * 
+ * @author Kuei-Feng Tung
+ */
+
 public class UsingStaticFinal {
 
 	public static void main(String[] args) {
 		LocalDate date = LocalDate.now();
 		String currentFormat = "";
 		String formattedDate = "";
-		
-		currentFormat = DateFormatLibrary.dateFormatDashes;			// missing final
+
+		// using a direct initialized static variable
+		currentFormat = DateFormatLibrary.dateFormatDashes; // static
 		formattedDate = date.format(DateTimeFormatter.ofPattern(currentFormat));
 		System.out.println(formattedDate);
-		
-		currentFormat = DateFormatLibrary.dateFormatDots;
+
+		// using a direct initialized static final variable
+		currentFormat = DateFormatLibrary.dateFormatDots; // static final
 		formattedDate = date.format(DateTimeFormatter.ofPattern(currentFormat));
 		System.out.println(formattedDate);
 	}
