@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * StringBuilder vs StringBuffer
+ * 
+ * StringBuilder is non-synchronized i.e. not thread safe. It means two threads can call the methods of StringBuilder simultaneously.
+ * BUT, StringBuilder is more efficient than StringBuffer.
+ */
+
 public class UsingStringBuilder {
 
 	public static void main(String[] args) {
