@@ -1,7 +1,6 @@
 package references;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 'static' means that the static object belongs specifically to the class

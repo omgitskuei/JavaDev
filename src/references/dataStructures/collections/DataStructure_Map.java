@@ -5,6 +5,9 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+
 import java.util.TreeMap;
 
 public class DataStructure_Map {
@@ -40,6 +43,68 @@ public class DataStructure_Map {
 		this.hMap = new HashMap<>();
 	}
 
+	private <KeyType, ValueType> KeyType useValueToFindAnyOneKey(Map<KeyType, ValueType> map, ValueType value) {
+		System.out.println(">>> useValueToFindFirstKey (map, ["+value+"])");
+		Stream<KeyType> stream = map
+			      .entrySet()
+			      .stream()
+			      .filter(entry -> value.equals(entry.getValue()))
+			      .map(Map.Entry::getKey);
+		KeyType firstKeyToMatchingValue = null;
+		try {
+			firstKeyToMatchingValue = stream.findFirst().get();
+		} catch (NoSuchElementException e) {
+			System.out.println(">>> useValueToFindFirstKey encountered NoSuchElementException - returning NULL.");
+		}
+	    return firstKeyToMatchingValue;
+	}
+	
+	
+	private <KeyType, ValueType> String beautifyPrintMap(Map<KeyType, ValueType> map) {
+		
+		String mapStr = map.toString();
+		
+		mapStr.replaceAll("\\s+","");
+		System.out.println(mapStr);
+		
+		StringBuilder s = new StringBuilder();
+		String eachChar = "";
+		int layer = 0;
+		for(int index = 0; index<mapStr.length(); index++) {
+			eachChar = mapStr.substring(index, index+1);
+			if(eachChar.equals(" ")) {
+				// do nothing
+			} else if(eachChar.equals("=")) {
+				s.append(" = ");
+			} else if(eachChar.equals("{")) {
+				s.append(eachChar);
+				s.append("\r\n");
+				layer++;
+				for(int indexLayer = 0; indexLayer<layer; indexLayer++) {
+					s.append("\t");
+				}
+			} else if(eachChar.equals("}")) {
+				s.append("\r\n");
+				for(int indexLayer = 0; indexLayer<layer; indexLayer++) {
+					s.append("\t");
+				}
+				s.append(eachChar);
+				layer--;
+			} else if(eachChar.equals(",")) {
+				s.append(eachChar);
+				s.append("\r\n");
+				for(int indexLayer = 0; indexLayer<layer; indexLayer++) {
+					s.append("\t");
+				}
+			} else {
+				s.append(eachChar);
+			}
+		}
+		mapStr = s.toString();
+		return mapStr;
+	}
+	
+	
 	// Executable
 	public static void main(String[] args) {
 		DataStructure_Map thisClass = new DataStructure_Map();
@@ -49,22 +114,31 @@ public class DataStructure_Map {
 		person.put("name", "Chris");
 		person.put("favorite color", "red");
 		person.put("age", "22");
+		person.put("age", "23");		// overrides 22
+		person.put("hair", "red");
+		
 		Map<String, Object> skills = new HashMap<String, Object>();
 		skills.put("cooking", "expert");
 		skills.put("singing", "novice");
+		
 		Map<String, Object> languages = new HashMap<String, Object>();
 		languages.put("java", "expert");
 		languages.put("python", "novice");
 		skills.put("coding", languages);
 		
 		person.put("skills", skills);
-		System.out.println(person);
 		
+		//System.out.println("Person= "+person);
+		
+		System.out.println("Person2= "+thisClass.beautifyPrintMap(person));
+		
+		String capital = thisClass.useValueToFindAnyOneKey(person, "red");		// should print "favorite color"
+		//System.out.println("keystream first = "+capital);
 		
 		thisClass.hMap.put("1", "value 1");
 		thisClass.hMap.put("2", "value 2");
 		if(thisClass.hMap.containsValue("value 1")) {
-			System.out.println("wow, spicy");
+		//	System.out.println("wow, spicy");
 		}
 	}
 
