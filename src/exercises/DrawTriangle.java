@@ -269,6 +269,8 @@ public class DrawTriangle {
 		
 		Integer numOfRows = 4;
 		
+		// Version 1 without using Objects
+		
 		Instant start = java.time.Instant.now();
 	    // Method calls;
 		ArrayList<String> coordinates = test1.getTrianglePointsCoordinates(numOfRows);
@@ -281,6 +283,7 @@ public class DrawTriangle {
 	        between.toHours(), between.toMinutes(), between.getSeconds(), between.toMillis());
 		
 		
+		// Version 2 using Objects
 		
 		Instant start2 = java.time.Instant.now();
 	    // Method calls;
