@@ -18,7 +18,8 @@ public class UsingTernaryOperators {
 		answerFalse="orange";
 	}
 	
-	public static void main(String[] args) {
+	@SuppressWarnings("unused")
+    public static void main(String[] args) {
 		UsingTernaryOperators instance = new UsingTernaryOperators();
 		// Both Method #1 and #2 do the same thing
 		

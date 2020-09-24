@@ -2,7 +2,9 @@ package references.operators.misc;
 
 public class UsingInstanceOf {
 	private Object variable;
-	private Class classType;
+	
+	@SuppressWarnings("rawtypes")
+    private Class classType;
 	
 	// Constructors
 	public UsingInstanceOf () {

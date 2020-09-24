@@ -10,6 +10,8 @@ class UsingScanner {
 		String userName = myObj.nextLine(); // Read user input
 		System.out.println("Username is: " + userName); // Output user input
 		
+		myObj.close();
+		
 	/**
 	 * In the example above, we used the nextLine() method, which is used to read Strings. To read other types, look at the table below:
 	 * Method			Description

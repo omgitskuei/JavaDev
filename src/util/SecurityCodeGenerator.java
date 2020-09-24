@@ -43,15 +43,21 @@ public class SecurityCodeGenerator {
 			instance.appendCode();			// [prev code] + [new code]
 			instance.generateCode();		// [new code]
 			System.out.println("result: " + instance.returnCode());
+			
 			instance.setGeneratorParams(false, false, true, false);			// upper cases only
 			instance.setLength(20);
 			instance.getLength();
 			instance.generateCode();		// [new code]
+			
 			instance.setGeneratorParams(true, false, false, false);			// nums only
 			instance.appendCode();			// [prev code] + [new code]
+			
 			instance.setGeneratorParams(false, false, false, true);			// spec chars only
 			instance.appendCode();			// [prev code] + [prev code] + [new code]
 			System.out.println("result: " + instance.returnCode());
+			
+			instance = new SecurityCodeGenerator(13.2, false, false, true, false);  // throws error
+			instance = new SecurityCodeGenerator("asd", false, false, true, false);  // throws error
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

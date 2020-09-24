@@ -39,8 +39,9 @@ public class DataStructure_Hashset {
 		// Creating the array and using toArray()
 		Object[] arr = instance.hashsetStrings.toArray();
 		System.out.println("The array is:");
-		for (int j = 0; j < arr.length; j++)
-			System.out.println(arr[j]);
+		for (String element : instance.hashsetStrings) {
+            System.out.println(element);
+        }
 
 		System.out.println(" * * * * * * * * * * * * * * * * ");
 		/**

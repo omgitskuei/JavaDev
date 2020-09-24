@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="log4j2.xml">
+ 
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="LOG_PATTERN">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="APP_LOG_ROOT">./target/dependenciesWorkspace/apachelog4j2</Property>
+    </Properties>
+     
+    <Appenders>
+        <!-- 'Console' Appender -->
+        <Appender type="Console" name="Console" target="SYSTEM_OUT" follow="true">
+            <Layout type="PatternLayout">
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </Layout>
+            <Filters>
+            </Filters>
+        </Appender>
+         
+        <!-- File Appenders on need basis -->
+        <!-- Priority: [ALL <] Trace < Debug < Info < Warn < Error < Fatal [< OFF] -->
+        
+        <!-- File for Level.TRACE -->
+        <Appender type="RollingFile" name="traceLog" fileName="${APP_LOG_ROOT}/rollingFileTraceLog.log"
+            filePattern="${APP_LOG_ROOT}/rollingFileTraceLog-%d{yyyy-MM-dd}-%i.log" >
+            <Layout type="PatternLayout">
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </Layout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </Appender>
+        <!-- File for Level.DEBUG -->
+        <Appender type="RollingFile" name="debugLog" fileName="${APP_LOG_ROOT}/rollingFileDebugLog.log"
+            filePattern="${APP_LOG_ROOT}/rollingFileDebugLog-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Layout type="PatternLayout">
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </Layout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </Appender>
+        <!-- File for Level.INFO -->
+        <Appender type="RollingFile" name="infoLog" fileName="${APP_LOG_ROOT}/rollingFileInfoLog.log"
+            filePattern="${APP_LOG_ROOT}/rollingFileInfoLog-%d{yyyy-MM-dd}-%i.log" >
+            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </Appender>
+        <!-- File for Level.WARN -->
+        
+        <!-- File for Level.ERROR -->
+        <Appender type="RollingFile" name="errorLog" fileName="${APP_LOG_ROOT}/rollingFileErrorLog.log"
+            filePattern="${APP_LOG_ROOT}/rollingFileErrorLog-%d{yyyy-MM-dd}-%i.log">
+            <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </Appender>
+    </Appenders>
+ 
+    <Loggers>
+        <!-- Root for level.WARN -->
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+        
+        <Logger name="dependenciesWorkspace" additivity="false" level="trace">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="traceLog"/>
+        </Logger>
+        
+        <Logger name="dependenciesWorkspace.apachelog4j2" additivity="false" level="debug">
+            <AppenderRef ref="debugLog"/>
+        </Logger>
+        <Logger name="dependenciesWorkspace.apachelog4j2" additivity="false" level="info">
+            <AppenderRef ref="infoLog"/>
+        </Logger>
+        <Logger name="dependenciesWorkspace.apachelog4j2" additivity="false" level="error">
+            <AppenderRef ref="errorLog"/>
+        </Logger>
+    </Loggers>
+ 
+</Configuration>
