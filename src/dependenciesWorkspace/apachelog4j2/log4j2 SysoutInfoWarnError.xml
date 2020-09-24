@@ -2,7 +2,7 @@
 <Configuration status="WARN">
     <Properties>
         <property name="log_level" value="info" />
-        <Property name="log_dir" value="log" />
+        <Property name="log_dir" value="target/dependenciesWorkspace/apachelog4j2" />
         <property name="log_pattern"
             value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] - [%t] %logger - %m%n" />
         <property name="file_name" value="test" />

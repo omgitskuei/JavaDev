@@ -2,9 +2,10 @@ package dependenciesWorkspace.apachelog4j2;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 
-@Plugin(name = "apacheLog4jTesterConfig", category = "ConfigurationFactory")
+
+
+//@Plugin(name = "log4j2-test.xml", category = "ConfigurationFactory")
 public class ApacheLog4j2WriteLogLines {
     
     private static final Logger logger = LogManager.getLogger(ApacheLog4j2WriteLogLines.class);
@@ -12,10 +13,8 @@ public class ApacheLog4j2WriteLogLines {
 
     
     public static void main(String[] args) {
-        
-        
-        
-        //LoggerContext.getContext().setConfiguration("./src/dependenciesWorkspace/apachelog4j2/apacheLog4jTesterConfig.xml");
+        // -Dlog4j.configurationFile=./dependenciesWorkspace/apachelog4j2/log4j2.xml
+    	// System.setProperty("log4j.configurationFile", "./dependenciesWorkspace/apachelog4j2/log4j2.xml");
         
         // priority = Trace < Debug < Info < Warn < Error < Fatal
         logger.trace("> > ApacheLog4j2WriteLogLines START < <");
