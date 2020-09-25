@@ -1,6 +1,6 @@
 package dependenciesWorkspace.junit;
 /**
- * Apache JUnit4 notes
+ * Apache JUnit4 Notes
  * @author Kuei-Feng Tung
  * @see www.github.com/omgitskuei
  * @version 1.0
