@@ -1,6 +1,6 @@
 package dependenciesWorkspace.junit;
 /**
- * Apache JUnit notes
+ * Apache JUnit4 notes
  * @author Kuei-Feng Tung
  * @see www.github.com/omgitskuei
  * @version 1.0
@@ -9,7 +9,18 @@ package dependenciesWorkspace.junit;
  */
 public class JUnitNotes {
     /**
+     * NOTE:
+     * 
+     * This package and its associated classes, notes, examples pertain to JUnit4
+     * As of now, there's already JUnit5 (but that needs Java 11 or higher).
+     * Check pom.xml to make sure you have a compatible version to your Java.
+     * 
+     * 
      * SOURCES:
+     * 
+     * FAQ on JUnit4
+     * https://github.com/junit-team/junit4/wiki/FAQ
+     * 
      * 
      * To use javac compiler, setup environment variables:
      *      - Set up classpath:
@@ -72,8 +83,6 @@ public class JUnitNotes {
      *      - Test testAt(int index) - Returns the test at the given index.
      *      - int testCount() - Returns the number of tests in this suite.
      *      - static Test warning(String message) - Returns a test which will fail and log a warning message.
-     *      
-     * 
      */
     
     
