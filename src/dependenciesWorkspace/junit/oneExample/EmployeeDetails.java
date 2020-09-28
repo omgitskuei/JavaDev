@@ -1,4 +1,4 @@
-package dependenciesWorkspace.junit.example;
+package dependenciesWorkspace.junit.oneExample;
 
 /**
  * EmployeeDetails class is used to −

@@ -1,4 +1,4 @@
-package dependenciesWorkspace.junit.example;
+package dependenciesWorkspace.junit.oneExample;
 
 /**
  * EmpBusinessLogic class is used for calculating −

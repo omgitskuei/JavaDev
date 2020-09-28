@@ -1,4 +1,4 @@
-package dependenciesWorkspace.junit.example;
+package dependenciesWorkspace.junit.oneExample;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
