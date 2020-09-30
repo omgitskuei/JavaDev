@@ -1,4 +1,4 @@
-package references;
+package references.javaCoreFeatures;
 
 import java.util.HashMap;
 

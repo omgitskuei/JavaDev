@@ -1,4 +1,4 @@
-package references;
+package references.dataTypes;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

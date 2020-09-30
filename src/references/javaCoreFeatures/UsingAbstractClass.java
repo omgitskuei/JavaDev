@@ -1,4 +1,4 @@
-package references;
+package references.javaCoreFeatures;
 
 // 'abstraction' enables the programmer to create a class that cannot be instantiated (cannot be new'd).
 // there's two ways to achieve abstraction;

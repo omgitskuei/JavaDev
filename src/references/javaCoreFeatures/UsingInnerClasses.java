@@ -1,8 +1,8 @@
-package references;
+package references.javaCoreFeatures;
 
-import references.UsingInnerClasses.Chestpiece;
-import references.UsingInnerClasses.Helmet;
-import references.UsingInnerClasses.Weapon;
+import references.javaCoreFeatures.UsingInnerClasses.Chestpiece;
+import references.javaCoreFeatures.UsingInnerClasses.Helmet;
+import references.javaCoreFeatures.UsingInnerClasses.Weapon;
 
 // An inner class can also be static, which means that you can access it without creating an object of the outer class
 // One advantage of inner classes, is that they can access attributes and methods of the outer class

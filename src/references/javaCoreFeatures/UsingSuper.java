@@ -1,4 +1,4 @@
-package references;
+package references.javaCoreFeatures;
 
 class Animal {
 	void eat() {

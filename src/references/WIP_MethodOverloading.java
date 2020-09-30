@@ -1,6 +1,6 @@
 package references;
 
-public class MethodOverloading {
+public class WIP_MethodOverloading {
 	
 	// 2 ways to overload methods in java:
 	// 1) change number of arguments

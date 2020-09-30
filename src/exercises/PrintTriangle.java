@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author omgitskuei
  *
  */
-public class DrawTriangle {
+public class PrintTriangle {
 
 	/**
 	 * Generate coordinates of points that make up outline of triangle
@@ -265,7 +265,7 @@ public class DrawTriangle {
 	}
 	
 	public static void main(String[] args) { 
-		DrawTriangle test1 = new DrawTriangle();
+		PrintTriangle test1 = new PrintTriangle();
 		
 		Integer numOfRows = 4;
 		

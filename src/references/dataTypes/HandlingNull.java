@@ -1,4 +1,4 @@
-package references;
+package references.dataTypes;
 
 public class HandlingNull {
 
