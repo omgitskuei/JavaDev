@@ -1,5 +1,7 @@
 package development;
 
+import java.util.ArrayList;
+
 public class TestSnippet {
 
 	public TestSnippet() {
@@ -7,37 +9,16 @@ public class TestSnippet {
 	}
 	
 	public static void main(String[] args) {
-		TestSnippet instance = new TestSnippet();
+		//TestSnippet instance = new TestSnippet();
+		ArrayList<Integer> numbers = new ArrayList<Integer>();
+	    numbers.add(5);
+	    numbers.add(9);
+	    numbers.add(8);
+	    numbers.add(1);
+	    numbers.forEach( (n) -> { System.out.println(n); } );
 		
-//		String s = "123456.789";
-//		String s = "  2312.314 4343   ";
-		
-//		System.out.println(instance.convertMoney(s));
-//		
-//		Timestamp thisLastUpdateTime = new Timestamp(2018, 01, 01, 13, 30, 40, 21212121);
-//		String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(thisLastUpdateTime);
-//		System.out.println(formattedDate);
-		System.out.println(instance.getBranch("0060", true));
-		System.out.println(instance.getBranch("0060", false));
-		System.out.println(instance.getBranch("060", true));
-		System.out.println(instance.getBranch("060", false));
+	}
+	
 
-		
-	}
-	
-	private String getBranch(String branch, boolean isReturn) {
-		// 取後三位數
-		if (branch.length()==0 || branch==null) {
-			return "";
-		} else {
-			if (isReturn) {
-				return branch.length() > 3 ? branch.substring(branch.length() - 3, branch.length()) : branch;
-			}
-			else {
-				return "0"+branch;
-			}
-		}
-	}
-	
 	
 }
