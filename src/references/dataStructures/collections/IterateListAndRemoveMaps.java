@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IterateAndRemoveMaps {
+public class IterateListAndRemoveMaps {
 
     public static void main(String[] args) {
         List<Map<String, String>> payDatas = new ArrayList<Map<String, String>>();

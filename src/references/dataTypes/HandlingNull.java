@@ -7,6 +7,7 @@ public class HandlingNull {
 		Object a = null;
 		String f = String.valueOf(a);
 		System.out.println(f);
+		System.out.println(f.toString());
 		try {
 			// No null point exception triggered
 			if ("wow".equals(f)) {
