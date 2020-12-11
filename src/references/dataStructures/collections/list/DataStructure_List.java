@@ -1,4 +1,4 @@
-package references.dataStructures.collections;
+package references.dataStructures.collections.list;
 
 import java.util.ArrayList;
 import java.util.HashSet;
