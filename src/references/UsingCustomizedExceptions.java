@@ -30,7 +30,11 @@ class A1 extends A {
 }
 
 class MyException extends Exception {
-	String message;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -1536780979905226096L;
+    String message;
 
 	MyException(String str) {
 		message = str;
