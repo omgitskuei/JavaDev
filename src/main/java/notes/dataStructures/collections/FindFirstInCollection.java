@@ -21,6 +21,14 @@ public class FindFirstInCollection {
      * @throws InterruptedException 
      */
     public static void main(String args[]) throws InterruptedException {
+        List<BigDecimal> bigDecimalsArrayList2 = new ArrayList<>();
+        bigDecimalsArrayList2.add(new BigDecimal(1));
+        bigDecimalsArrayList2.add(new BigDecimal(2));
+        bigDecimalsArrayList2.add(new BigDecimal(3));
+        bigDecimalsArrayList2.add(new BigDecimal(3));
+        System.out.println("List:" + bigDecimalsArrayList2);
+        System.out.println("Stream.findAny() = "+bigDecimalsArrayList2.stream().findAny());
+        System.out.println();
         
         // - - - - - - - - - - - List - - - - - - - - - - - 
         List<BigDecimal> bigDecimalsArrayList = new ArrayList<>();
@@ -36,6 +44,7 @@ public class FindFirstInCollection {
         System.out.println(aBigDecimal);
         System.out.println();
         
+        
         // - - - - - - - - - - - Set - - - - - - - - - - - 
         Set<String> stringSet = new HashSet<String>();
         stringSet.add("1");
@@ -49,6 +58,7 @@ public class FindFirstInCollection {
                 .orElse("notFound");
         System.out.println(aString);
         System.out.println();
+        
         
         // - - - - - - - - - - - Map - - - - - - - - - - - 
         // NOTE:
@@ -84,6 +94,7 @@ public class FindFirstInCollection {
         System.out.println("Option 3:" + errMsg);
         System.out.println();
         
+        
         // - - - - - - - - - - - Queue - - - - - - - - - - - 
         Queue<String> queue = new ArrayBlockingQueue<String>(4);
         queue.add("1");
@@ -97,6 +108,7 @@ public class FindFirstInCollection {
                 .orElse("notFound");
         System.out.println(aString);
         System.out.println();
+        
         
         // - - - - - - - - - - - Stack - - - - - - - - - - - 
         Stack<String> stack = new Stack<String>();
