@@ -50,8 +50,14 @@ public class DataStructure_List {
 		// Displaying ArrayList elements
 		System.out.println("ArrayList contains: " + instance.listString);
 
+		ArrayList<Integer> numbers = new ArrayList<Integer>();
+	    numbers.add(5);
+	    numbers.add(9);
+	    numbers.add(8);
+	    numbers.add(1);
+	    numbers.forEach( (n) -> { System.out.print(n + ","); } );
 		
-		int[] a = { 3, 3, 1, 2, 6, 85, 4 };
+//		int[] a = { 3, 3, 1, 2, 6, 85, 4 };
 //		String inClause = instance.listString.stream().map(a-> String.valueOf(a)).collect(toStringJoiner(","));
 //		String sql = "select name from tbl where name in (" + inClause + ")";
 	}

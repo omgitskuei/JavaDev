@@ -1,6 +1,7 @@
 package development;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TestSnippet {
 
@@ -9,13 +10,10 @@ public class TestSnippet {
 	}
 	
 	public static void main(String[] args) {
-		//TestSnippet instance = new TestSnippet();
-		ArrayList<Integer> numbers = new ArrayList<Integer>();
-	    numbers.add(5);
-	    numbers.add(9);
-	    numbers.add(8);
-	    numbers.add(1);
-	    numbers.forEach( (n) -> { System.out.println(n); } );
+		
+		String a = "202012";
+		System.out.println(a.substring(0, 4));
+		System.out.println(a.substring(4));
 		
 	}
 	
