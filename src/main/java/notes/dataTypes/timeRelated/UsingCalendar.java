@@ -22,6 +22,20 @@ public class UsingCalendar {
 		
 		new UsingCalendar().printYYYYMMDD(a);		
 		
+		
+		System.out.println("--------------------------");
+		String CALC_YM = "202002";
+		
+		Calendar calCALC_YM = Calendar.getInstance();
+		int yearCALC_YM = Integer.valueOf(CALC_YM.substring(0, 4));	// parse year
+		int monthCALC_YM = Integer.valueOf(CALC_YM.substring(4));	// parse month
+		calCALC_YM.set(yearCALC_YM, monthCALC_YM, 0); 		// .set(YYYY, MM, DD where 0 == last day of month)
+		new UsingCalendar().printYYYYMMDD(calCALC_YM);
+		
+		System.out.println("--------------------------");
+		
+		
+		
 		// Today
 		String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 		String month = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1);
