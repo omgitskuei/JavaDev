@@ -1,3 +1,2 @@
 # JavaDev
-This repository backs up java source code that may have re-usability for future projects
-These source code contain research/study notes, implementation, examples, and exercises.
+This repo is a collection of exercises and notes, containing in-depth look at various vanilla Java libraries and how similar tools differ, paying specific attention to results and behavior that are NOT intuitive .
