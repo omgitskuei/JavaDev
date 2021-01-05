@@ -1,4 +1,4 @@
-package main.exercises;
+package main.notes.system;
 
 public class GetProjectRoot {
 

@@ -1,7 +1,7 @@
 package main.notes.variables;
 
-import main.time.LocalDate;
-import main.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Final is a non-access modifier, only applicable to variable, method, and

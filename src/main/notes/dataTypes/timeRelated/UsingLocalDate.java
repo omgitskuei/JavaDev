@@ -1,6 +1,6 @@
 package main.notes.dataTypes.timeRelated;
 
-import main.time.LocalDate;
+import java.time.LocalDate;
 
 public class UsingLocalDate {
 

@@ -3,7 +3,7 @@ package main.notes.dataTypes.timeRelated;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import main.time.Instant;
+import java.time.Instant;
 
 public class SqlTimestamp {
 	private Timestamp timestamp;
