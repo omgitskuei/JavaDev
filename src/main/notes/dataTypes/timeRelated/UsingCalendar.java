@@ -22,6 +22,15 @@ public class UsingCalendar {
 		
 		new UsingCalendar().printYYYYMMDD(a);		
 		
+		// Calendar a == 2020/12/31
+		// Get Last Month
+		a.add(Calendar.MONTH, -1);
+		new UsingCalendar().printYYYYMMDD(a);
+		
+		
+		
+		
+		
 		
 		System.out.println("--------------------------");
 		String CALC_YM = "202002";
@@ -45,7 +54,6 @@ public class UsingCalendar {
 		
 		// The properties of a Calendar object
 		Calendar c = Calendar.getInstance();
-		System.out.println(c.getCalendarType());
 		System.out.println(c);
 		System.out.println(c.get(0));  // prints 1, i=0 means ERA
 		System.out.println("YEAR = " + c.get(Calendar.YEAR));
