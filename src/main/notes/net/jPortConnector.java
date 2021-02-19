@@ -26,17 +26,13 @@ public class jPortConnector {
 				localSocket.close();
 				
 				System.out.println(
-					"Connection to [" 
-						+ InetAddress.getByName(ipAddress).getHostAddress() 
-						+ ":"
-						+ portNum 
-						+ "] Success!");
+					"Connection to [" + InetAddress.getByName(ipAddress).getHostAddress() + ":" + portNum + "] Success!");
 			} catch (ConnectException connE) {
 				System.out.println("Connection Failed/Rejected! Possibly by firewall.");
 			} catch (NumberFormatException e) {
 				System.out.println("Please type Numbers only for Port.");
 			} catch (Exception e) {
-				System.out.println("Connection failed with "+e.getClass()+",\r\nStackTrace:\r\n");
+				System.out.println("Connection failed with "+e.getClass()+",\r\n" + "StackTrace:");
 				e.printStackTrace();
 			} finally {
 				System.out.print("More tests (Y/N)? ");
