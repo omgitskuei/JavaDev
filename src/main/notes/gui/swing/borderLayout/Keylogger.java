@@ -1,4 +1,4 @@
-package main.notes.gui.swing;
+package main.notes.gui.swing.borderLayout;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
