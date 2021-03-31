@@ -18,11 +18,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class Keylogger {
+public class BorderLayoutTest {
 	
 	private static JFileChooser fileChooser = new JFileChooser();
 	
-	private static JFrame frame = new JFrame("Keylogger");
+	private static JFrame frame = new JFrame("MacroEditor");
 	private static JMenuBar menuBar = new JMenuBar();
 	private static JTextArea textarea = new JTextArea();
 	private static JPanel panel = new JPanel();
