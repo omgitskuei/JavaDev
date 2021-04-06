@@ -2,8 +2,6 @@ package main.projects.macroEditor;
 
 import javax.swing.*;
 
-import main.notes.gui.swing.i18nExample;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,61 +23,84 @@ public class MacroEditor {
 
 	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 	private static final JFrame FRAME = new JFrame();
-	private static final Preferences PREFS = Preferences.userNodeForPackage(main.projects.macroEditor.MacroEditor.class);
+	private static final Preferences PREFS = Preferences
+			.userNodeForPackage(main.projects.macroEditor.MacroEditor.class);
 	private static ArrayList<String> fileContents = new ArrayList<String>();
 	private static HashMap<String, String> contribURLs = new HashMap<String, String>();
 	private static HashMap<String, HashMap<String, String>> i18nLabels = new HashMap<String, HashMap<String, String>>();
 	private static HashMap<String, Integer> keyBindings = new HashMap<String, Integer>();
 	private static String version = "2021-03";
-	
-	private static String getDebugTimestamp() {
-		return TIMESTAMP_FORMAT.format(new Date(System.currentTimeMillis()));
-	}
+	private static final String newline = System.getProperty("line.separator");
 
 	public static void main(String[] args) {
-		
+		try {
+			// Set Look&Feel to current System's
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			outputDebugMsg("Successfully set UIManager look&feel to current system's look&feel ["+UIManager.getSystemLookAndFeelClassName()+"].");
+		} catch (UnsupportedLookAndFeelException e) {
+			// Default to CrossPlatformLookAndFeel if System's fails
+			System.err.println("An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to current sysL&F.");
+			try {
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			} catch (UnsupportedLookAndFeelException e1) {
+				System.err.println("An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to crossPlatformL&F.");
+			}  catch (ClassNotFoundException e1) {
+				System.err.println("An ClassNotFoundException error occurred while setting LookAndFeel to crossPlatformL&F.");
+			} catch (InstantiationException e1) {
+				System.err.println("An InstantiationException error occurred while setting LookAndFeel to crossPlatformL&F.");
+			} catch (IllegalAccessException e1) {
+				System.err.println("An IllegalAccessException error occurred while setting LookAndFeel to crossPlatformL&F.");
+			}
+		} catch (ClassNotFoundException e) {
+			System.err.println("An ClassNotFoundException error occurred while setting LookAndFeel to current sysL&F.");
+		} catch (InstantiationException e) {
+			System.err.println("An InstantiationException error occurred while setting LookAndFeel to current sysL&F.");
+		} catch (IllegalAccessException e) {
+			System.err.println("An IllegalAccessException error occurred while setting LookAndFeel to current sysL&F.");
+		}
+
 		// initJFrame
 		FRAME.setTitle("MacroEditor");
 		FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		FRAME.setSize(400, 400);
 		FRAME.setMinimumSize(new Dimension(400, 300));
 		FRAME.setAlwaysOnTop(true);
-		
+
 		// initcontribURLs
 		contribURLs.put("Github", "https://github.com/omgitskuei");
 		contribURLs.put("Gitlab", "https://gitlab.com/omgitskuei");
-		
+
 		// initPreferences
-		PREFS.put("isDebug", "true");   // valid: true, false
-		PREFS.put("lang", "english");   // valid: english, chinese
-		
+		PREFS.put("isDebug", "true"); // valid: true, false
+		PREFS.put("lang", "english"); // valid: english, chinese
+
 		// initI18nLabels
 		HashMap<String, String> enLabels = new HashMap<String, String>();
 		// menuBar labels
-		enLabels.put("menuBarFile",        "File");
-		enLabels.put("menuBarFileOpen",    "Open");
-		enLabels.put("menuBarFileSaveAs",  "Save As");
-		enLabels.put("menuBarHelp",        "Help");
+		enLabels.put("menuBarFile", "File");
+		enLabels.put("menuBarFileOpen", "Open");
+		enLabels.put("menuBarFileSaveAs", "Save As");
+		enLabels.put("menuBarHelp", "Help");
 		enLabels.put("menuBarHelpWelcome", "Welcome");
-		enLabels.put("menuBarHelpAbout",   "About");
+		enLabels.put("menuBarHelpAbout", "About");
 		enLabels.put("menuBarHelpContrib", "Contribute");
-		enLabels.put("menuBarPrefs",       "Preferences");
-		enLabels.put("menuBarPrefsDebug",  "Debug");
-		enLabels.put("menuBarPrefsLang",   "Language");
+		enLabels.put("menuBarPrefs", "Preferences");
+		enLabels.put("menuBarPrefsDebug", "Debug");
+		enLabels.put("menuBarPrefsLang", "Language");
 		enLabels.put("menuBarPrefsLangEn", "English");
 		enLabels.put("menuBarPrefsLangCn", "Chinese");
 		i18nLabels.put("english", enLabels);
 		HashMap<String, String> cnLabels = new HashMap<String, String>();
-		cnLabels.put("menuBarFile",        "檔案");
-		cnLabels.put("menuBarFileOpen",    "開啟");
-		cnLabels.put("menuBarFileSaveAs",  "儲存");
-		cnLabels.put("menuBarHelp",        "說明");
+		cnLabels.put("menuBarFile", "檔案");
+		cnLabels.put("menuBarFileOpen", "開啟");
+		cnLabels.put("menuBarFileSaveAs", "儲存");
+		cnLabels.put("menuBarHelp", "說明");
 		cnLabels.put("menuBarHelpWelcome", "MacroEditor 說明");
-		cnLabels.put("menuBarHelpAbout",   "關於 MacroEditor");
+		cnLabels.put("menuBarHelpAbout", "關於 MacroEditor");
 		cnLabels.put("menuBarHelpContrib", "贊助");
-		cnLabels.put("menuBarPrefs",       "選項");
-		cnLabels.put("menuBarPrefsDebug",  "除錯");
-		cnLabels.put("menuBarPrefsLang",   "語言設定");
+		cnLabels.put("menuBarPrefs", "選項");
+		cnLabels.put("menuBarPrefsDebug", "除錯");
+		cnLabels.put("menuBarPrefsLang", "語言設定");
 		cnLabels.put("menuBarPrefsLangEn", "英文");
 		cnLabels.put("menuBarPrefsLangCn", "中文");
 		i18nLabels.put("chinese", cnLabels);
@@ -111,7 +132,7 @@ public class MacroEditor {
 		keyBindings.put("x", KeyEvent.VK_X);
 		keyBindings.put("y", KeyEvent.VK_Y);
 		keyBindings.put("z", KeyEvent.VK_Z);
-		
+
 		// initMenuBar
 		JMenuBar menuBar = new JMenuBar();
 		// - - - - - - - - - - - - - - - Menu bar > File - - - - - - - - - - - - - - -
@@ -122,66 +143,65 @@ public class MacroEditor {
 		menuBarFileOpen.setName("menuBarFileOpen");
 		menuBarFileOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked File -> " + actEvent.getActionCommand());
+				outputDebugMsg("Clicked File -> " + actEvent.getActionCommand());
 				JFileChooser fileChooser = new JFileChooser("src\\main\\projects\\macroEditor\\");
 				int chosenFile = fileChooser.showOpenDialog(FRAME);
 				if (chosenFile == JFileChooser.APPROVE_OPTION) { // JFileChooser.APPROVE_OPTION is 0
 					File file = fileChooser.getSelectedFile();
-					outputDebugMsg("[" + getDebugTimestamp() + "] User selected a file;");
-					outputDebugMsg("File name:     " + file.getName());
-					outputDebugMsg("Absolute path: " + file.getAbsolutePath());
-					outputDebugMsg("Writeable:     " + file.canWrite());
-					outputDebugMsg("Readable       " + file.canRead());
-					outputDebugMsg("Size (bytes):  " + file.length());
+					outputDebugMsg("User selected a file;" + newline + "File name:     " + file.getName() + newline
+							+ "Absolute path: " + file.getAbsolutePath() + newline + "Writeable:     " + file.canWrite()
+							+ newline + "Readable       " + file.canRead() + newline + "Size (bytes):  "
+							+ file.length());
 					try {
 						Scanner myReader = new Scanner(file);
 						outputDebugMsg("<<File contents - BEGIN>>");
 						int lnCount = 1;
 						while (myReader.hasNextLine()) {
 							String eachLine = myReader.nextLine();
-							outputDebugMsg("(ln"+lnCount+") "+eachLine);
+							outputDebugMsg("(ln" + lnCount + ") " + eachLine);
 							fileContents.add(eachLine);
 							lnCount++;
 						}
 						outputDebugMsg("<<File contents - END>>");
 						myReader.close();
 					} catch (FileNotFoundException e) {
-						System.err.println("[" + getDebugTimestamp() + "] A FileNotFoundException error occurred.");
+						System.err.println("A FileNotFoundException error occurred.");
 						e.printStackTrace();
 					}
 				} else {
-					outputDebugMsg("[" + getDebugTimestamp() + "] User didn't select file");
+					outputDebugMsg("User didn't select file");
 				}
 			}
 		});
 		menuBarFile.add(menuBarFileOpen);
 		// - - - - - - - - - - - - - - - Menu bar > File > Save as - - - - - - - - - - -
-		JMenuItem menuBarFileSaveAs = new JMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarFileSaveAs"));
+		JMenuItem menuBarFileSaveAs = new JMenuItem(
+				i18nLabels.get(PREFS.get("lang", "english")).get("menuBarFileSaveAs"));
 		menuBarFileSaveAs.setName("menuBarFileSaveAs");
 		menuBarFileSaveAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked File -> " + actEvent.getActionCommand());
+				outputDebugMsg("Clicked File -> " + actEvent.getActionCommand());
 				JFileChooser fileChooser = new JFileChooser("src\\main\\projects\\macroEditor\\");
-				fileChooser.setDialogTitle("Save As");   
+				fileChooser.setDialogTitle("Save As");
 				int userSelection = fileChooser.showSaveDialog(FRAME);
 				if (userSelection == JFileChooser.APPROVE_OPTION) {
-				    File fileToSave = fileChooser.getSelectedFile();
-				    outputDebugMsg("[" + getDebugTimestamp() + "] Save as file name: " + fileToSave.getName());
-				    outputDebugMsg("[" + getDebugTimestamp() + "] Save as file:      " + fileToSave.getAbsolutePath());
-				    FileWriter myWriter;
+					File fileToSave = fileChooser.getSelectedFile();
+					outputDebugMsg("Save as file name: " + fileToSave.getName());
+					outputDebugMsg("Save as file:      " + fileToSave.getAbsolutePath());
+					FileWriter myWriter;
 					BufferedWriter writer;
 					try {
 						myWriter = new FileWriter(fileToSave.getAbsolutePath());
 						writer = new BufferedWriter(myWriter);
-						for(int index = 0; index<fileContents.size(); index++) {
+						for (int index = 0; index < fileContents.size(); index++) {
 							String eachLine = fileContents.get(index);
-							outputDebugMsg("[" + getDebugTimestamp() + "] On (Ln"+(index+1)+"), wrote \"" + eachLine + "\"");
-							eachLine = eachLine + "\r\n";
+							outputDebugMsg("On (Ln" + (index + 1) + "), wrote \"" + eachLine + "\"");
+							eachLine = eachLine + newline;
 							writer.write(eachLine);
 						}
 						writer.close();
 					} catch (IOException e) {
-						System.err.println("[" + getDebugTimestamp() + "] An IOException error occurred.");
+						System.err.println("An IOException error occurred.");
 						e.printStackTrace();
 					}
 				}
@@ -193,70 +213,68 @@ public class MacroEditor {
 		JMenu menuBarHelp = new JMenu(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelp"));
 		menuBarHelp.setName("menuBarHelp");
 		// - - - - - - - - - - - - - - - Menu bar > Help > Welcome - - - - - - - - - - -
-		JMenuItem menuBarHelpWelcome = new JMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpWelcome"));
+		JMenuItem menuBarHelpWelcome = new JMenuItem(
+				i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpWelcome"));
 		menuBarHelpWelcome.setName("menuBarHelpWelcome");
 		menuBarHelpWelcome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked Help -> " + actEvent.getActionCommand());
+				outputDebugMsg("Clicked Help -> " + actEvent.getActionCommand());
 			}
 		});
 		menuBarHelp.add(menuBarHelpWelcome);
 		// - - - - - - - - - - - - - - - Menu bar > Help > About - - - - - - - - - - - -
-		JMenuItem menuBarHelpAbout = new JMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpAbout"));
+		JMenuItem menuBarHelpAbout = new JMenuItem(
+				i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpAbout"));
 		menuBarHelpAbout.setName("menuBarHelpAbout");
 		menuBarHelpAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked Help -> " + actEvent.getActionCommand());
-				outputDebugMsg("[" + getDebugTimestamp() + "] version = " + version);
-				JOptionPane.showMessageDialog(
-					FRAME, 
-					"MacroEditor (Version:" + version + ")\r\n"
-					+ "\r\n"
-					+ "MacroEditor was created by Kuei-Feng Tung in 2021 \r\n"
-					+ "with the purpose of simplifying the creation of \r\n"
-					+ "automation commands. With this app, users can \r\n"
-					+ "automate using text files, without needing the \r\n"
-					+ "know-how of coding with Java robot API. \r\n"
-					+ "\r\n"
-					+ "(C) Copyright MacroEditor 2021. All rights reserved.\r\n"
-					+ "MacroEditor and the MacroEditor logo are trademarks \r\n"
-					+ "of Kuei-Feng Tung, https://github.com/omgitskuei. \r\n"
-					+ "The MacroEditor logo cannot be altered without \r\n"
-					+ "permission. Oracle and Java are trademarks or \r\n"
-					+ "registered trademarks of Oracle and/or its \r\n"
-					+ "affiliates.",
-					"About MacroEditor", 
-					JOptionPane.INFORMATION_MESSAGE);
+				outputDebugMsg("Clicked Help -> " + actEvent.getActionCommand());
+				outputDebugMsg("version = " + version);
+				JOptionPane.showMessageDialog(FRAME,
+						"MacroEditor (Version:" + version + ")" + newline + newline
+								+ "MacroEditor was created by Kuei-Feng Tung in 2021" + newline
+								+ "with the purpose of simplifying the creation of" + newline
+								+ "automation commands. With this app, users can" + newline
+								+ "automate using text files, without needing the" + newline
+								+ "know-how of coding with Java robot API." + newline + newline
+								+ "(C) Copyright MacroEditor 2021. All rights reserved." + newline
+								+ "MacroEditor and the MacroEditor logo are trademarks" + newline
+								+ "of Kuei-Feng Tung, https://github.com/omgitskuei." + newline
+								+ "The MacroEditor logo cannot be altered without" + newline
+								+ "permission. Oracle and Java are trademarks or" + newline
+								+ "registered trademarks of Oracle and/or its" + newline + "affiliates.",
+						"About MacroEditor", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		menuBarHelp.add(menuBarHelpAbout);
 		// - - - - - - - - - - - - - - - Menu bar > Help > Contribute - - - - - - - - -
-		JMenuItem menuBarHelpContrib = new JMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpContrib"));
+		JMenuItem menuBarHelpContrib = new JMenuItem(
+				i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpContrib"));
 		menuBarHelpContrib.setName("menuBarHelpContrib");
 		menuBarHelpContrib.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked Help -> " + actEvent.getActionCommand());
-				outputDebugMsg("[" + getDebugTimestamp() + "] contribURLs = " + contribURLs);
-				String selectedOption = (String) JOptionPane.showInputDialog(
-					FRAME,
-					"Contribute by following me on:", 
-					"Contribute",					// Dialog window title
-					JOptionPane.PLAIN_MESSAGE, 		// Type of Dialog window
-					null, 							// Icon
-					contribURLs.keySet().toArray(), // Select options (Object[]), convert Map to Set<String> to String[]
-					"Github"						// Default option
+				outputDebugMsg("Clicked Help -> " + actEvent.getActionCommand());
+				outputDebugMsg("contribURLs = " + contribURLs);
+				String selectedOption = (String) JOptionPane.showInputDialog(FRAME, "Contribute by following me on:",
+						"Contribute", // Dialog window title
+						JOptionPane.PLAIN_MESSAGE, // Type of Dialog window
+						null, // Icon
+						contribURLs.keySet().toArray(), // Select options (Object[]), convert Map to Set<String> to
+														// String[]
+						"Github" // Default option
 				);
-				// If the user presses OK, and return a selected option, go to the corresponding URL
+				// If the user presses OK, and return a selected option, go to the corresponding
+				// URL
 				if ((selectedOption != null) && (selectedOption.length() > 0)) {
-					outputDebugMsg("[" + getDebugTimestamp() + "] User chose [" + selectedOption + "]");
+					outputDebugMsg("User chose [" + selectedOption + "]");
 					try {
 						java.awt.Desktop.getDesktop().browse(java.net.URI.create(contribURLs.get(selectedOption)));
 					} catch (IOException ioE) {
-						System.err.println("[" + getDebugTimestamp() + "] A IOException error occurred.");
+						System.err.println("A IOException error occurred.");
 						ioE.printStackTrace();
 					}
 				} else {
-					outputDebugMsg("[" + getDebugTimestamp() + "] User closed Contribute dialog window.");
+					outputDebugMsg("User closed Contribute dialog window.");
 				}
 				// Close dialog window, Return to FRAME
 				return;
@@ -269,10 +287,12 @@ public class MacroEditor {
 		menuBarPrefs.setName("menuBarPrefs");
 		// - - - - - - - - - - - - - - - Menu bar > Preferences > Debug - - - - - - - -
 		JCheckBoxMenuItem menuBarPrefsDebug;
-		if(PREFS.get("isDebug", "false").equals("true")) {
-			menuBarPrefsDebug = new JCheckBoxMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsDebug"), true); 
+		if (PREFS.get("isDebug", "false").equals("true")) {
+			menuBarPrefsDebug = new JCheckBoxMenuItem(
+					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsDebug"), true);
 		} else {
-			menuBarPrefsDebug = new JCheckBoxMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsDebug")); 
+			menuBarPrefsDebug = new JCheckBoxMenuItem(
+					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsDebug"));
 		}
 		menuBarPrefsDebug.setName("menuBarPrefsDebug");
 		menuBarPrefsDebug.addActionListener(new ActionListener() {
@@ -282,60 +302,67 @@ public class MacroEditor {
 				} else {
 					PREFS.put("isDebug", "false");
 				}
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked Preferences -> " + actEvent.getActionCommand());
+				outputDebugMsg("Clicked Preferences -> " + actEvent.getActionCommand());
 			}
 		});
 		menuBarPrefs.add(menuBarPrefsDebug);
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language - - - - - - - -
+		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language - - - - - - -
+		// -
 		JMenu menuBarPrefsLang = new JMenu(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLang"));
 		menuBarPrefsLang.setName("menuBarPrefsLang");
 		final ButtonGroup langRadioGrp = new ButtonGroup();
-		
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language > English - - - - - - - -
+
+		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language > English - -
+		// - - - - - -
 		JRadioButtonMenuItem menuBarPrefsLangEn;
-		if(PREFS.get("lang", "english").equals("english")) {
-			menuBarPrefsLangEn = new JRadioButtonMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"), true); 
+		if (PREFS.get("lang", "english").equals("english")) {
+			menuBarPrefsLangEn = new JRadioButtonMenuItem(
+					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"), true);
 		} else {
-			menuBarPrefsLangEn = new JRadioButtonMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn")); 
+			menuBarPrefsLangEn = new JRadioButtonMenuItem(
+					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"));
 		}
 		menuBarPrefsLangEn.setActionCommand(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"));
 		menuBarPrefsLangEn.setName("menuBarPrefsLangEn");
 		menuBarPrefsLangEn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
 				String command = langRadioGrp.getSelection().getActionCommand();
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked Preferences -> Language -> " + command);
-				outputDebugMsg("[" + getDebugTimestamp() + "] Language chosen = [english]");
+				outputDebugMsg("Clicked Preferences -> Language -> " + command);
+				outputDebugMsg("Language chosen = [english]");
 				HashMap<String, String> newLabels = i18nLabels.get("english");
 				List<Component> allComponents = getChildren(Component.class, FRAME);
-				for(Component eachComp: allComponents) {
+				for (Component eachComp : allComponents) {
 					updateLabel(eachComp, newLabels);
 				}
 			}
 		});
 		menuBarPrefsLang.add(menuBarPrefsLangEn);
 		langRadioGrp.add(menuBarPrefsLangEn);
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language > Chinese - - - - - - - -
+		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language > Chinese - -
+		// - - - - - -
 		JRadioButtonMenuItem menuBarPrefsLangCn;
-		if(PREFS.get("lang", "english").equals("chinese")) {
-			menuBarPrefsLangCn = new JRadioButtonMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"), true); 
+		if (PREFS.get("lang", "english").equals("chinese")) {
+			menuBarPrefsLangCn = new JRadioButtonMenuItem(
+					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"), true);
 		} else {
-			menuBarPrefsLangCn = new JRadioButtonMenuItem(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn")); 
+			menuBarPrefsLangCn = new JRadioButtonMenuItem(
+					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"));
 		}
 		menuBarPrefsLangCn.setActionCommand(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"));
 		menuBarPrefsLangCn.setName("menuBarPrefsLangCn");
 		menuBarPrefsLangCn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
 				String command = langRadioGrp.getSelection().getActionCommand();
-				outputDebugMsg("[" + getDebugTimestamp() + "] Clicked Preferences -> Language -> " + command);
-				outputDebugMsg("[" + getDebugTimestamp() + "] Language chosen = [chinese]");
+				outputDebugMsg("Clicked Preferences -> Language -> " + command);
+				outputDebugMsg("Language chosen = [chinese]");
 				HashMap<String, String> newLabels = i18nLabels.get("chinese");
 				List<Component> allComponents = getChildren(Component.class, FRAME);
-				for(Component eachComp: allComponents) {
+				for (Component eachComp : allComponents) {
 					updateLabel(eachComp, newLabels);
 				}
 			}
 		});
-		menuBarPrefsLang.add(menuBarPrefsLangCn); 
+		menuBarPrefsLang.add(menuBarPrefsLangCn);
 		langRadioGrp.add(menuBarPrefsLangCn);
 		menuBarPrefs.add(menuBarPrefsLang);
 		menuBar.add(menuBarPrefs);
@@ -356,14 +383,14 @@ public class MacroEditor {
 		// InitButtonsJPanel
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new GridBagLayout());
+
 		JButton button;
-		buttonsPanel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		// natural height, maximum width
-		c.fill = GridBagConstraints.HORIZONTAL;
+		GridBagConstraints c;
+
 		button = new JButton("Button 1");
-		c.weightx = 0.5;
+		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
 		c.gridx = 0;
 		c.gridy = 0;
 		buttonsPanel.add(button, c);
@@ -371,7 +398,7 @@ public class MacroEditor {
 		button = new JButton("Button 2");
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
+		c.weightx = 1.0;
 		c.gridx = 1;
 		c.gridy = 0;
 		buttonsPanel.add(button, c);
@@ -380,36 +407,85 @@ public class MacroEditor {
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
-		c.gridx = 2;
-		c.gridy = 0;
-		buttonsPanel.add(button, c);
-
-		button = new JButton("Long-Named Button 4");
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.ipady = 40; // make this component tall
-		c.weightx = 0.0;
-		c.gridwidth = 3;
 		c.gridx = 0;
 		c.gridy = 1;
 		buttonsPanel.add(button, c);
 
-		button = new JButton("5");
+		button = new JButton("Button 4");
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.ipady = 0; // reset to default
-		c.weighty = 1.0; // request any extra vertical space
-		c.anchor = GridBagConstraints.PAGE_END; // bottom of space
-		c.insets = new Insets(10, 0, 0, 0); // top padding
-		c.gridx = 1; // aligned with button 2
-		c.gridwidth = 2; // 2 columns wide
-		c.gridy = 2; // third row
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 1;
 		buttonsPanel.add(button, c);
-		FRAME.getContentPane().add(BorderLayout.SOUTH, buttonsPanel);
 
-		FRAME.getContentPane().add(BorderLayout.WEST, new JButton("WEST"));
-		FRAME.getContentPane().add(BorderLayout.CENTER, new JButton("CENTER"));
-		FRAME.getContentPane().add(BorderLayout.EAST, new JButton("EAST"));
+		button = new JButton("Button 5");
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 2;
+		buttonsPanel.add(button, c);
+
+		button = new JButton("Button 6");
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 2;
+		buttonsPanel.add(button, c);
+
+		button = new JButton("Button 7");
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 3;
+		buttonsPanel.add(button, c);
+
+		button = new JButton("Button 8");
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 3;
+		buttonsPanel.add(button, c);
+		
+		
+
+//		button = new JButton("Long-Named Button 4");
+//		c = new GridBagConstraints();
+//		c.fill = GridBagConstraints.HORIZONTAL;
+//		c.ipady = 40; // make this component tall
+//		c.weightx = 0.0;
+//		c.gridwidth = 3;
+//		c.gridx = 0;
+//		c.gridy = 1;
+//		buttonsPanel.add(button, c);
+
+//		button = new JButton("5");
+//		c = new GridBagConstraints();
+//		c.fill = GridBagConstraints.HORIZONTAL;
+//		c.ipady = 0; // reset to default
+//		c.weighty = 1.0; // request any extra vertical space
+//		c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+//		c.insets = new Insets(10, 0, 30, 0); // top, left, bottom, right padding
+//		c.gridx = 1; // aligned with button 2
+//		c.gridwidth = 2; // 2 columns wide
+//		c.gridy = 2; // third row
+//		buttonsPanel.add(button, c);
+
+		FRAME.getContentPane().add(BorderLayout.EAST, buttonsPanel);
+
+//		FRAME.getContentPane().add(BorderLayout.WEST, new JButton("WEST"));
+		JTextField textFieldInput = new JTextField(20);
+		textFieldInput.addKeyListener(keyTyped());
+		textFieldInput.requestFocusInWindow();
+		textFieldInput.setFocusTraversalKeysEnabled(false);
+		
+		
+		FRAME.getContentPane().add(BorderLayout.CENTER, textFieldInput);
+//		FRAME.getContentPane().add(BorderLayout.EAST, new JButton("EAST"));
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -419,85 +495,161 @@ public class MacroEditor {
 		});
 	}
 
-	// Helper methods
-	private static void updateLabel(Component eachComp, HashMap<String, String> newLabels) {
-		String name = "", currText = "", newText = "", className = "";
-		// Objects that inherit from AbstractButton have setText("") method
-		if(AbstractButton.class.isAssignableFrom(eachComp.getClass())) {
-			if(eachComp.getClass() == JMenu.class) {
-				JMenu thisComp = (JMenu) eachComp;
-				outputDebugMsg("[" + getDebugTimestamp() + "] "
-						+ "Component [class=" + String.valueOf(thisComp.getClass()) + ", "
-						+ "name=" + thisComp.getName() + ", " 
-						+ "text=" + thisComp.getText() + "] "
-						+ "changed text to [" + newLabels.get(eachComp.getName()) + "]");
-				thisComp.setText(newLabels.get(eachComp.getName()));
-			} else if (eachComp.getClass() == JButton.class) {
-				JButton thisComp = (JButton) eachComp;
-				name = thisComp.getName();
-				currText = thisComp.getText();
-				thisComp.setText(newLabels.get(eachComp.getName()));
-				newText = thisComp.getText();
-				className = String.valueOf(thisComp.getClass());
-			} else if (eachComp.getClass() == JMenuItem.class) {
-				JMenuItem thisComp = (JMenuItem) eachComp;
-				name = thisComp.getName();
-				currText = thisComp.getText();
-				thisComp.setText(newLabels.get(eachComp.getName()));
-				newText = thisComp.getText();
-				className = String.valueOf(thisComp.getClass());
-			} else if (eachComp.getClass() == JCheckBoxMenuItem.class) {
-				JCheckBoxMenuItem thisComp = (JCheckBoxMenuItem) eachComp;
-				name = thisComp.getName();
-				currText = thisComp.getText();
-				thisComp.setText(newLabels.get(eachComp.getName()));
-				newText = thisComp.getText();
-				className = String.valueOf(thisComp.getClass());
-			} else if (eachComp.getClass() == JRadioButtonMenuItem.class) {
-				JRadioButtonMenuItem thisComp = (JRadioButtonMenuItem) eachComp;
-				name = thisComp.getName();
-				currText = thisComp.getText();
-				thisComp.setText(newLabels.get(eachComp.getName()));
-				newText = thisComp.getText();
-				className = String.valueOf(thisComp.getClass());
-			}
-		} 
-		// JLabel does NOT inherit from AbstractButton but itself comes with setText("") method
-		else if (eachComp.getClass() == JLabel.class) {
-			JLabel thisComp =(JLabel) eachComp;
-			name = thisComp.getName();
-			currText = thisComp.getText();
-			thisComp.setText(newLabels.get(eachComp.getName()));
-			newText = thisComp.getText();
-			className = String.valueOf(thisComp.getClass());
-		}
-		if(name!=null && name.length() > 0) {
-			outputDebugMsg("[" + getDebugTimestamp() + "] "
-					+ "Component [class=" + className + ", name=" + name + ", text=" + currText + "] "
-					+ "changed text to [" + newText + "]");
-		}
-	}
 	
-	private static void outputDebugMsg(String message) {
-		if(PREFS.get("isDebug", "false").equals("true")) {
-			System.out.println(message);
-		}
-	}
-	
-	private static <T extends Component> List<T> getChildren(Class<T> clazz, final Container container) {
-        Component[] components;
-        if (container instanceof JMenu)
-            components = ((JMenu) container).getMenuComponents();
-        else
-            components = container.getComponents();
-        List<T> compList = new ArrayList<T>();
-        for (Component comp : components) {
-            if (clazz.isAssignableFrom(comp.getClass())) {
-                compList.add(clazz.cast(comp));
-            }
-            if (comp instanceof Container)
-                compList.addAll(getChildren(clazz, (Container) comp));
-        }
-        return compList;
+	/** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+        displayInfo(e, "KEY TYPED: ");
     }
+
+    /** Handle the key-pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+        displayInfo(e, "KEY PRESSED: ");
+    }
+
+    /** Handle the key-released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+        displayInfo(e, "KEY RELEASED: ");
+    }
+	
+private void displayInfo(KeyEvent e, String keyStatus){
+        
+        //You should only rely on the key char if the event
+        //is a key typed event.
+        int id = e.getID();
+        String keyString;
+        if (id == KeyEvent.KEY_TYPED) {
+            char c = e.getKeyChar();
+            keyString = "key character = '" + c + "'";
+        } else {
+            int keyCode = e.getKeyCode();
+            keyString = "key code = " + keyCode
+                    + " ("
+                    + KeyEvent.getKeyText(keyCode)
+                    + ")";
+        }
+        
+        int modifiersEx = e.getModifiersEx();
+        String modString = "extended modifiers = " + modifiersEx;
+        String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+        if (tmpString.length() > 0) {
+            modString += " (" + tmpString + ")";
+        } else {
+            modString += " (no extended modifiers)";
+        }
+        
+        String actionString = "action key? ";
+        if (e.isActionKey()) {
+            actionString += "YES";
+        } else {
+            actionString += "NO";
+        }
+        
+        String locationString = "key location: ";
+        int location = e.getKeyLocation();
+        if (location == KeyEvent.KEY_LOCATION_STANDARD) {
+            locationString += "standard";
+        } else if (location == KeyEvent.KEY_LOCATION_LEFT) {
+            locationString += "left";
+        } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
+            locationString += "right";
+        } else if (location == KeyEvent.KEY_LOCATION_NUMPAD) {
+            locationString += "numpad";
+        } else { // (location == KeyEvent.KEY_LOCATION_UNKNOWN)
+            locationString += "unknown";
+        }
+        
+        ...//Display information about the KeyEvent...
+    }
+	
+	
+	
+	// Helper methods
+	private static void updateLabel(Component aComponent, HashMap<String, String> newLabels) {
+		String debugMsg = "";
+		// Objects that inherit from AbstractButton have setText("") method
+		// and JLabel has setText("") method
+		if (AbstractButton.class.isAssignableFrom(aComponent.getClass()) || aComponent.getClass() == JLabel.class) {
+			if (aComponent instanceof JMenu) {
+				JMenu thisComp = (JMenu) aComponent;
+				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
+						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
+						+ newLabels.get(aComponent.getName()) + "\"";
+				thisComp.setText(newLabels.get(aComponent.getName()));
+			} else if (aComponent instanceof JButton) {
+				JButton thisComp = (JButton) aComponent;
+				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
+						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
+						+ newLabels.get(aComponent.getName()) + "\"";
+				thisComp.setText(newLabels.get(aComponent.getName()));
+			} else if (aComponent instanceof JMenuItem) {
+				JMenuItem thisComp = (JMenuItem) aComponent;
+				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
+						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
+						+ newLabels.get(aComponent.getName()) + "\"";
+				thisComp.setText(newLabels.get(aComponent.getName()));
+			} else if (aComponent instanceof JCheckBoxMenuItem) {
+				JCheckBoxMenuItem thisComp = (JCheckBoxMenuItem) aComponent;
+				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
+						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
+						+ newLabels.get(aComponent.getName()) + "\"";
+				thisComp.setText(newLabels.get(aComponent.getName()));
+			} else if (aComponent instanceof JRadioButtonMenuItem) {
+				JRadioButtonMenuItem thisComp = (JRadioButtonMenuItem) aComponent;
+				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
+						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
+						+ newLabels.get(aComponent.getName()) + "\"";
+				thisComp.setText(newLabels.get(aComponent.getName()));
+			} else if (aComponent instanceof JLabel) {
+				JLabel thisComp = (JLabel) aComponent;
+				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
+						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
+						+ newLabels.get(aComponent.getName()) + "\"";
+				thisComp.setText(newLabels.get(aComponent.getName()));
+			} else {
+				System.err.println("Uncaught component=" + aComponent);
+			}
+			outputDebugMsg(debugMsg);
+		} else {
+			// This component does not have setText("") method
+			outputDebugMsg("Found Component [class=" + aComponent.getClass() + "] "
+					+ ", component does not have setText(\"\") method, has nothing to update.");
+		}
+	}
+
+	private static void outputDebugMsg(String message) {
+		if (PREFS.get("isDebug", "false").equals("true")) {
+			System.out.println("[" + TIMESTAMP_FORMAT.format(new Date(System.currentTimeMillis())) + "] " + message);
+		}
+	}
+
+	/*
+	 * A recursive method to get children components of a java swing component Some
+	 * children components of this component may have children of their own So, it
+	 * recursively calls this method itself on the child to get ITS children
+	 * 
+	 * Reminder List<T> is a List of Generics named 'T'; Generics added in Java 5 T
+	 * is used for type, K for key, V for value
+	 */
+	private static <T extends Component> List<T> getChildren(Class<T> clazz, final Container container) {
+		Component[] components;
+		// JMenu has a different getComponents() method from other components
+		if (container instanceof JMenu) {
+			components = ((JMenu) container).getMenuComponents();
+		} else {
+			components = container.getComponents();
+		}
+		List<T> compList = new ArrayList<T>();
+		for (Component comp : components) {
+			// class1.isAssignableFrom(class2) - does class2 inherit (extends) from class1?
+			if (clazz.isAssignableFrom(comp.getClass())) {
+				compList.add(clazz.cast(comp));
+			}
+			// This child has children of their own
+			if (comp instanceof Container) {
+				// Recursion
+				compList.addAll(getChildren(clazz, (Container) comp));
+			}
+		}
+		return compList;
+	}
 }
