@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -477,10 +478,61 @@ public class MacroEditor {
 
 		FRAME.getContentPane().add(BorderLayout.EAST, buttonsPanel);
 
+		
+		
+		KeyListener listener = new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent event) {
+                printEventInfo("Key Pressed", event);
+            }
+            @Override
+            public void keyReleased(KeyEvent event) {
+                printEventInfo("Key Released", event);
+            }
+            @Override
+            public void keyTyped(KeyEvent event) {
+                printEventInfo("Key Typed", event);
+            }
+            private void printEventInfo(String str, KeyEvent e) {
+                System.out.println(str);
+                
+                System.out.println("    KeyEvent id = " + e.getID());
+                System.out.println((e.getID() == KeyEvent.KEY_TYPED) ? 
+                    "    KeyChar: " +  e.getKeyChar()
+                        : "    KeyText: " + KeyEvent.getKeyText(e.getKeyCode()));
+                
+                int modifiersEx = e.getModifiersEx();
+                String tmpString = KeyEvent.getModifiersExText(modifiersEx);
+                String modString = (tmpString.length() > 0) ? 
+                	"    Extended modifiers = " + modifiersEx + " (" + tmpString + ")" 
+                		: "    Extended modifiers = " + modifiersEx + " (no extended modifiers)"; 
+                System.out.println(modString);
+                
+                String stringKeyLocation;
+                switch (e.getKeyLocation()) {
+	                case KeyEvent.KEY_LOCATION_RIGHT:
+	                	stringKeyLocation = "Right";
+	                case KeyEvent.KEY_LOCATION_LEFT:
+	                	stringKeyLocation = "Left";
+	                case KeyEvent.KEY_LOCATION_NUMPAD:
+	                	stringKeyLocation = "NumPad";
+	                case KeyEvent.KEY_LOCATION_STANDARD:
+	                	stringKeyLocation = "Standard";
+	                case KeyEvent.KEY_LOCATION_UNKNOWN:
+	                default:
+	                	stringKeyLocation = "Unknown";
+                }
+                System.out.println("    Location: " + stringKeyLocation);
+                System.out.println("    Action Key: " + (e.isActionKey()?"YES":"NO"));
+            }
+        };
+		
 //		FRAME.getContentPane().add(BorderLayout.WEST, new JButton("WEST"));
 		JTextField textFieldInput = new JTextField(20);
-		textFieldInput.addKeyListener(keyTyped());
+		textFieldInput.setEnabled(false);
+		textFieldInput.addKeyListener(listener);
 		textFieldInput.requestFocusInWindow();
+		// this enables capturing tabs as keyEvent, as opposed to using tab to traverse to next component
 		textFieldInput.setFocusTraversalKeysEnabled(false);
 		
 		
@@ -494,72 +546,7 @@ public class MacroEditor {
 			}
 		});
 	}
-
 	
-	/** Handle the key typed event from the text field. */
-    public void keyTyped(KeyEvent e) {
-        displayInfo(e, "KEY TYPED: ");
-    }
-
-    /** Handle the key-pressed event from the text field. */
-    public void keyPressed(KeyEvent e) {
-        displayInfo(e, "KEY PRESSED: ");
-    }
-
-    /** Handle the key-released event from the text field. */
-    public void keyReleased(KeyEvent e) {
-        displayInfo(e, "KEY RELEASED: ");
-    }
-	
-private void displayInfo(KeyEvent e, String keyStatus){
-        
-        //You should only rely on the key char if the event
-        //is a key typed event.
-        int id = e.getID();
-        String keyString;
-        if (id == KeyEvent.KEY_TYPED) {
-            char c = e.getKeyChar();
-            keyString = "key character = '" + c + "'";
-        } else {
-            int keyCode = e.getKeyCode();
-            keyString = "key code = " + keyCode
-                    + " ("
-                    + KeyEvent.getKeyText(keyCode)
-                    + ")";
-        }
-        
-        int modifiersEx = e.getModifiersEx();
-        String modString = "extended modifiers = " + modifiersEx;
-        String tmpString = KeyEvent.getModifiersExText(modifiersEx);
-        if (tmpString.length() > 0) {
-            modString += " (" + tmpString + ")";
-        } else {
-            modString += " (no extended modifiers)";
-        }
-        
-        String actionString = "action key? ";
-        if (e.isActionKey()) {
-            actionString += "YES";
-        } else {
-            actionString += "NO";
-        }
-        
-        String locationString = "key location: ";
-        int location = e.getKeyLocation();
-        if (location == KeyEvent.KEY_LOCATION_STANDARD) {
-            locationString += "standard";
-        } else if (location == KeyEvent.KEY_LOCATION_LEFT) {
-            locationString += "left";
-        } else if (location == KeyEvent.KEY_LOCATION_RIGHT) {
-            locationString += "right";
-        } else if (location == KeyEvent.KEY_LOCATION_NUMPAD) {
-            locationString += "numpad";
-        } else { // (location == KeyEvent.KEY_LOCATION_UNKNOWN)
-            locationString += "unknown";
-        }
-        
-        ...//Display information about the KeyEvent...
-    }
 	
 	
 	
