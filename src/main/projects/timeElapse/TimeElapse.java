@@ -1,7 +1,6 @@
 package main.projects.timeElapse;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -10,18 +9,22 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -30,6 +33,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -42,7 +47,7 @@ public class TimeElapse {
 	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
 	private static final Preferences PREFS = Preferences
-			.userNodeForPackage(main.projects.macroEditor.MacroEditor.class);
+			.userNodeForPackage(main.projects.timeElapse.TimeElapse.class);
 
 	private static final String newline = System.getProperty("line.separator");
 
@@ -50,7 +55,32 @@ public class TimeElapse {
 
 	private static HashMap<String, String> contribURLs = new HashMap<String, String>();
 	private static HashMap<String, HashMap<String, String>> i18nLabels = new HashMap<String, HashMap<String, String>>();
+	private static HashMap<String, GridBagConstraints> componentGBCs = new HashMap<String, GridBagConstraints>();
 
+	private static String results = "";
+	
+	/*
+	 * UI Layout:
+	 * FRAME
+	 * --> JPanel (frameJPanel, BorderLayout)
+	 * -- --> JPanel (menuBarJPanel, GridBagLayout)
+	 * -- -- --> JMenuBar (menuBar)
+	 * -- --> JPanel (appbodyJPanel, GridBagLayout)
+	 * -- -- // Row 1
+	 * -- -- --> JLabel (startLabel)
+	 * -- -- --> JTextField (startTextField)
+	 * -- -- --> ComboBox (startAMPMCombo)
+	 * -- -- // Row 2
+	 * -- -- --> JLabel (endLabel)
+	 * -- -- --> JTextFiel (endTextField)
+	 * -- -- --> ComboBox (endAMPMCombo)\
+	 * -- -- // Row 3
+	 * -- -- --> JButton (calcElapseBtn)
+	 * -- -- --> JButton (clearBtn)
+	 * -- -- // Row 4
+	 * -- -- --> JScrollPane (scrollPane)
+	 * -- -- -- --> JTextArea (resultTextArea)
+	 */
 	public static void main(String[] args) {
 
 		TimeElapse timeElapse = new TimeElapse();
@@ -72,64 +102,191 @@ public class TimeElapse {
 		// initialize JFrame
 		FRAME.setTitle(APPNAME);
 		FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		FRAME.setSize(400, 400);
-		FRAME.setMinimumSize(new Dimension(400, 300));
 		FRAME.setAlwaysOnTop(true);
-
-		/*
-		 * UI Layout
-		 * FRAME
-		 * --> JPanel (frameJPanel, BorderLayout)
-		 * -- --> JPanel (menuBarJPanel, GridBagLayout)
-		 * -- -- --> JMenuBar (menuBar)
-		 * -- --> JPanel (appbodyJPanel, GridBagLayout)
-		 * -- -- --> JPanel (startDateTimeJPanel, GridBagLayout)
-		 * -- -- -- --> ComboBox (start
-		 * -- -- -- --> ?
-		 * -- -- -- --> ComboBox (AMPM
-		 * -- -- --> ?
-		 * -- -- --> ?
-		 * -- -- --> ?
-		 */
+		
+		// initialize GridBagConstraints of various UI components (eg. JLabel, JTextField, JButton, etc)
+		timeElapse.populateGBCs();
 		
 		// Add JPanel to FRAME
 		JPanel frameJPanel = new JPanel();
-		// frameJPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		frameJPanel.setLayout(new BorderLayout());
 		FRAME.getContentPane().add(frameJPanel);
 
 		// Initialize JMenuBar menuBar, GridBagConstraints menuBarGBC, JPanel menuBarJPanel
 		JPanel menuBarJPanel = new JPanel();
-		menuBarJPanel.setBorder(BorderFactory.createLineBorder(Color.red));
 		menuBarJPanel.setLayout(new GridBagLayout());
 		frameJPanel.add(menuBarJPanel, BorderLayout.PAGE_START);
 		
-		GridBagConstraints menuBarGBC = new GridBagConstraints();
-		menuBarGBC.fill = GridBagConstraints.HORIZONTAL;
-		menuBarGBC.anchor = GridBagConstraints.NORTHWEST;
-		menuBarGBC.weightx = 1;
-		
+
 		JMenuBar menuBar = createMenuBar();
-		menuBarJPanel.add(menuBar, menuBarGBC);
+		menuBarJPanel.add(menuBar, componentGBCs.get("menuBarGBC"));
 		
 		
-		// Initialize 
+		// Initialize app body jpanel
 		JPanel appbodyJPanel = new JPanel();
-		appbodyJPanel.setBorder(BorderFactory.createLineBorder(Color.green));
 		appbodyJPanel.setLayout(new GridBagLayout());
 		frameJPanel.add(appbodyJPanel, BorderLayout.CENTER);
+		// - - - - - - - - Row 1 - - - - - - - -
+		// startLabel
+		JLabel startLabel = new JLabel(i18nLabels.get(PREFS.get("lang", "english")).get("startLabel"));
+		startLabel.setName("startLabel");
+		startLabel.setHorizontalTextPosition(JLabel.CENTER);
+		startLabel.setVerticalTextPosition(JLabel.CENTER);
+		appbodyJPanel.add(startLabel, componentGBCs.get("startLabelGBC"));
+		// startTextField
+		final JTextField startTextField = new JTextField();
+		startTextField.setEnabled(true);
+		appbodyJPanel.add(startTextField, componentGBCs.get("startTextFieldGBC"));
+		// startAMPMCombo
+		String[] AMPMOptions = {"AM", "PM"};
+		final JComboBox<String> startAMPMCombo = new JComboBox<String>(AMPMOptions);
+		startAMPMCombo.setSelectedIndex(0);
+		appbodyJPanel.add(startAMPMCombo, componentGBCs.get("startAMPMComboGBC"));
+		// - - - - - - - - Row 2 - - - - - - - -
+		// endLabel
+		JLabel endLabel = new JLabel(i18nLabels.get(PREFS.get("lang", "english")).get("endLabel"));
+		endLabel.setName("endLabel");
+		endLabel.setHorizontalTextPosition(JLabel.CENTER);
+		endLabel.setVerticalTextPosition(JLabel.CENTER);
+		appbodyJPanel.add(endLabel, componentGBCs.get("endLabelGBC"));
+		// endTextField
+		final JTextField endTextField = new JTextField();
+		endTextField.setEnabled(false);
+		appbodyJPanel.add(endTextField, componentGBCs.get("endTextFieldGBC"));
+		// endAMPMCombo
+		final JComboBox<String> endAMPMCombo = new JComboBox<String>(AMPMOptions);
+		endAMPMCombo.setSelectedIndex(0);
+		endAMPMCombo.setEnabled(false);
+		appbodyJPanel.add(endAMPMCombo, componentGBCs.get("endAMPMComboGBC"));
+		// - - - - - - - - Row 3 - - - - - - - -
+		// calcElapseBtn
+		final JButton calcElapseBtn = new JButton(i18nLabels.get(PREFS.get("lang", "english")).get("calcElapseBtn"));
+		calcElapseBtn.setEnabled(false);
+		calcElapseBtn.setName("calcElapseBtn");
+		appbodyJPanel.add(calcElapseBtn, componentGBCs.get("calcElapseBtnGBC"));
+		// clearBtn
+		final JButton clearBtn = new JButton(i18nLabels.get(PREFS.get("lang", "english")).get("clearBtn"));
+		clearBtn.setName("clearBtn");
+		appbodyJPanel.add(clearBtn, componentGBCs.get("clearBtnGBC"));
+		// - - - - - - - - Row 4 - - - - - - - -
+		final JTextArea resultTextArea = new JTextArea();
+		resultTextArea.setEditable(false);
+		JScrollPane scrollPane = new JScrollPane(resultTextArea);
+		scrollPane.setPreferredSize(new Dimension(300, 100));
+		appbodyJPanel.add(scrollPane, componentGBCs.get("resultTextArea"));
 		
-		appbodyJPanel.add(, );
+		startTextField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actEvent) {
+				outputDebugMsg("Entered into startTextField -> \'" + actEvent.getActionCommand() + "\'");
+				String debugMsg = "";
+				if(startTextField.getText().trim().length()>0) {
+					if(!endTextField.isEnabled()) {
+						debugMsg = debugMsg + ", Enable endTextField & endAMPMCombo";
+						endTextField.setEnabled(true);
+						endAMPMCombo.setEnabled(true);
+					}
+					debugMsg = debugMsg + ", Focus endTextField";
+					endTextField.grabFocus();
+				} else {
+					if(endTextField.isEnabled()) {
+						debugMsg = debugMsg + ", Disable endTextField & endAMPMCombo";
+						endTextField.setEnabled(false);
+						endAMPMCombo.setEnabled(false);
+					}
+				}
+				outputDebugMsg("startTextField.getText() = \'"+startTextField.getText()+"\'" + debugMsg);
+			}
+		});
+		startAMPMCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actEvent) {
+				outputDebugMsg("Changed startAMPMCombo -> \'" + actEvent.getActionCommand() + "\'" + ", " + startAMPMCombo.getItemAt(startAMPMCombo.getSelectedIndex()));
+				String debugMsg = "";
+				if(startTextField.getText().length()>0) {
+					if(endTextField.isEnabled()==false) {
+						debugMsg = debugMsg + ", Enable endTextField";
+						endTextField.setEnabled(true);
+						endAMPMCombo.setEnabled(true);
+					}
+					debugMsg = debugMsg + ", Focus endTextField";
+					endTextField.grabFocus();
+				} else {
+					if(endTextField.isEnabled()==true) {
+						debugMsg = debugMsg + ", Disable endTextField";
+						endTextField.setEnabled(false);
+						endAMPMCombo.setEnabled(false);
+					}
+				}
+				outputDebugMsg("Start time textField.getText() = \'"+startTextField.getText()+"\'" + debugMsg);
+			}
+		});
 		
-//		GridBagConstraints mGBC = new GridBagConstraints();
-//		mGBC.fill = GridBagConstraints.HORIZONTAL;
-//		mGBC.anchor = GridBagConstraints.NORTHWEST;
-//		mGBC.weightx = 1;
-//		mGBC.weighty = 1;
-//		JMenuBar menuBar2 = createMenuBar();
-//		mJPanel.add(menuBar2, mGBC);
+		endTextField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actEvent) {
+				outputDebugMsg("Entered into endTextField -> \'" + actEvent.getActionCommand() + "\'");
+				String debugMsg = "";
+				if(endTextField.getText().trim().length()>0 && startTextField.getText().trim().length()>0) {
+					if(calcElapseBtn.isEnabled()==false) {
+						debugMsg = debugMsg + ", Enable calcElapseBtn";
+						calcElapseBtn.setEnabled(true);
+					}
+					debugMsg = debugMsg + ", Focus calcElapseBtn";
+					calcElapseBtn.grabFocus();
+				} else {
+					if(calcElapseBtn.isEnabled()) {
+						debugMsg = debugMsg + ", Disable calcElapseBtn";
+						calcElapseBtn.setEnabled(false);
+					}
+				}
+				outputDebugMsg("endTextField.getText() = \'"+endTextField.getText()+"\'" + debugMsg);
+			}
+		});
+		endAMPMCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actEvent) {
+				outputDebugMsg("Changed endAMPMCombo -> \'" + actEvent.getActionCommand() + "\'" + ", " + endAMPMCombo.getItemAt(endAMPMCombo.getSelectedIndex()));
+				String debugMsg = "";
+				if(endTextField.getText().length()>0) {
+					if(calcElapseBtn.isEnabled()==false) {
+						debugMsg = debugMsg + ", Enable calcElapseBtn";
+						calcElapseBtn.setEnabled(true);
+					}
+					debugMsg = debugMsg + ", Focus calcElapseBtn";
+					calcElapseBtn.grabFocus();
+				} else {
+					if(calcElapseBtn.isEnabled()==true) {
+						debugMsg = debugMsg + ", Disable calcElapseBtn";
+						calcElapseBtn.setEnabled(false);
+					}
+				}
+				outputDebugMsg("startTextField.getText() = \'"+startTextField.getText()+"\'" + ", endTextField.getText() = \'"+endTextField.getText()+"\'" + debugMsg);
+			}
+		});
 		
+		calcElapseBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actEvent) {
+				outputDebugMsg("Clicked calcElapseBtn -> \'" + actEvent.getActionCommand() + "\'");
+				String calcElapseResult = calcDifference(
+						startTextField.getText(), 
+						startAMPMCombo.getItemAt(startAMPMCombo.getSelectedIndex()), 
+						endTextField.getText(), 
+						endAMPMCombo.getItemAt(endAMPMCombo.getSelectedIndex()));
+				results = results + calcElapseResult + "\r\n";
+				resultTextArea.setText(results);
+				clearBtn.grabFocus();
+			}
+		});
+		clearBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actEvent) {
+				outputDebugMsg("Clicked clearBtn -> \'" + actEvent.getActionCommand() + "\'");
+				startTextField.setText("");
+				endTextField.setText("");
+				endTextField.setEnabled(false);
+				endAMPMCombo.setEnabled(false);
+				calcElapseBtn.setEnabled(false);
+				startTextField.grabFocus();
+			}
+		});
 		
+		FRAME.pack();
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -140,7 +297,76 @@ public class TimeElapse {
 	}
 
 	/**
-	 * Set look and feel of the App to current system's native esthetics If failed,
+	 * Retrieve user input and clean data for common dirty data like h:mm instead of hh:mm (eg. 3:45, valid but incorrect format).
+	 * Convert strings into Calendar, get long millis, and subtract end and start.
+	 * Use modulus operator (%) for the remainders of the difference, to convert millis into Hours and Minutes
+	 * 
+	 * @param startTime
+	 * @param startAMPM
+	 * @param endTime
+	 * @param endAMPM
+	 * @return result
+	 * @author omgitskuei
+	 * @since Apri 8, 2021
+	 */
+	private static String calcDifference(String startTime, String startAMPM, String endTime, String endAMPM) {
+		outputDebugMsg("calcDifference(startTime=\'"+startTime+"\', startAMPM=\'"+startAMPM+"\', endTime=\'"+endTime+"\', endAMPM=\'"+endAMPM+"\')");
+		
+		// Get current date
+		long millis=System.currentTimeMillis();
+		java.sql.Date date=new java.sql.Date(millis);
+		outputDebugMsg("Assuming same day [" + String.valueOf(date) + "] for both startTime, endTime");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.ENGLISH);
+		
+		// Convert startTime to Calendar
+		Calendar start = Calendar.getInstance();
+		String startHour = startTime.substring(0, 2);
+		String startMins = startTime.substring(3);
+		// Catch all H:MM (eg. 1:34, convert to 01:34)
+		if(startHour.contains(":")) {
+			outputDebugMsg("startHour passed needs zero padding; " + startHour + " -> " + "0" + startHour.substring(0, 1));
+			startHour = "0" + startHour.substring(0, 1);
+			startMins = startTime.substring(2);
+		}
+		try {
+			outputDebugMsg("Try parsing \'" + String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM + "\' for Calendar start");
+			start.setTime(
+					sdf.parse(String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM)
+			);
+		} catch (ParseException e) {
+			System.err.println("PARSE STARTTIME FAILED");
+			return "Failed to parse Start time";
+		}
+		
+		// Convert endTime to Calendar
+		Calendar end = Calendar.getInstance();
+		String endHour = endTime.substring(0, 2);
+		String endMins = endTime.substring(3);
+		// Catch all H:MM (eg. 1:34, convert to 01:34)
+		if(endHour.contains(":")) {
+			outputDebugMsg("endHour passed needs zero padding; " + endHour + " -> " + "0" + endHour.substring(0, 1));
+			endHour = "0" + endHour.substring(0, 1);
+			endMins = endTime.substring(2);
+		}
+		try {
+			outputDebugMsg("Try parsing \'" + String.valueOf(date) + " " +endHour +":"+endMins + " " + endAMPM + "\' for Calendar end");
+			end.setTime(
+					sdf.parse(String.valueOf(date) + " " +endHour +":"+endMins + " " + endAMPM)
+			);
+		} catch (ParseException e) {
+			System.err.println("PARSE ENDTIME FAILED");
+			return "Failed to parse End time";
+		}
+		
+		long hrs = TimeUnit.MILLISECONDS.toHours(end.getTimeInMillis() - start.getTimeInMillis()) % 24;
+		long min = TimeUnit.MILLISECONDS.toMinutes(end.getTimeInMillis() - start.getTimeInMillis()) % 60;
+		return hrs+" Hours, "+min+" Minutes";
+	}
+	
+	
+	/**
+	 * Set look and feel of the App to current system's native esthetics. If failed,
 	 * use default cross-platform Java esthetics
 	 * 
 	 * @author omgitskuei
@@ -180,6 +406,103 @@ public class TimeElapse {
 		}
 	}
 
+	
+	/**
+	 * Create GridBagConstraints for various Java swing UI components.
+	 * The app's UI layout is noted below.
+	 * 
+	 * @author omgitskuei
+	 * @since Apr 8 2021
+	 */
+	private void populateGBCs() {
+		GridBagConstraints gbc;
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		componentGBCs.put("menuBarGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("startLabelGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.ipadx = 90;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("startTextFieldGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("startAMPMComboGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("endLabelGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		gbc.ipadx = 90;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("endTextFieldGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 2;
+		gbc.gridy = 1;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("endAMPMComboGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("calcElapseBtnGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		componentGBCs.put("clearBtnGBC", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = 3;
+		componentGBCs.put("resultTextArea", gbc);
+	}
+	
+	
 	/**
 	 * Populate component text in various languages
 	 * 
@@ -201,6 +524,10 @@ public class TimeElapse {
 		enLabels.put("menuBarPrefsLang", "Language");
 		enLabels.put("menuBarPrefsLangEn", "English");
 		enLabels.put("menuBarPrefsLangCn", "Chinese");
+		enLabels.put("startLabel", "Start time:");
+		enLabels.put("endLabel", "End time:");
+		enLabels.put("calcElapseBtn", "Calculate Time elapsed");
+		enLabels.put("clearBtn", "Clear");
 		i18nLabels.put("english", enLabels);
 		HashMap<String, String> cnLabels = new HashMap<String, String>();
 		cnLabels.put("menuBarFile", "檔案");
@@ -214,8 +541,13 @@ public class TimeElapse {
 		cnLabels.put("menuBarPrefsLang", "語言設定");
 		cnLabels.put("menuBarPrefsLangEn", "英文");
 		cnLabels.put("menuBarPrefsLangCn", "中文");
+		cnLabels.put("startLabel", "開始時間:");
+		cnLabels.put("endLabel", "結束時間:");
+		cnLabels.put("calcElapseBtn", "計算時間");
+		cnLabels.put("clearBtn", "清除");
 		i18nLabels.put("chinese", cnLabels);
 	}
+	
 
 	/**
 	 * Create a menu bar and add menu items, sub-menu items, and their onClick
@@ -243,8 +575,7 @@ public class TimeElapse {
 						+ APPNAME + " was created by Kuei-Feng Tung in 2021" + newline
 						+ "for calculating time differences. With this app," + newline
 						+ "users can quickly find time elapsed" + newline + "between two given times within a day. "
-						+ newline + "Calculating time elapsed across longer periods " + newline
-						+ "can be chosen under the Preferences > Configuration" + newline + "menu." + newline
+						+ newline
 						+ "(C) Copyright " + APPNAME + " 2021. All rights reserved." + newline + APPNAME + " and the "
 						+ APPNAME + " logo are trademarks" + newline
 						+ "of Kuei-Feng Tung, https://github.com/omgitskuei." + newline + "The " + APPNAME
@@ -373,6 +704,7 @@ public class TimeElapse {
 		menuBar.add(menuBarPrefs);
 		return menuBar;
 	}
+	
 
 	/**
 	 * Change app's UI language by Updating all components' text
@@ -433,6 +765,7 @@ public class TimeElapse {
 					+ ", component does not have setText(\"\") method, has nothing to update.");
 		}
 	}
+	
 
 	/**
 	 * Prints out console messages to assist in debugging Checks preferences
@@ -447,11 +780,12 @@ public class TimeElapse {
 			System.out.println("[" + TIMESTAMP_FORMAT.format(new Date(System.currentTimeMillis())) + "] " + message);
 		}
 	}
+	
 
 	/**
 	 * A recursive method to get children components of a java swing component Some
 	 * children components of this component may have children of their own So, it
-	 * recursively calls this method itself on the child to get ITS children
+	 * recursively calls this method itself on the child to get ITS children.
 	 * 
 	 * Reminder List<T> is a List of Generics named 'T'; Generics added in Java 5 T
 	 * is used for type, K for key, V for value
