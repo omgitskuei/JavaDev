@@ -1,4 +1,4 @@
-package main.projects.timeElapse;
+package main.projects.timeElapse.version2;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -40,14 +40,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class TimeElapse {
+public class TimeElapseV2 {
 
 	private static final String APPNAME = "TimeElapse";
 	private static final String VERSION = "2021-04";
 	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
 	private static final Preferences PREFS = Preferences
-			.userNodeForPackage(main.projects.timeElapse.TimeElapse.class);
+			.userNodeForPackage(main.projects.timeElapse.version1.TimeElapseV1.class);
 
 	private static final String newline = System.getProperty("line.separator");
 
@@ -83,7 +83,7 @@ public class TimeElapse {
 	 */
 	public static void main(String[] args) {
 
-		TimeElapse timeElapse = new TimeElapse();
+		TimeElapseV2 timeElapse = new TimeElapseV2();
 
 		// set LookAndFeel
 		timeElapse.setLookAndFeel();
