@@ -9,9 +9,11 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -42,513 +46,100 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class TimeElapseV2 {
 
-	private static final String APPNAME = "TimeElapse";
-	private static final String VERSION = "2021-04";
-	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-
-	private static final Preferences PREFS = Preferences
-			.userNodeForPackage(main.projects.timeElapse.version1.TimeElapseV1.class);
-
-	private static final String newline = System.getProperty("line.separator");
-
-	private static final JFrame FRAME = new JFrame();
-
-	private static HashMap<String, String> contribURLs = new HashMap<String, String>();
-	private static HashMap<String, HashMap<String, String>> i18nLabels = new HashMap<String, HashMap<String, String>>();
-	private static HashMap<String, GridBagConstraints> componentGBCs = new HashMap<String, GridBagConstraints>();
-
-	private static String results = "";
+	// UI Layout:
+	// FRAME
+	// --> JPanel (mainframeJPanel, BorderLayout)
+	// -- --> JPanel (menuBarJPanel, GridBagLayout)
+	// -- -- --> JMenuBar (menuBar)
+	// -- -- -- --> JMenu (menuBarHelp)
+	// -- -- -- -- --> JMenuItem (menuBarHelpAbout)
+	// -- -- -- -- --> JMenuItem (menuBarHelpContrib)
+	// -- -- -- -- -->
+	// -- --> JPanel (bodyJPanel, BorderLayout)
+	// -- -- --> JPanel (startPanel, GridBagLayout)
+	// ------------ row 1
+	// -- -- -- --> JLabel (startLabel)
+	// ------------ row 2
+	// -- -- -- --> ComboBox (startYear)
+	// -- -- -- --> ComboBox (startMonth)
+	// -- -- -- --> ComboBox (startDay)
+	// ------------ row 3
+	// -- -- -- --> ComboBox (startHour)
+	// -- -- -- --> ComboBox (startMins)
+	// -- -- -- --> ComboBox (startAMPM)
+	// -- -- --> JPanel (endPanel, GridBagLayout)
+	// ------------ row 1
+	// -- -- -- --> JLabel (endLabel)
+	// ------------ row 2
+	// -- -- -- --> ComboBox (endYear)
+	// -- -- -- --> ComboBox (endMonth)
+	// -- -- -- --> ComboBox (endDay)
+	// ------------ row 3
+	// -- -- -- --> ComboBox (endHour)
+	// -- -- -- --> ComboBox (endMins)
+	// -- -- -- --> ComboBox (endAMPM)
+	// -- -- --> JPanel (resultsPanel, GridBagLayout)
+	// ------------ row 1
+	// -- -- -- --> JScrollPane (resultScrollPane)
+	// -- -- -- -- --> JTextArea (resultTextArea)
+	// -- -- --> JPanel (watermarkPanel, GridBagLayout)
+	// ------------ row 1
+	// -- -- -- --> JLabel (watermarkLabel)
 	
-	/*
-	 * UI Layout:
-	 * FRAME
-	 * --> JPanel (frameJPanel, BorderLayout)
-	 * -- --> JPanel (menuBarJPanel, GridBagLayout)
-	 * -- -- --> JMenuBar (menuBar)
-	 * -- --> JPanel (appbodyJPanel, GridBagLayout)
-	 * -- -- // Row 1
-	 * -- -- --> JLabel (startLabel)
-	 * -- -- --> JTextField (startTextField)
-	 * -- -- --> ComboBox (startAMPMCombo)
-	 * -- -- // Row 2
-	 * -- -- --> JLabel (endLabel)
-	 * -- -- --> JTextFiel (endTextField)
-	 * -- -- --> ComboBox (endAMPMCombo)\
-	 * -- -- // Row 3
-	 * -- -- --> JButton (calcElapseBtn)
-	 * -- -- --> JButton (clearBtn)
-	 * -- -- // Row 4
-	 * -- -- --> JScrollPane (scrollPane)
-	 * -- -- -- --> JTextArea (resultTextArea)
-	 */
-	public static void main(String[] args) {
+	private JFrame mainFrame = new JFrame();
+	private JMenuBar menuBar;
+	private HashMap<String, JPanel> allJPanels = new HashMap<String, JPanel>();
+	private HashMap<String, JLabel> allJLabels = new HashMap<String, JLabel>();
+	private HashMap<String, JComboBox<String>> allJComboBoxes = new HashMap<String, JComboBox<String>>();
+	private JScrollPane resultScrollPane = new JScrollPane();
+	private JTextArea resultTextArea = new JTextArea();
 
-		TimeElapseV2 timeElapse = new TimeElapseV2();
+	private static TimeElapseV2 instance;
 
-		// set LookAndFeel
-		timeElapse.setLookAndFeel();
+	private TimeElapseV2() {
+	}
 
-		// populate ContribURLs
-		contribURLs.put("Github", "https://github.com/omgitskuei");
-		contribURLs.put("Gitlab", "https://gitlab.com/omgitskuei");
+	public static synchronized TimeElapseV2 getInstance() {
+		if (instance == null) {
+			instance = new TimeElapseV2();
+		}
+		return instance;
+	}
 
-		// initialize Preferences
-		PREFS.put("isDebug", "true"); // valid: true, false
-		PREFS.put("lang", "english"); // valid: english, chinese
+	public static void main(String args[]) {
+		TimeElapseV2 app = TimeElapseV2.getInstance();
 
-		// initialize I18nLabels
-		timeElapse.populateI18NLabels();
-
-		// initialize JFrame
-		FRAME.setTitle(APPNAME);
-		FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		FRAME.setAlwaysOnTop(true);
-		
-		// initialize GridBagConstraints of various UI components (eg. JLabel, JTextField, JButton, etc)
-		timeElapse.populateGBCs();
-		
-		// Add JPanel to FRAME
-		JPanel frameJPanel = new JPanel();
-		frameJPanel.setLayout(new BorderLayout());
-		FRAME.getContentPane().add(frameJPanel);
-
-		// Initialize JMenuBar menuBar, GridBagConstraints menuBarGBC, JPanel menuBarJPanel
-		JPanel menuBarJPanel = new JPanel();
-		menuBarJPanel.setLayout(new GridBagLayout());
-		frameJPanel.add(menuBarJPanel, BorderLayout.PAGE_START);
-		
-
-		JMenuBar menuBar = createMenuBar();
-		menuBarJPanel.add(menuBar, componentGBCs.get("menuBarGBC"));
+		app.createAllComponents();
+		app.configUI(
+			app.mainFrame, 
+			app.allJPanels, 
+			app.allJLabels, 
+			app.allJComboBoxes, 
+			app.resultScrollPane, 
+			app.resultTextArea);
 		
 		
-		// Initialize app body jpanel
-		JPanel appbodyJPanel = new JPanel();
-		appbodyJPanel.setLayout(new GridBagLayout());
-		frameJPanel.add(appbodyJPanel, BorderLayout.CENTER);
-		// - - - - - - - - Row 1 - - - - - - - -
-		// startLabel
-		JLabel startLabel = new JLabel(i18nLabels.get(PREFS.get("lang", "english")).get("startLabel"));
-		startLabel.setName("startLabel");
-		startLabel.setHorizontalTextPosition(JLabel.CENTER);
-		startLabel.setVerticalTextPosition(JLabel.CENTER);
-		appbodyJPanel.add(startLabel, componentGBCs.get("startLabelGBC"));
-		// startTextField
-		final JTextField startTextField = new JTextField();
-		startTextField.setEnabled(true);
-		appbodyJPanel.add(startTextField, componentGBCs.get("startTextFieldGBC"));
-		// startAMPMCombo
-		String[] AMPMOptions = {"AM", "PM"};
-		final JComboBox<String> startAMPMCombo = new JComboBox<String>(AMPMOptions);
-		startAMPMCombo.setSelectedIndex(0);
-		appbodyJPanel.add(startAMPMCombo, componentGBCs.get("startAMPMComboGBC"));
-		// - - - - - - - - Row 2 - - - - - - - -
-		// endLabel
-		JLabel endLabel = new JLabel(i18nLabels.get(PREFS.get("lang", "english")).get("endLabel"));
-		endLabel.setName("endLabel");
-		endLabel.setHorizontalTextPosition(JLabel.CENTER);
-		endLabel.setVerticalTextPosition(JLabel.CENTER);
-		appbodyJPanel.add(endLabel, componentGBCs.get("endLabelGBC"));
-		// endTextField
-		final JTextField endTextField = new JTextField();
-		endTextField.setEnabled(false);
-		appbodyJPanel.add(endTextField, componentGBCs.get("endTextFieldGBC"));
-		// endAMPMCombo
-		final JComboBox<String> endAMPMCombo = new JComboBox<String>(AMPMOptions);
-		endAMPMCombo.setSelectedIndex(0);
-		endAMPMCombo.setEnabled(false);
-		appbodyJPanel.add(endAMPMCombo, componentGBCs.get("endAMPMComboGBC"));
-		// - - - - - - - - Row 3 - - - - - - - -
-		// calcElapseBtn
-		final JButton calcElapseBtn = new JButton(i18nLabels.get(PREFS.get("lang", "english")).get("calcElapseBtn"));
-		calcElapseBtn.setEnabled(false);
-		calcElapseBtn.setName("calcElapseBtn");
-		appbodyJPanel.add(calcElapseBtn, componentGBCs.get("calcElapseBtnGBC"));
-		// clearBtn
-		final JButton clearBtn = new JButton(i18nLabels.get(PREFS.get("lang", "english")).get("clearBtn"));
-		clearBtn.setName("clearBtn");
-		appbodyJPanel.add(clearBtn, componentGBCs.get("clearBtnGBC"));
-		// - - - - - - - - Row 4 - - - - - - - -
-		final JTextArea resultTextArea = new JTextArea();
-		resultTextArea.setEditable(false);
-		JScrollPane scrollPane = new JScrollPane(resultTextArea);
-		scrollPane.setPreferredSize(new Dimension(300, 100));
-		appbodyJPanel.add(scrollPane, componentGBCs.get("resultTextArea"));
+		app.mainFrame.setTitle("");
+		app.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		app.mainFrame.setAlwaysOnTop(true);
 		
-		startTextField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Entered into startTextField -> \'" + actEvent.getActionCommand() + "\'");
-				String debugMsg = "";
-				if(startTextField.getText().trim().length()>0) {
-					if(!endTextField.isEnabled()) {
-						debugMsg = debugMsg + ", Enable endTextField & endAMPMCombo";
-						endTextField.setEnabled(true);
-						endAMPMCombo.setEnabled(true);
-					}
-					debugMsg = debugMsg + ", Focus endTextField";
-					endTextField.grabFocus();
-				} else {
-					if(endTextField.isEnabled()) {
-						debugMsg = debugMsg + ", Disable endTextField & endAMPMCombo";
-						endTextField.setEnabled(false);
-						endAMPMCombo.setEnabled(false);
-					}
-				}
-				outputDebugMsg("startTextField.getText() = \'"+startTextField.getText()+"\'" + debugMsg);
-			}
-		});
-		startAMPMCombo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Changed startAMPMCombo -> \'" + actEvent.getActionCommand() + "\'" + ", " + startAMPMCombo.getItemAt(startAMPMCombo.getSelectedIndex()));
-				String debugMsg = "";
-				if(startTextField.getText().length()>0) {
-					if(endTextField.isEnabled()==false) {
-						debugMsg = debugMsg + ", Enable endTextField";
-						endTextField.setEnabled(true);
-						endAMPMCombo.setEnabled(true);
-					}
-					debugMsg = debugMsg + ", Focus endTextField";
-					endTextField.grabFocus();
-				} else {
-					if(endTextField.isEnabled()==true) {
-						debugMsg = debugMsg + ", Disable endTextField";
-						endTextField.setEnabled(false);
-						endAMPMCombo.setEnabled(false);
-					}
-				}
-				outputDebugMsg("Start time textField.getText() = \'"+startTextField.getText()+"\'" + debugMsg);
-			}
-		});
-		
-		endTextField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Entered into endTextField -> \'" + actEvent.getActionCommand() + "\'");
-				String debugMsg = "";
-				if(endTextField.getText().trim().length()>0 && startTextField.getText().trim().length()>0) {
-					if(calcElapseBtn.isEnabled()==false) {
-						debugMsg = debugMsg + ", Enable calcElapseBtn";
-						calcElapseBtn.setEnabled(true);
-					}
-					debugMsg = debugMsg + ", Focus calcElapseBtn";
-					calcElapseBtn.grabFocus();
-				} else {
-					if(calcElapseBtn.isEnabled()) {
-						debugMsg = debugMsg + ", Disable calcElapseBtn";
-						calcElapseBtn.setEnabled(false);
-					}
-				}
-				outputDebugMsg("endTextField.getText() = \'"+endTextField.getText()+"\'" + debugMsg);
-			}
-		});
-		endAMPMCombo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Changed endAMPMCombo -> \'" + actEvent.getActionCommand() + "\'" + ", " + endAMPMCombo.getItemAt(endAMPMCombo.getSelectedIndex()));
-				String debugMsg = "";
-				if(endTextField.getText().length()>0) {
-					if(calcElapseBtn.isEnabled()==false) {
-						debugMsg = debugMsg + ", Enable calcElapseBtn";
-						calcElapseBtn.setEnabled(true);
-					}
-					debugMsg = debugMsg + ", Focus calcElapseBtn";
-					calcElapseBtn.grabFocus();
-				} else {
-					if(calcElapseBtn.isEnabled()==true) {
-						debugMsg = debugMsg + ", Disable calcElapseBtn";
-						calcElapseBtn.setEnabled(false);
-					}
-				}
-				outputDebugMsg("startTextField.getText() = \'"+startTextField.getText()+"\'" + ", endTextField.getText() = \'"+endTextField.getText()+"\'" + debugMsg);
-			}
-		});
-		
-		calcElapseBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Clicked calcElapseBtn -> \'" + actEvent.getActionCommand() + "\'");
-				String calcElapseResult = calcDifference(
-						startTextField.getText(), 
-						startAMPMCombo.getItemAt(startAMPMCombo.getSelectedIndex()), 
-						endTextField.getText(), 
-						endAMPMCombo.getItemAt(endAMPMCombo.getSelectedIndex()));
-				results = results + calcElapseResult + "\r\n";
-				resultTextArea.setText(results);
-				clearBtn.grabFocus();
-			}
-		});
-		clearBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Clicked clearBtn -> \'" + actEvent.getActionCommand() + "\'");
-				startTextField.setText("");
-				endTextField.setText("");
-				endTextField.setEnabled(false);
-				endAMPMCombo.setEnabled(false);
-				calcElapseBtn.setEnabled(false);
-				startTextField.grabFocus();
-			}
-		});
-		
-		FRAME.pack();
+		app.mainFrame.pack();
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				FRAME.setVisible(true);
+				app.mainFrame.setVisible(true);
 			}
 		});
 	}
-
-	/**
-	 * Retrieve user input and clean data for common dirty data like h:mm instead of hh:mm (eg. 3:45, valid but incorrect format).
-	 * Convert strings into Calendar, get long millis, and subtract end and start.
-	 * Use modulus operator (%) for the remainders of the difference, to convert millis into Hours and Minutes
-	 * 
-	 * @param startTime
-	 * @param startAMPM
-	 * @param endTime
-	 * @param endAMPM
-	 * @return result
-	 * @author omgitskuei
-	 * @since Apri 8, 2021
-	 */
-	private static String calcDifference(String startTime, String startAMPM, String endTime, String endAMPM) {
-		outputDebugMsg("calcDifference(startTime=\'"+startTime+"\', startAMPM=\'"+startAMPM+"\', endTime=\'"+endTime+"\', endAMPM=\'"+endAMPM+"\')");
-		
-		// Get current date
-		long millis=System.currentTimeMillis();
-		java.sql.Date date=new java.sql.Date(millis);
-		outputDebugMsg("Assuming same day [" + String.valueOf(date) + "] for both startTime, endTime");
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.ENGLISH);
-		
-		// Convert startTime to Calendar
-		Calendar start = Calendar.getInstance();
-		String startHour = startTime.substring(0, 2);
-		String startMins = startTime.substring(3);
-		// Catch all H:MM (eg. 1:34, convert to 01:34)
-		if(startHour.contains(":")) {
-			outputDebugMsg("startHour passed needs zero padding; " + startHour + " -> " + "0" + startHour.substring(0, 1));
-			startHour = "0" + startHour.substring(0, 1);
-			startMins = startTime.substring(2);
-		}
-		try {
-			outputDebugMsg("Try parsing \'" + String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM + "\' for Calendar start");
-			start.setTime(
-					sdf.parse(String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM)
-			);
-		} catch (ParseException e) {
-			System.err.println("PARSE STARTTIME FAILED");
-			return "Failed to parse Start time";
-		}
-		
-		// Convert endTime to Calendar
-		Calendar end = Calendar.getInstance();
-		String endHour = endTime.substring(0, 2);
-		String endMins = endTime.substring(3);
-		// Catch all H:MM (eg. 1:34, convert to 01:34)
-		if(endHour.contains(":")) {
-			outputDebugMsg("endHour passed needs zero padding; " + endHour + " -> " + "0" + endHour.substring(0, 1));
-			endHour = "0" + endHour.substring(0, 1);
-			endMins = endTime.substring(2);
-		}
-		try {
-			outputDebugMsg("Try parsing \'" + String.valueOf(date) + " " +endHour +":"+endMins + " " + endAMPM + "\' for Calendar end");
-			end.setTime(
-					sdf.parse(String.valueOf(date) + " " +endHour +":"+endMins + " " + endAMPM)
-			);
-		} catch (ParseException e) {
-			System.err.println("PARSE ENDTIME FAILED");
-			return "Failed to parse End time";
-		}
-		
-		long hrs = TimeUnit.MILLISECONDS.toHours(end.getTimeInMillis() - start.getTimeInMillis()) % 24;
-		long min = TimeUnit.MILLISECONDS.toMinutes(end.getTimeInMillis() - start.getTimeInMillis()) % 60;
-		return hrs+" Hours, "+min+" Minutes";
-	}
 	
 	
-	/**
-	 * Set look and feel of the App to current system's native esthetics. If failed,
-	 * use default cross-platform Java esthetics
-	 * 
-	 * @author omgitskuei
-	 * @since Apr 7 2021
-	 */
-	private void setLookAndFeel() {
-		try {
-			// Set Look&Feel to current System's
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			outputDebugMsg("Successfully set UIManager look&feel to current system's look&feel ["
-					+ UIManager.getSystemLookAndFeelClassName() + "].");
-		} catch (UnsupportedLookAndFeelException e) {
-			// Default to CrossPlatformLookAndFeel if System's fails
-			System.err.println(
-					"An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to current sysL&F.");
-			try {
-				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			} catch (UnsupportedLookAndFeelException e1) {
-				System.err.println(
-						"An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			} catch (ClassNotFoundException e1) {
-				System.err.println(
-						"An ClassNotFoundException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			} catch (InstantiationException e1) {
-				System.err.println(
-						"An InstantiationException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			} catch (IllegalAccessException e1) {
-				System.err.println(
-						"An IllegalAccessException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			}
-		} catch (ClassNotFoundException e) {
-			System.err.println("An ClassNotFoundException error occurred while setting LookAndFeel to current sysL&F.");
-		} catch (InstantiationException e) {
-			System.err.println("An InstantiationException error occurred while setting LookAndFeel to current sysL&F.");
-		} catch (IllegalAccessException e) {
-			System.err.println("An IllegalAccessException error occurred while setting LookAndFeel to current sysL&F.");
-		}
-	}
-
-	
-	/**
-	 * Create GridBagConstraints for various Java swing UI components.
-	 * The app's UI layout is noted below.
-	 * 
-	 * @author omgitskuei
-	 * @since Apr 8 2021
-	 */
-	private void populateGBCs() {
-		GridBagConstraints gbc;
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.weightx = 1;
-		componentGBCs.put("menuBarGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("startLabelGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.ipadx = 90;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("startTextFieldGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("startAMPMComboGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("endLabelGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.ipadx = 90;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("endTextFieldGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("endAMPMComboGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("calcElapseBtnGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		componentGBCs.put("clearBtnGBC", gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.gridwidth = 3;
-		componentGBCs.put("resultTextArea", gbc);
-	}
 	
 	
-	/**
-	 * Populate component text in various languages
-	 * 
-	 * @return void
-	 * @author omgitskuei
-	 * @since Apr 7, 2021
-	 */
-	private void populateI18NLabels() {
-		HashMap<String, String> enLabels = new HashMap<String, String>();
-		// menuBar labels
-		enLabels.put("menuBarFile", "File");
-		enLabels.put("menuBarFileOpen", "Open");
-		enLabels.put("menuBarFileSaveAs", "Save As");
-		enLabels.put("menuBarHelp", "Help");
-		enLabels.put("menuBarHelpAbout", "About");
-		enLabels.put("menuBarHelpContrib", "Contribute");
-		enLabels.put("menuBarPrefs", "Preferences");
-		enLabels.put("menuBarPrefsDebug", "Debug");
-		enLabels.put("menuBarPrefsLang", "Language");
-		enLabels.put("menuBarPrefsLangEn", "English");
-		enLabels.put("menuBarPrefsLangCn", "Chinese");
-		enLabels.put("startLabel", "Start time:");
-		enLabels.put("endLabel", "End time:");
-		enLabels.put("calcElapseBtn", "Calculate Time elapsed");
-		enLabels.put("clearBtn", "Clear");
-		i18nLabels.put("english", enLabels);
-		HashMap<String, String> cnLabels = new HashMap<String, String>();
-		cnLabels.put("menuBarFile", "檔案");
-		cnLabels.put("menuBarFileOpen", "開啟");
-		cnLabels.put("menuBarFileSaveAs", "儲存");
-		cnLabels.put("menuBarHelp", "說明");
-		cnLabels.put("menuBarHelpAbout", "關於 " + APPNAME);
-		cnLabels.put("menuBarHelpContrib", "贊助");
-		cnLabels.put("menuBarPrefs", "選項");
-		cnLabels.put("menuBarPrefsDebug", "除錯");
-		cnLabels.put("menuBarPrefsLang", "語言設定");
-		cnLabels.put("menuBarPrefsLangEn", "英文");
-		cnLabels.put("menuBarPrefsLangCn", "中文");
-		cnLabels.put("startLabel", "開始時間:");
-		cnLabels.put("endLabel", "結束時間:");
-		cnLabels.put("calcElapseBtn", "計算時間");
-		cnLabels.put("clearBtn", "清除");
-		i18nLabels.put("chinese", cnLabels);
-	}
 	
-
+	
+	
+	
 	/**
 	 * Create a menu bar and add menu items, sub-menu items, and their onClick
 	 * functionality
@@ -560,263 +151,281 @@ public class TimeElapseV2 {
 	private static JMenuBar createMenuBar() {
 		// initMenuBar
 		JMenuBar menuBar = new JMenuBar();
-		// - - - - - - - - - - - - - - - Menu bar > Help - - - - - - - - - - - - - - -
-		JMenu menuBarHelp = new JMenu(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelp"));
-		menuBarHelp.setName("menuBarHelp");
-		// - - - - - - - - - - - - - - - Menu bar > Help > About - - - - - - - - - - - -
-		JMenuItem menuBarHelpAbout = new JMenuItem(
-				i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpAbout"));
-		menuBarHelpAbout.setName("menuBarHelpAbout");
-		menuBarHelpAbout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Clicked Help -> " + actEvent.getActionCommand());
-				outputDebugMsg("version = " + VERSION);
-				JOptionPane.showMessageDialog(FRAME, APPNAME + " (Version:" + VERSION + ")" + newline + newline
-						+ APPNAME + " was created by Kuei-Feng Tung in 2021" + newline
-						+ "for calculating time differences. With this app," + newline
-						+ "users can quickly find time elapsed" + newline + "between two given times within a day. "
-						+ newline
-						+ "(C) Copyright " + APPNAME + " 2021. All rights reserved." + newline + APPNAME + " and the "
-						+ APPNAME + " logo are trademarks" + newline
-						+ "of Kuei-Feng Tung, https://github.com/omgitskuei." + newline + "The " + APPNAME
-						+ " logo cannot be altered without" + newline + "permission. Oracle and Java are trademarks or"
-						+ newline + "registered trademarks of Oracle and/or its" + newline + "affiliates.",
-						"About TimeElapse", JOptionPane.INFORMATION_MESSAGE);
-			}
-		});
-		menuBarHelp.add(menuBarHelpAbout);
-		// - - - - - - - - - - - - - - - Menu bar > Help > Contribute - - - - - - - - -
-		JMenuItem menuBarHelpContrib = new JMenuItem(
-				i18nLabels.get(PREFS.get("lang", "english")).get("menuBarHelpContrib"));
-		menuBarHelpContrib.setName("menuBarHelpContrib");
-		menuBarHelpContrib.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				outputDebugMsg("Clicked Help -> " + actEvent.getActionCommand());
-				outputDebugMsg("contribURLs = " + contribURLs);
-				String selectedOption = (String) JOptionPane.showInputDialog(FRAME, "Contribute by following me on:",
-						"Contribute", // Dialog window title
-						JOptionPane.PLAIN_MESSAGE, // Type of Dialog window
-						null, // Icon
-						contribURLs.keySet().toArray(), // Select options (Object[]), convert Map to Set<String> to
-														// String[]
-						"Github" // Default option
-				);
-				// If the user presses OK, and return a selected option, go to the corresponding
-				// URL
-				if ((selectedOption != null) && (selectedOption.length() > 0)) {
-					outputDebugMsg("User chose [" + selectedOption + "]");
-					try {
-						java.awt.Desktop.getDesktop().browse(java.net.URI.create(contribURLs.get(selectedOption)));
-					} catch (IOException ioE) {
-						System.err.println("A IOException error occurred.");
-						ioE.printStackTrace();
-					}
-				} else {
-					outputDebugMsg("User closed Contribute dialog window.");
-				}
-				// Close dialog window, Return to FRAME
-				return;
-			}
-		});
-		menuBarHelp.add(menuBarHelpContrib);
-		menuBar.add(menuBarHelp);
-		// - - - - - - - - - - - - - - - Menu bar > Preferences - - - - - - - - - - - -
-		JMenu menuBarPrefs = new JMenu(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefs"));
-		menuBarPrefs.setName("menuBarPrefs");
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Debug - - - - - - - -
-		JCheckBoxMenuItem menuBarPrefsDebug;
-		if (PREFS.get("isDebug", "false").equals("true")) {
-			menuBarPrefsDebug = new JCheckBoxMenuItem(
-					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsDebug"), true);
-		} else {
-			menuBarPrefsDebug = new JCheckBoxMenuItem(
-					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsDebug"));
-		}
-		menuBarPrefsDebug.setName("menuBarPrefsDebug");
-		menuBarPrefsDebug.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				if (PREFS.get("isDebug", "false").equals("false")) {
-					PREFS.put("isDebug", "true");
-				} else {
-					PREFS.put("isDebug", "false");
-				}
-				outputDebugMsg("Clicked Preferences -> " + actEvent.getActionCommand());
-			}
-		});
-		menuBarPrefs.add(menuBarPrefsDebug);
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language - - - - - - -
-		JMenu menuBarPrefsLang = new JMenu(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLang"));
-		menuBarPrefsLang.setName("menuBarPrefsLang");
-		final ButtonGroup langRadioGrp = new ButtonGroup();
-
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language > English - -
-		JRadioButtonMenuItem menuBarPrefsLangEn;
-		if (PREFS.get("lang", "english").equals("english")) {
-			menuBarPrefsLangEn = new JRadioButtonMenuItem(
-					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"), true);
-		} else {
-			menuBarPrefsLangEn = new JRadioButtonMenuItem(
-					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"));
-		}
-		menuBarPrefsLangEn.setActionCommand(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangEn"));
-		menuBarPrefsLangEn.setName("menuBarPrefsLangEn");
-		menuBarPrefsLangEn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				String command = langRadioGrp.getSelection().getActionCommand();
-				outputDebugMsg("Clicked Preferences -> Language -> " + command);
-				outputDebugMsg("Language chosen = [english]");
-				HashMap<String, String> newLabels = i18nLabels.get("english");
-				List<Component> allComponents = getChildren(Component.class, FRAME);
-				for (Component eachComp : allComponents) {
-					updateLabel(eachComp, newLabels);
-				}
-			}
-		});
-		menuBarPrefsLang.add(menuBarPrefsLangEn);
-		langRadioGrp.add(menuBarPrefsLangEn);
-		// - - - - - - - - - - - - - - - Menu bar > Preferences > Language > Chinese - -
-		JRadioButtonMenuItem menuBarPrefsLangCn;
-		if (PREFS.get("lang", "english").equals("chinese")) {
-			menuBarPrefsLangCn = new JRadioButtonMenuItem(
-					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"), true);
-		} else {
-			menuBarPrefsLangCn = new JRadioButtonMenuItem(
-					i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"));
-		}
-		menuBarPrefsLangCn.setActionCommand(i18nLabels.get(PREFS.get("lang", "english")).get("menuBarPrefsLangCn"));
-		menuBarPrefsLangCn.setName("menuBarPrefsLangCn");
-		menuBarPrefsLangCn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actEvent) {
-				String command = langRadioGrp.getSelection().getActionCommand();
-				outputDebugMsg("Clicked Preferences -> Language -> " + command);
-				outputDebugMsg("Language chosen = [chinese]");
-				HashMap<String, String> newLabels = i18nLabels.get("chinese");
-				List<Component> allComponents = getChildren(Component.class, FRAME);
-				for (Component eachComp : allComponents) {
-					updateLabel(eachComp, newLabels);
-				}
-			}
-		});
-		menuBarPrefsLang.add(menuBarPrefsLangCn);
-		langRadioGrp.add(menuBarPrefsLangCn);
-		menuBarPrefs.add(menuBarPrefsLang);
-
-		menuBar.add(menuBarPrefs);
+		// ...
 		return menuBar;
 	}
-	
 
-	/**
-	 * Change app's UI language by Updating all components' text
-	 * 
-	 * @param aComponent
-	 * @param newLabels
-	 * @author omgitskuei
-	 * @since Apr 1 2021
-	 */
-	private static void updateLabel(Component aComponent, HashMap<String, String> newLabels) {
-		String debugMsg = "";
-		// Objects that inherit from AbstractButton have setText("") method
-		// and JLabel has setText("") method
-		if (AbstractButton.class.isAssignableFrom(aComponent.getClass()) || aComponent.getClass() == JLabel.class) {
-			if (aComponent instanceof JMenu) {
-				JMenu thisComp = (JMenu) aComponent;
-				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
-						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
-						+ newLabels.get(aComponent.getName()) + "\"";
-				thisComp.setText(newLabels.get(aComponent.getName()));
-			} else if (aComponent instanceof JButton) {
-				JButton thisComp = (JButton) aComponent;
-				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
-						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
-						+ newLabels.get(aComponent.getName()) + "\"";
-				thisComp.setText(newLabels.get(aComponent.getName()));
-			} else if (aComponent instanceof JMenuItem) {
-				JMenuItem thisComp = (JMenuItem) aComponent;
-				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
-						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
-						+ newLabels.get(aComponent.getName()) + "\"";
-				thisComp.setText(newLabels.get(aComponent.getName()));
-			} else if (aComponent instanceof JCheckBoxMenuItem) {
-				JCheckBoxMenuItem thisComp = (JCheckBoxMenuItem) aComponent;
-				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
-						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
-						+ newLabels.get(aComponent.getName()) + "\"";
-				thisComp.setText(newLabels.get(aComponent.getName()));
-			} else if (aComponent instanceof JRadioButtonMenuItem) {
-				JRadioButtonMenuItem thisComp = (JRadioButtonMenuItem) aComponent;
-				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
-						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
-						+ newLabels.get(aComponent.getName()) + "\"";
-				thisComp.setText(newLabels.get(aComponent.getName()));
-			} else if (aComponent instanceof JLabel) {
-				JLabel thisComp = (JLabel) aComponent;
-				debugMsg = "Component [class=" + String.valueOf(thisComp.getClass()) + ", name=\"" + thisComp.getName()
-						+ "\"" + ", text=\"" + thisComp.getText() + "\"] " + "changed text to \""
-						+ newLabels.get(aComponent.getName()) + "\"";
-				thisComp.setText(newLabels.get(aComponent.getName()));
-			} else {
-				System.err.println("Uncaught component=" + aComponent);
-			}
-			outputDebugMsg(debugMsg);
-		} else {
-			// This component does not have setText("") method
-			outputDebugMsg("Found Component [class=" + aComponent.getClass() + "] "
-					+ ", component does not have setText(\"\") method, has nothing to update.");
-		}
+	private void configUI(
+			JFrame mainFrame,
+			HashMap<String, JPanel> allJPanels, 
+			HashMap<String, JLabel> allJLabels,
+			HashMap<String, JComboBox<String>> allJComboBoxes, 
+			JScrollPane resultScrollPane,
+			JTextArea resultTextArea) {
+		
+		HashMap<String, GridBagConstraints> allGBCs = new HashMap<String, GridBagConstraints>();
+		
+		GridBagConstraints gbc;
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		allGBCs.put("endLabel", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endYear", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endMonth", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endDay", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endHour", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endMins", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endAMPM", gbc);
+		
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startLabel", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startYear", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startMonth", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startDay", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startHour", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startMins", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startAMPM", gbc);
+		
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("startPanel", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("endPanel", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("resultsPanel", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("watermarkPanel", gbc);
+		
+		gbc = new GridBagConstraints();
+		allGBCs.put("menuBarJPanel", gbc);
+		
+		
+		allJPanels.get("watermarkPanel").add(allJLabels.get("watermarkLabel"));
+		
+		resultScrollPane.add(resultTextArea);
+		allJPanels.get("resultsPanel").add(resultScrollPane);
+		
+		allJPanels.get("endPanel").add(allJLabels.get("endLabel"), allGBCs.get("endLabel"));
+		allJPanels.get("endPanel").add(allJComboBoxes.get("endYear"), allGBCs.get("endYear"));
+		allJPanels.get("endPanel").add(allJComboBoxes.get("endMonth"), allGBCs.get("endMonth"));
+		allJPanels.get("endPanel").add(allJComboBoxes.get("endDay"), allGBCs.get("endDay"));
+		allJPanels.get("endPanel").add(allJComboBoxes.get("endHour"), allGBCs.get("endHour"));
+		allJPanels.get("endPanel").add(allJComboBoxes.get("endMins"), allGBCs.get("endMins"));
+		allJPanels.get("endPanel").add(allJComboBoxes.get("endAMPM"), allGBCs.get("endAMPM"));
+		
+		allJPanels.get("startPanel").add(allJLabels.get("startLabel"), allGBCs.get("startLabel"));
+		allJPanels.get("startPanel").add(allJComboBoxes.get("startYear"), allGBCs.get("startYear"));
+		allJPanels.get("startPanel").add(allJComboBoxes.get("startMonth"), allGBCs.get("startMonth"));
+		allJPanels.get("startPanel").add(allJComboBoxes.get("startDay"), allGBCs.get("startDay"));
+		allJPanels.get("startPanel").add(allJComboBoxes.get("startHour"), allGBCs.get("startHour"));
+		allJPanels.get("startPanel").add(allJComboBoxes.get("startMins"), allGBCs.get("startMins"));
+		allJPanels.get("startPanel").add(allJComboBoxes.get("startAMPM"), allGBCs.get("startAMPM"));
+		
+		allJPanels.get("bodyJPanel").add(allJPanels.get("startPanel"), allGBCs.get("startPanel"));
+		allJPanels.get("bodyJPanel").add(allJPanels.get("endPanel"), allGBCs.get("endPanel"));
+		allJPanels.get("bodyJPanel").add(allJPanels.get("resultsPanel"), allGBCs.get("resultsPanel"));
+		allJPanels.get("bodyJPanel").add(allJPanels.get("watermarkPanel"), allGBCs.get("watermarkPanel"));
+		
+		allJPanels.get("mainframeJPanel").add(allJPanels.get("menuBarJPanel"), allGBCs.get("menuBarJPanel"));
+		allJPanels.get("mainframeJPanel").add(allJPanels.get("bodyJPanel"));
+		
+		mainFrame.getContentPane().add(allJPanels.get("mainframeJPanel"));
 	}
-	
 
-	/**
-	 * Prints out console messages to assist in debugging Checks preferences
-	 * settings if debugging is enabled
-	 * 
-	 * @param message
-	 * @author omgitskuei
-	 * @since Mar 31 2021
-	 */
-	private static void outputDebugMsg(String message) {
-		if (PREFS.get("isDebug", "false").equals("true")) {
-			System.out.println("[" + TIMESTAMP_FORMAT.format(new Date(System.currentTimeMillis())) + "] " + message);
-		}
-	}
-	
+	private void createAllComponents() {
+		JPanel panel;
+		panel = new JPanel();
+		panel.setName("mainframeJPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("mainframeJPanel", panel);
 
-	/**
-	 * A recursive method to get children components of a java swing component Some
-	 * children components of this component may have children of their own So, it
-	 * recursively calls this method itself on the child to get ITS children.
-	 * 
-	 * Reminder List<T> is a List of Generics named 'T'; Generics added in Java 5 T
-	 * is used for type, K for key, V for value
-	 * 
-	 * @param <T>
-	 * @param clazz
-	 * @param container
-	 * @return List<T>
-	 * @author omgitskuei
-	 * @since Apr 1 2021
-	 */
-	private static <T extends Component> List<T> getChildren(Class<T> clazz, final Container container) {
-		Component[] components;
-		// JMenu has a different getComponents() method from other components
-		if (container instanceof JMenu) {
-			components = ((JMenu) container).getMenuComponents();
-		} else {
-			components = container.getComponents();
-		}
-		List<T> compList = new ArrayList<T>();
-		for (Component comp : components) {
-			// class1.isAssignableFrom(class2) - does class2 inherit (extends) from class1?
-			if (clazz.isAssignableFrom(comp.getClass())) {
-				compList.add(clazz.cast(comp));
+		panel = new JPanel();
+		panel.setName("menuBarJPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("menuBarJPanel", panel);
+
+		panel = new JPanel();
+		panel.setName("bodyJPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("bodyJPanel", panel);
+
+		panel = new JPanel();
+		panel.setName("startPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("startPanel", panel);
+
+		panel = new JPanel();
+		panel.setName("endPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("endPanel", panel);
+
+		panel = new JPanel();
+		panel.setName("resultsPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("resultsPanel", panel);
+
+		panel = new JPanel();
+		panel.setName("watermarkPanel");
+		panel.setLayout(new GridBagLayout());
+		allJPanels.put("watermarkPanel", panel);
+
+		JLabel label;
+		label = new JLabel();
+		label.setName("startLabel");
+		label.setHorizontalTextPosition(JLabel.CENTER);
+		label.setVerticalTextPosition(JLabel.CENTER);
+		allJLabels.put("startLabel", label);
+
+		label = new JLabel();
+		label.setName("endLabel");
+		label.setHorizontalTextPosition(JLabel.CENTER);
+		label.setVerticalTextPosition(JLabel.CENTER);
+		allJLabels.put("endLabel", label);
+
+		label = new JLabel();
+		label.setName("watermarkLabel");
+		label.setHorizontalTextPosition(JLabel.CENTER);
+		label.setVerticalTextPosition(JLabel.CENTER);
+		allJLabels.put("watermarkLabel", label);
+
+		
+		JComboBox<String> dropdown;
+		List<String> yearsList = IntStream.rangeClosed(1971, 2500).mapToObj(Integer::toString).collect(Collectors.toList());
+		String[] yearsOptions = new String[yearsList.size()];
+		yearsOptions = yearsList.toArray(yearsOptions);
+		dropdown = new JComboBox<String>(yearsOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("startYear");
+		allJComboBoxes.put("startYear", dropdown);
+
+		dropdown = new JComboBox<String>(yearsOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("endYear");
+		allJComboBoxes.put("endYear", dropdown);
+		
+		List<String> monthsList = IntStream.rangeClosed(1, 12).mapToObj(Integer::toString).collect(Collectors.toList());
+		for (int i = 0; i < monthsList.size(); i++) {
+			if (monthsList.get(i).length() == 1) {
+				monthsList.set(i, "0" + monthsList.get(i));
 			}
-			// This child has children of their own
-			if (comp instanceof Container) {
-				// Recursion
-				compList.addAll(getChildren(clazz, (Container) comp));
+		}
+		System.err.println(monthsList);
+		String[] monthsOptions = new String[monthsList.size()];
+		monthsOptions = monthsList.toArray(monthsOptions);
+		dropdown = new JComboBox<String>(monthsOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("startMonth");
+		allJComboBoxes.put("startMonth", dropdown);
+
+		dropdown = new JComboBox<String>(monthsOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("endMonth");
+		allJComboBoxes.put("endMonth", dropdown);
+		
+		List<String> daysList = IntStream.rangeClosed(1, 31).mapToObj(Integer::toString).collect(Collectors.toList());
+		for (int i = 0; i < daysList.size(); i++) {
+			if (daysList.get(i).length() == 1) {
+				daysList.set(i, "0" + daysList.get(i));
 			}
 		}
-		return compList;
+		String[] daysOptions = new String[daysList.size()];
+		daysOptions = daysList.toArray(daysOptions);
+		dropdown = new JComboBox<String>(daysOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("startDay");
+		allJComboBoxes.put("startDay", dropdown);
+
+		dropdown = new JComboBox<String>(daysOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("endDay");
+		allJComboBoxes.put("endDay", dropdown);
+		
+		List<String> hoursList = IntStream.rangeClosed(0, 23).mapToObj(Integer::toString).collect(Collectors.toList());
+		for (int i = 0; i < hoursList.size(); i++) {
+			if (hoursList.get(i).length() == 1) {
+				hoursList.set(i, "0" + hoursList.get(i));
+			}
+		}
+		String[] hoursOptions = new String[hoursList.size()];
+		hoursOptions = hoursList.toArray(hoursOptions);
+		dropdown = new JComboBox<String>(hoursOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("startHour");
+		allJComboBoxes.put("startHour", dropdown);
+		
+		dropdown = new JComboBox<String>(hoursOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("endHour");
+		allJComboBoxes.put("endHour", dropdown);
+		
+		List<String> minsList = IntStream.rangeClosed(0, 59).mapToObj(Integer::toString).collect(Collectors.toList());
+		for (int i = 0; i < minsList.size(); i++) {
+			if (minsList.get(i).length() == 1) {
+				minsList.set(i, "0" + minsList.get(i));
+			}
+		}
+		String[] minsOptions = new String[minsList.size()];
+		minsOptions = minsList.toArray(minsOptions);
+		dropdown = new JComboBox<String>(minsOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("startMins");
+		allJComboBoxes.put("startMins", dropdown);
+
+		dropdown = new JComboBox<String>(minsOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("endMins");
+		allJComboBoxes.put("endMins", dropdown);
+		
+		String[] ampmOptions = { "AM", "PM" };
+		dropdown = new JComboBox<String>(ampmOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("startAMPM");
+		allJComboBoxes.put("startAMPM", dropdown);
+
+		dropdown = new JComboBox<String>(ampmOptions);
+		dropdown.setSelectedIndex(0);
+		dropdown.setName("endAMPM");
+		allJComboBoxes.put("endAMPM", dropdown);
+		
+		// FRAME
+		// -- -- --> JMenuBar (menuBar)
+
+		resultTextArea = new JTextArea();
+		resultTextArea.setEditable(false);
+		
+		resultScrollPane = new JScrollPane(resultTextArea);
+		resultScrollPane.setPreferredSize(new Dimension(300, 100));
+		
+		menuBar = createMenuBar();
 	}
 }

@@ -1,0 +1,47 @@
+languagesKey
+english
+
+menuBarFile
+File
+
+menuBarFileOpen
+Open
+
+menuBarFileSaveAs
+Save As
+
+menuBarHelp
+Help
+
+menuBarHelpAbout
+About
+
+menuBarHelpContrib
+Contribute
+
+menuBarPrefs
+Preferences
+
+menuBarPrefsDebug
+Debug
+
+menuBarPrefsLang
+Language
+
+menuBarPrefsLangEn
+English
+
+menuBarPrefsLangCn
+Chinese
+
+startLabel
+Start time
+
+endLabel
+End time
+
+calcElapseBtn
+Calculate
+
+clearBtn
+Clear

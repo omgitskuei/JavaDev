@@ -384,25 +384,17 @@ public class TimeElapseV1 {
 					"An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to current sysL&F.");
 			try {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			} catch (UnsupportedLookAndFeelException e1) {
-				System.err.println(
-						"An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			} catch (ClassNotFoundException e1) {
-				System.err.println(
-						"An ClassNotFoundException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			} catch (InstantiationException e1) {
-				System.err.println(
-						"An InstantiationException error occurred while setting LookAndFeel to crossPlatformL&F.");
-			} catch (IllegalAccessException e1) {
-				System.err.println(
-						"An IllegalAccessException error occurred while setting LookAndFeel to crossPlatformL&F.");
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| UnsupportedLookAndFeelException e1) {
+				System.err.println("Failed to apply CrossPlatformLookAndFeel");
+				System.exit(1);
 			}
 		} catch (ClassNotFoundException e) {
-			System.err.println("An ClassNotFoundException error occurred while setting LookAndFeel to current sysL&F.");
+			System.err.println("An ClassNotFoundException error occurred while setting LookAndFeel to currSysLaF.");
 		} catch (InstantiationException e) {
-			System.err.println("An InstantiationException error occurred while setting LookAndFeel to current sysL&F.");
+			System.err.println("An InstantiationException error occurred while setting LookAndFeel to currSysLaF.");
 		} catch (IllegalAccessException e) {
-			System.err.println("An IllegalAccessException error occurred while setting LookAndFeel to current sysL&F.");
+			System.err.println("An IllegalAccessException error occurred while setting LookAndFeel to currSysLaF.");
 		}
 	}
 
