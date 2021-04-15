@@ -4,13 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import java.net.URL;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -78,13 +81,15 @@ public class TimeElapseV2 {
 	private HashMap<String, JPanel> allJPanels = new HashMap<String, JPanel>();
 	private HashMap<String, JLabel> allJLabels = new HashMap<String, JLabel>();
 	private HashMap<String, JComboBox<String>> allJComboBoxes = new HashMap<String, JComboBox<String>>();
+	private HashMap<String, JButton> allJButtons = new HashMap<String, JButton>();
 	private JScrollPane resultScrollPane = new JScrollPane();
 	private JTextArea resultTextArea = new JTextArea();
 	
 	// App Data
-	private Preferences settings = Preferences.userNodeForPackage(main.projects.timeElapse.version2.TimeElapseV2.class);
+	private static Preferences settings = Preferences.userNodeForPackage(main.projects.timeElapse.version2.TimeElapseV2.class);
 	private HashMap<String, HashMap<String, String>> i18nLabels = new HashMap<String, HashMap<String, String>>();
 	
+	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 	private static final String newline = System.getProperty("line.separator");
 	
 	private static TimeElapseV2 instance;
@@ -102,7 +107,7 @@ public class TimeElapseV2 {
 	public static void main(String args[]) {
 		TimeElapseV2 app = TimeElapseV2.getInstance();
 		
-		app.setDefaultSettings(app.settings);
+		app.setDefaultSettings(settings);
 		
 		try {
 			app.getAllUILangsFromResources(app.i18nLabels);
@@ -114,7 +119,7 @@ public class TimeElapseV2 {
 			System.exit(1);
 		}
 		
-		HashMap<String, String> newLabelSet = app.getNewUILabelTexts(app.i18nLabels, app.settings);
+		HashMap<String, String> newLabelSet = app.getNewUILabelTexts(app.i18nLabels, settings);
 		
 		app.createAllComponents(
 			newLabelSet, 
@@ -122,6 +127,7 @@ public class TimeElapseV2 {
 			app.allJPanels, 
 			app.allJLabels, 
 			app.allJComboBoxes,
+			app.allJButtons,
 			app.resultScrollPane, 
 			app.resultTextArea);
 		
@@ -132,10 +138,16 @@ public class TimeElapseV2 {
 			app.allJPanels, 
 			app.allJLabels, 
 			app.allJComboBoxes, 
+			app.allJButtons,
 			app.resultScrollPane, 
 			app.resultTextArea);
 		
-		app.mainFrame.setTitle(app.settings.get("appName", null) + " " + app.settings.get("version", null));
+		app.addActionListeners(
+			app.allJComboBoxes,
+			app.allJButtons);
+		
+		app.mainFrame.setTitle(
+			settings.get("appName", null) + " " + settings.get("version", null));
 		
 		app.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		app.mainFrame.setAlwaysOnTop(true);
@@ -157,6 +169,32 @@ public class TimeElapseV2 {
 	
 	
 	
+	private void addActionListeners(HashMap<String, JComboBox<String>> allJComboBoxes) {
+		ActionListener a;
+		
+		a = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				outputDebugMsg(
+					"ActionCommand = \'" + e.getActionCommand() + "\', "
+					+ "Source = " + e.getSource());
+			}
+		};
+		allJComboBoxes.get("startYear").addActionListener(a);
+		allJComboBoxes.get("startMonth").addActionListener(a);
+		allJComboBoxes.get("startDay").addActionListener(a);
+		allJComboBoxes.get("startHour").addActionListener(a);
+		allJComboBoxes.get("startMins").addActionListener(a);
+		allJComboBoxes.get("startAMPM").addActionListener(a);
+		
+		allJComboBoxes.get("endYear").addActionListener(a);
+		allJComboBoxes.get("endMonth").addActionListener(a);
+		allJComboBoxes.get("endDay").addActionListener(a);
+		allJComboBoxes.get("endHour").addActionListener(a);
+		allJComboBoxes.get("endMins").addActionListener(a);
+		allJComboBoxes.get("endAMPM").addActionListener(a);
+	}
+
 	private HashMap<String, String> getNewUILabelTexts(
 			HashMap<String, HashMap<String, String>> i18nLabels, Preferences settings) {
 		return i18nLabels.get(settings.get("lang", null));
@@ -208,14 +246,28 @@ public class TimeElapseV2 {
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		
-		
+		// ...
 		
 		return menuBar;
 	}
 
+	/**
+	 * Prints out console messages to assist in debugging Checks preferences
+	 * settings if debugging is enabled
+	 * 
+	 * @param message
+	 * @author omgitskuei
+	 * @since Mar 31 2021
+	 */
+	private static void outputDebugMsg(String message) {
+		if (settings.get("isDebug", "false").equals("true")) {
+			System.out.println("[" + TIMESTAMP_FORMAT.format(new Date(System.currentTimeMillis())) + "] " + message);
+		}
+	}
+	
 	private void setDefaultSettings(Preferences settings) {
 		settings.put("isDebug", "true"); // valid: true, false
-		settings.put("lang", "chinese"); // valid: english, chinese
+		settings.put("lang", "english"); // valid: english, chinese
 		settings.put("appName", "TimeElapse");
 		settings.put("version", "2021-05");
 	}
