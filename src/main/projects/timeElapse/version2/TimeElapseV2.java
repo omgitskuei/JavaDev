@@ -1,62 +1,48 @@
 package main.projects.timeElapse.version2;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import java.net.URL;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
+import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+
+import main.projects.timeElapse.version2.FileFormatException;
 
 public class TimeElapseV2 {
 
 	// UI Layout:
 	// FRAME
-	// --> JPanel (mainframeJPanel, BorderLayout)
-	// -- --> JPanel (menuBarJPanel, GridBagLayout)
-	// -- -- --> JMenuBar (menuBar)
+	// --> JPanel (mainframeJPanel)
+	// -- --> JPanel (menuBarJPanel)
+	// -- -- --> JMenuBar (menuBar, menuBarGBC)
 	// -- -- -- --> JMenu (menuBarHelp)
 	// -- -- -- -- --> JMenuItem (menuBarHelpAbout)
 	// -- -- -- -- --> JMenuItem (menuBarHelpContrib)
 	// -- -- -- -- -->
-	// -- --> JPanel (bodyJPanel, BorderLayout)
-	// -- -- --> JPanel (startPanel, GridBagLayout)
+	// -- --> JPanel (bodyJPanel)
+	// -- -- --> JPanel (startPanel)
 	// ------------ row 1
 	// -- -- -- --> JLabel (startLabel)
 	// ------------ row 2
@@ -67,7 +53,7 @@ public class TimeElapseV2 {
 	// -- -- -- --> ComboBox (startHour)
 	// -- -- -- --> ComboBox (startMins)
 	// -- -- -- --> ComboBox (startAMPM)
-	// -- -- --> JPanel (endPanel, GridBagLayout)
+	// -- -- --> JPanel (endPanel)
 	// ------------ row 1
 	// -- -- -- --> JLabel (endLabel)
 	// ------------ row 2
@@ -78,14 +64,15 @@ public class TimeElapseV2 {
 	// -- -- -- --> ComboBox (endHour)
 	// -- -- -- --> ComboBox (endMins)
 	// -- -- -- --> ComboBox (endAMPM)
-	// -- -- --> JPanel (resultsPanel, GridBagLayout)
+	// -- -- --> JPanel (resultsPanel)
 	// ------------ row 1
 	// -- -- -- --> JScrollPane (resultScrollPane)
 	// -- -- -- -- --> JTextArea (resultTextArea)
-	// -- -- --> JPanel (watermarkPanel, GridBagLayout)
+	// -- -- --> JPanel (watermarkPanel)
 	// ------------ row 1
 	// -- -- -- --> JLabel (watermarkLabel)
 	
+	// Java Swing Components
 	private JFrame mainFrame = new JFrame();
 	private JMenuBar menuBar;
 	private HashMap<String, JPanel> allJPanels = new HashMap<String, JPanel>();
@@ -93,12 +80,18 @@ public class TimeElapseV2 {
 	private HashMap<String, JComboBox<String>> allJComboBoxes = new HashMap<String, JComboBox<String>>();
 	private JScrollPane resultScrollPane = new JScrollPane();
 	private JTextArea resultTextArea = new JTextArea();
-
+	
+	// App Data
+	private Preferences settings = Preferences.userNodeForPackage(main.projects.timeElapse.version2.TimeElapseV2.class);
+	private HashMap<String, HashMap<String, String>> i18nLabels = new HashMap<String, HashMap<String, String>>();
+	
+	private static final String newline = System.getProperty("line.separator");
+	
 	private static TimeElapseV2 instance;
 
-	private TimeElapseV2() {
-	}
+	private TimeElapseV2() {}
 
+	// Singleton Constructor
 	public static synchronized TimeElapseV2 getInstance() {
 		if (instance == null) {
 			instance = new TimeElapseV2();
@@ -108,8 +101,32 @@ public class TimeElapseV2 {
 
 	public static void main(String args[]) {
 		TimeElapseV2 app = TimeElapseV2.getInstance();
-
-		app.createAllComponents();
+		
+		app.setDefaultSettings(app.settings);
+		
+		try {
+			app.getAllUILangsFromResources(app.i18nLabels);
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.exit(1);
+		} catch (FileFormatException e) {
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+		
+		HashMap<String, String> newLabelSet = app.getNewUILabelTexts(app.i18nLabels, app.settings);
+		
+		app.createAllComponents(
+			newLabelSet, 
+			app.menuBar, 
+			app.allJPanels, 
+			app.allJLabels, 
+			app.allJComboBoxes,
+			app.resultScrollPane, 
+			app.resultTextArea);
+		
+		app.mainFrame.setJMenuBar(app.menuBar);
+		
 		app.configUI(
 			app.mainFrame, 
 			app.allJPanels, 
@@ -118,8 +135,8 @@ public class TimeElapseV2 {
 			app.resultScrollPane, 
 			app.resultTextArea);
 		
+		app.mainFrame.setTitle(app.settings.get("appName", null) + " " + app.settings.get("version", null));
 		
-		app.mainFrame.setTitle("");
 		app.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		app.mainFrame.setAlwaysOnTop(true);
 		
@@ -140,6 +157,46 @@ public class TimeElapseV2 {
 	
 	
 	
+	private HashMap<String, String> getNewUILabelTexts(
+			HashMap<String, HashMap<String, String>> i18nLabels, Preferences settings) {
+		return i18nLabels.get(settings.get("lang", null));
+	}
+
+	private void getAllUILangsFromResources(HashMap<String, HashMap<String, String>> i18nLabels) throws FileNotFoundException, FileFormatException {
+		ArrayList<String> fileLines = new ArrayList<String>();
+		
+		URL path = TimeElapseV2.class.getResource("../resources/i18n.txt");
+		File file = new File(path.getFile());
+		Scanner i18nScanner = new Scanner(file);
+		while (i18nScanner.hasNextLine()) {
+			fileLines.add(i18nScanner.nextLine());
+		}
+		i18nScanner.close();
+		
+		int numOfLangs = 0;
+		if(fileLines.contains("languagesKey")) {
+			int indexLangsKey = fileLines.indexOf("languagesKey");
+			while (!fileLines.get((indexLangsKey+1)+numOfLangs).equals("")){
+				++numOfLangs; // if [en, cn], then 2
+			}
+			if(numOfLangs==0) {
+				throw new FileFormatException("i18n.txt is missing languages under languagesKey key");
+			}
+		} else {
+			throw new FileFormatException("i18n.txt is missing languagesKey key");
+		}
+		for(int indexLang=0; indexLang<numOfLangs; indexLang++) {  // with 2, run twice
+			HashMap<String, String> labelSet = new HashMap<String, String>();
+			for(int indexLine = 0; indexLine<fileLines.size(); indexLine=indexLine+(2+numOfLangs)) {
+				String key = fileLines.get(indexLine);
+				String val = fileLines.get(indexLang+indexLine+1);
+				
+				labelSet.put(key, val);
+			}
+			i18nLabels.put(fileLines.get(indexLang+1), labelSet);
+		}
+	}
+
 	/**
 	 * Create a menu bar and add menu items, sub-menu items, and their onClick
 	 * functionality
@@ -149,12 +206,20 @@ public class TimeElapseV2 {
 	 * @since Apr 7 2021
 	 */
 	private static JMenuBar createMenuBar() {
-		// initMenuBar
 		JMenuBar menuBar = new JMenuBar();
-		// ...
+		
+		
+		
 		return menuBar;
 	}
 
+	private void setDefaultSettings(Preferences settings) {
+		settings.put("isDebug", "true"); // valid: true, false
+		settings.put("lang", "chinese"); // valid: english, chinese
+		settings.put("appName", "TimeElapse");
+		settings.put("version", "2021-05");
+	}
+	
 	private void configUI(
 			JFrame mainFrame,
 			HashMap<String, JPanel> allJPanels, 
@@ -168,67 +233,180 @@ public class TimeElapseV2 {
 		GridBagConstraints gbc;
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.gridx = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.weightx = 1;
+		gbc.ipady = 5;
+		gbc.gridwidth = 3;	// make component span multiple cells
 		allGBCs.put("endLabel", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("endYear", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
+		allGBCs.put("endYearLabel", gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("endMonth", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("endDay", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("endHour", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("endMins", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("endAMPM", gbc);
 		
-		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.gridx = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
+		gbc.gridwidth = 3;	// make component span multiple cells
 		allGBCs.put("startLabel", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("startYear", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("startMonth", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("startDay", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;			// row 3 of startPanel
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;		// equally divides the space left and right of the combobox, centering it
+		gbc.ipadx = 20;			// makes combobox longer <--->
+		gbc.ipady = 5;			// makes combobox slightly taller
 		allGBCs.put("startHour", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("startMins", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 5;
 		allGBCs.put("startAMPM", gbc);
 		
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 25;
+		gbc.ipadx = 5;
 		allGBCs.put("startPanel", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 25;
+		gbc.ipadx = 5;
 		allGBCs.put("endPanel", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 25;
+		gbc.ipadx = 5;
 		allGBCs.put("resultsPanel", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 3;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.weightx = 1;
+		gbc.ipady = 25;
+		gbc.ipadx = 5;
 		allGBCs.put("watermarkPanel", gbc);
 		
 		gbc = new GridBagConstraints();
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.ipady = 25;
+		gbc.ipadx = 5;
 		allGBCs.put("menuBarJPanel", gbc);
 		
+		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.weightx = 1;
+		gbc.ipadx = 25;
+		gbc.ipady = 5;
+		allGBCs.put("bodyJPanel", gbc);
 		
 		allJPanels.get("watermarkPanel").add(allJLabels.get("watermarkLabel"));
 		
@@ -236,6 +414,7 @@ public class TimeElapseV2 {
 		allJPanels.get("resultsPanel").add(resultScrollPane);
 		
 		allJPanels.get("endPanel").add(allJLabels.get("endLabel"), allGBCs.get("endLabel"));
+		
 		allJPanels.get("endPanel").add(allJComboBoxes.get("endYear"), allGBCs.get("endYear"));
 		allJPanels.get("endPanel").add(allJComboBoxes.get("endMonth"), allGBCs.get("endMonth"));
 		allJPanels.get("endPanel").add(allJComboBoxes.get("endDay"), allGBCs.get("endDay"));
@@ -256,47 +435,54 @@ public class TimeElapseV2 {
 		allJPanels.get("bodyJPanel").add(allJPanels.get("resultsPanel"), allGBCs.get("resultsPanel"));
 		allJPanels.get("bodyJPanel").add(allJPanels.get("watermarkPanel"), allGBCs.get("watermarkPanel"));
 		
-		allJPanels.get("mainframeJPanel").add(allJPanels.get("menuBarJPanel"), allGBCs.get("menuBarJPanel"));
-		allJPanels.get("mainframeJPanel").add(allJPanels.get("bodyJPanel"));
+//		allJPanels.get("mainframeJPanel").add(allJPanels.get("menuBarJPanel"), allGBCs.get("menuBarJPanel"));
+		allJPanels.get("mainframeJPanel").add(allJPanels.get("bodyJPanel"), allGBCs.get("bodyJPanel"));
 		
 		mainFrame.getContentPane().add(allJPanels.get("mainframeJPanel"));
 	}
 
-	private void createAllComponents() {
+	private void createAllComponents(HashMap<String, String> newLabelSet, JMenuBar menuBar, HashMap<String, JPanel> allJPanels, HashMap<String, JLabel> allJLabels, HashMap<String, JComboBox<String>> allJComboBoxes, JScrollPane resultScrollPane, JTextArea resultTextArea) {
 		JPanel panel;
 		panel = new JPanel();
 		panel.setName("mainframeJPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.green));
 		allJPanels.put("mainframeJPanel", panel);
 
 		panel = new JPanel();
 		panel.setName("menuBarJPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		allJPanels.put("menuBarJPanel", panel);
 
 		panel = new JPanel();
 		panel.setName("bodyJPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.blue));
 		allJPanels.put("bodyJPanel", panel);
 
 		panel = new JPanel();
 		panel.setName("startPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.black));
 		allJPanels.put("startPanel", panel);
 
 		panel = new JPanel();
 		panel.setName("endPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.black));
 		allJPanels.put("endPanel", panel);
 
 		panel = new JPanel();
 		panel.setName("resultsPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.black));
 		allJPanels.put("resultsPanel", panel);
 
 		panel = new JPanel();
 		panel.setName("watermarkPanel");
 		panel.setLayout(new GridBagLayout());
+		panel.setBorder(BorderFactory.createLineBorder(Color.black));
 		allJPanels.put("watermarkPanel", panel);
 
 		JLabel label;
@@ -304,18 +490,24 @@ public class TimeElapseV2 {
 		label.setName("startLabel");
 		label.setHorizontalTextPosition(JLabel.CENTER);
 		label.setVerticalTextPosition(JLabel.CENTER);
+		label.setBorder(BorderFactory.createLineBorder(Color.red));
+		label.setText(newLabelSet.get("startLabel"));
 		allJLabels.put("startLabel", label);
-
+		
 		label = new JLabel();
 		label.setName("endLabel");
 		label.setHorizontalTextPosition(JLabel.CENTER);
 		label.setVerticalTextPosition(JLabel.CENTER);
+		label.setBorder(BorderFactory.createLineBorder(Color.red));
+		label.setText(newLabelSet.get("endLabel"));
 		allJLabels.put("endLabel", label);
 
 		label = new JLabel();
 		label.setName("watermarkLabel");
 		label.setHorizontalTextPosition(JLabel.CENTER);
 		label.setVerticalTextPosition(JLabel.CENTER);
+		label.setBorder(BorderFactory.createLineBorder(Color.red));
+		label.setText(newLabelSet.get("watermarkLabel"));
 		allJLabels.put("watermarkLabel", label);
 
 		
@@ -339,7 +531,6 @@ public class TimeElapseV2 {
 				monthsList.set(i, "0" + monthsList.get(i));
 			}
 		}
-		System.err.println(monthsList);
 		String[] monthsOptions = new String[monthsList.size()];
 		monthsOptions = monthsList.toArray(monthsOptions);
 		dropdown = new JComboBox<String>(monthsOptions);
@@ -370,7 +561,7 @@ public class TimeElapseV2 {
 		dropdown.setName("endDay");
 		allJComboBoxes.put("endDay", dropdown);
 		
-		List<String> hoursList = IntStream.rangeClosed(0, 23).mapToObj(Integer::toString).collect(Collectors.toList());
+		List<String> hoursList = IntStream.rangeClosed(1, 12).mapToObj(Integer::toString).collect(Collectors.toList());
 		for (int i = 0; i < hoursList.size(); i++) {
 			if (hoursList.get(i).length() == 1) {
 				hoursList.set(i, "0" + hoursList.get(i));
@@ -417,9 +608,6 @@ public class TimeElapseV2 {
 		dropdown.setName("endAMPM");
 		allJComboBoxes.put("endAMPM", dropdown);
 		
-		// FRAME
-		// -- -- --> JMenuBar (menuBar)
-
 		resultTextArea = new JTextArea();
 		resultTextArea.setEditable(false);
 		

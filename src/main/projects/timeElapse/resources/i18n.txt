@@ -61,3 +61,7 @@ Calculate
 clearBtn
 Clear
 清除
+
+watermarkLabel
+（c）2021 Kuei-Feng Tung.
+（c）2021 董奎峰, 版权所有.
