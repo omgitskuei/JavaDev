@@ -493,7 +493,7 @@ public class TimeElapseV2 {
 		mainFrame.getContentPane().add(allJPanels.get("mainframeJPanel"));
 	}
 
-	private void createAllComponents(HashMap<String, String> newLabelSet, JMenuBar menuBar, HashMap<String, JPanel> allJPanels, HashMap<String, JLabel> allJLabels, HashMap<String, JComboBox<String>> allJComboBoxes, JScrollPane resultScrollPane, JTextArea resultTextArea) {
+	private void createAllComponents(HashMap<String, String> newLabelSet, JMenuBar menuBar, HashMap<String, JPanel> allJPanels, HashMap<String, JLabel> allJLabels, HashMap<String, JComboBox<String>> allJComboBoxes, HashMap<String, JButton> allJButtons, JScrollPane resultScrollPane, JTextArea resultTextArea) {
 		JPanel panel;
 		panel = new JPanel();
 		panel.setName("mainframeJPanel");
@@ -659,6 +659,9 @@ public class TimeElapseV2 {
 		dropdown.setSelectedIndex(0);
 		dropdown.setName("endAMPM");
 		allJComboBoxes.put("endAMPM", dropdown);
+		
+		JButton btn = new JButton();
+		btn.setName("calc");
 		
 		resultTextArea = new JTextArea();
 		resultTextArea.setEditable(false);
