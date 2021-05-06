@@ -65,6 +65,14 @@ public class TimeElapseV1 {
 	 * --> JPanel (frameJPanel, BorderLayout)
 	 * -- --> JPanel (menuBarJPanel, GridBagLayout)
 	 * -- -- --> JMenuBar (menuBar)
+	 * -- -- -- --> JMenu "Help"
+	 * -- -- -- -- --> JMenuItem "About"
+	 * -- -- -- -- --> JMenuItem "Contribute"
+	 * -- -- -- --> JMenu "Preferences"
+	 * -- -- -- -- --> JCheckBoxMenuItem "Debug"
+	 * -- -- -- -- --> JMenu "Language"
+	 * -- -- -- -- -- --> JRadioButtonMenuItem "English"
+	 * -- -- -- -- -- --> JRadioButtonMenuItem "Chinese"
 	 * -- --> JPanel (appbodyJPanel, GridBagLayout)
 	 * -- -- // Row 1
 	 * -- -- --> JLabel (startLabel)
@@ -264,14 +272,30 @@ public class TimeElapseV1 {
 		calcElapseBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actEvent) {
 				outputDebugMsg("Clicked calcElapseBtn -> \'" + actEvent.getActionCommand() + "\'");
-				String calcElapseResult = calcDifference(
-						startTextField.getText(), 
-						startAMPMCombo.getItemAt(startAMPMCombo.getSelectedIndex()), 
-						endTextField.getText(), 
-						endAMPMCombo.getItemAt(endAMPMCombo.getSelectedIndex()));
-				results = results + calcElapseResult + "\r\n";
-				resultTextArea.setText(results);
-				clearBtn.grabFocus();
+				// get input
+				String startTime = startTextField.getText();
+				String startAMPM = startAMPMCombo.getItemAt(startAMPMCombo.getSelectedIndex());
+				String endTime = endTextField.getText();
+				String endAMPM = endAMPMCombo.getItemAt(endAMPMCombo.getSelectedIndex());
+				// validate input
+				boolean validStart = validateInput(startTime, startAMPM);
+				boolean validEnd = validateInput(endTime, endAMPM);
+				if(!validStart) {
+					results = results + "Start time is Invalid" + "\r\n";
+					resultTextArea.setText(results);
+					clearBtn.grabFocus();
+				} 
+				if(!validEnd) {
+					results = results + "End time is Invalid" + "\r\n";
+					resultTextArea.setText(results);
+					clearBtn.grabFocus();
+				}				
+				if(validStart  && validEnd) {
+					String diff = calcDifference(startTime, startAMPM, endTime, endAMPM);
+					results = results + diff + "\r\n";
+					resultTextArea.setText(results);
+					clearBtn.grabFocus();
+				}
 			}
 		});
 		clearBtn.addActionListener(new ActionListener() {
@@ -297,6 +321,73 @@ public class TimeElapseV1 {
 	}
 
 	/**
+	 * Given inputTime and ampm, is the input valid?
+	 * Valid is true when these conditions are all met;
+	 * Input has to be the correct String.length
+	 * Input must contain ":" semi-colon
+	 * Input hours cannot be > 24
+	 * Input mins cannot be > 59
+	 * Input must fit "yyyy-MM-dd hh:mm a" format
+	 * Input must be parse-able
+	 * 
+	 * @param String inputTime
+	 * @param String ampm
+	 * @return boolean valid
+	 * @author omgitskuei
+	 * @since May 5, 2021
+	 */
+	private static Boolean validateInput(String inputTime, String ampm) {
+		outputDebugMsg("validateInput(time=\'"+inputTime+"\', ampm=\'"+ampm+"\')");
+		if(!inputTime.contains(":")) {
+			outputDebugMsg("Input missing \':\'");
+			return false;
+		}
+		String hrs;
+		String mins;
+		try {
+			hrs = inputTime.substring(0, 2);
+			mins = inputTime.substring(3);
+		} catch (StringIndexOutOfBoundsException e) {
+			outputDebugMsg("Input has invalid length");
+			return false;
+		}
+		// Catch all H:MM (eg. 1:34, convert to 01:34)
+		if(hrs.contains(":")) {
+			outputDebugMsg("[hrs] passed needs zero padding; " + hrs + " -> " + "0" + hrs.substring(0, 1));
+			hrs = "0" + hrs.substring(0, 1);
+			mins = inputTime.substring(2);
+		}
+		if(Integer.valueOf(hrs)>24) {
+			outputDebugMsg("Input has invalid hours");
+			return false;
+		}
+		if(Integer.valueOf(mins)>59) {
+			outputDebugMsg("Input has invalid mins");
+			return false;
+		}
+		
+		Calendar cal = Calendar.getInstance();
+		long millis=System.currentTimeMillis();
+		java.sql.Date date = new java.sql.Date(millis);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.ENGLISH);
+		String time = String.valueOf(date) + " " +hrs + ":" +mins + " " + ampm;
+		try {
+			outputDebugMsg("Try parsing \'" + time + "\'");
+			cal.setTime(
+				sdf.parse(
+					String.valueOf(date) + " " +
+					hrs + ":" + mins + " " + ampm
+				)
+			);
+		} catch (ParseException e) {
+			outputDebugMsg("Parsing " + time + " FAILED");
+			return false;
+		}
+		outputDebugMsg("Parsing " + time + " successful");
+		return true;
+	}
+	
+	/**
 	 * Retrieve user input and clean data for common dirty data like h:mm instead of hh:mm (eg. 3:45, valid but incorrect format).
 	 * Convert strings into Calendar, get long millis, and subtract end and start.
 	 * Use modulus operator (%) for the remainders of the difference, to convert millis into Hours and Minutes
@@ -314,35 +405,37 @@ public class TimeElapseV1 {
 		
 		// Get current date
 		long millis=System.currentTimeMillis();
-		java.sql.Date date=new java.sql.Date(millis);
+		java.sql.Date date = new java.sql.Date(millis);
 		outputDebugMsg("Assuming same day [" + String.valueOf(date) + "] for both startTime, endTime");
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.ENGLISH);
 		
 		// Convert startTime to Calendar
 		Calendar start = Calendar.getInstance();
 		String startHour = startTime.substring(0, 2);
 		String startMins = startTime.substring(3);
+		
 		// Catch all H:MM (eg. 1:34, convert to 01:34)
 		if(startHour.contains(":")) {
 			outputDebugMsg("startHour passed needs zero padding; " + startHour + " -> " + "0" + startHour.substring(0, 1));
 			startHour = "0" + startHour.substring(0, 1);
 			startMins = startTime.substring(2);
 		}
+		
 		try {
-			outputDebugMsg("Try parsing \'" + String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM + "\' for Calendar start");
 			start.setTime(
-					sdf.parse(String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM)
+				sdf.parse(String.valueOf(date) + " " +startHour +":"+startMins + " " + startAMPM)
 			);
 		} catch (ParseException e) {
-			System.err.println("PARSE STARTTIME FAILED");
-			return "Failed to parse Start time";
+			e.printStackTrace();
 		}
+		
 		
 		// Convert endTime to Calendar
 		Calendar end = Calendar.getInstance();
+		
 		String endHour = endTime.substring(0, 2);
 		String endMins = endTime.substring(3);
+		
 		// Catch all H:MM (eg. 1:34, convert to 01:34)
 		if(endHour.contains(":")) {
 			outputDebugMsg("endHour passed needs zero padding; " + endHour + " -> " + "0" + endHour.substring(0, 1));
@@ -355,13 +448,19 @@ public class TimeElapseV1 {
 					sdf.parse(String.valueOf(date) + " " +endHour +":"+endMins + " " + endAMPM)
 			);
 		} catch (ParseException e) {
-			System.err.println("PARSE ENDTIME FAILED");
-			return "Failed to parse End time";
+			e.printStackTrace();
 		}
 		
 		long hrs = TimeUnit.MILLISECONDS.toHours(end.getTimeInMillis() - start.getTimeInMillis()) % 24;
 		long min = TimeUnit.MILLISECONDS.toMinutes(end.getTimeInMillis() - start.getTimeInMillis()) % 60;
-		return hrs+" Hours, "+min+" Minutes";
+		
+		// validate calculated difference
+		// 1) difference cannot be a negative number (this means start time happened AFTER end time)
+		if(hrs<0 || min<0) {
+			return "[Start time] is after [End time]";
+		} else {
+			return hrs+" Hours, "+min+" Minutes";
+		}
 	}
 	
 	
@@ -380,21 +479,21 @@ public class TimeElapseV1 {
 					+ UIManager.getSystemLookAndFeelClassName() + "].");
 		} catch (UnsupportedLookAndFeelException e) {
 			// Default to CrossPlatformLookAndFeel if System's fails
-			System.err.println(
+			outputDebugMsg(
 					"An UnsupportedLookAndFeelException error occurred while setting LookAndFeel to current sysL&F.");
 			try {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 					| UnsupportedLookAndFeelException e1) {
-				System.err.println("Failed to apply CrossPlatformLookAndFeel");
+				outputDebugMsg("Failed to apply CrossPlatformLookAndFeel");
 				System.exit(1);
 			}
 		} catch (ClassNotFoundException e) {
-			System.err.println("An ClassNotFoundException error occurred while setting LookAndFeel to currSysLaF.");
+			outputDebugMsg("An ClassNotFoundException error occurred while setting LookAndFeel to currSysLaF.");
 		} catch (InstantiationException e) {
-			System.err.println("An InstantiationException error occurred while setting LookAndFeel to currSysLaF.");
+			outputDebugMsg("An InstantiationException error occurred while setting LookAndFeel to currSysLaF.");
 		} catch (IllegalAccessException e) {
-			System.err.println("An IllegalAccessException error occurred while setting LookAndFeel to currSysLaF.");
+			outputDebugMsg("An IllegalAccessException error occurred while setting LookAndFeel to currSysLaF.");
 		}
 	}
 
@@ -525,17 +624,17 @@ public class TimeElapseV1 {
 		cnLabels.put("menuBarFile", "檔案");
 		cnLabels.put("menuBarFileOpen", "開啟");
 		cnLabels.put("menuBarFileSaveAs", "儲存");
-		cnLabels.put("menuBarHelp", "說明");
-		cnLabels.put("menuBarHelpAbout", "關於 " + APPNAME);
+		cnLabels.put("menuBarHelp", "説明");
+		cnLabels.put("menuBarHelpAbout", "有關於 " + APPNAME);
 		cnLabels.put("menuBarHelpContrib", "贊助");
-		cnLabels.put("menuBarPrefs", "選項");
-		cnLabels.put("menuBarPrefsDebug", "除錯");
+		cnLabels.put("menuBarPrefs", "設定");
+		cnLabels.put("menuBarPrefsDebug", "除錯模式");
 		cnLabels.put("menuBarPrefsLang", "語言設定");
 		cnLabels.put("menuBarPrefsLangEn", "英文");
 		cnLabels.put("menuBarPrefsLangCn", "中文");
 		cnLabels.put("startLabel", "開始時間:");
 		cnLabels.put("endLabel", "結束時間:");
-		cnLabels.put("calcElapseBtn", "計算時間");
+		cnLabels.put("calcElapseBtn", "計算");
 		cnLabels.put("clearBtn", "清除");
 		i18nLabels.put("chinese", cnLabels);
 	}
@@ -600,7 +699,7 @@ public class TimeElapseV1 {
 					try {
 						java.awt.Desktop.getDesktop().browse(java.net.URI.create(contribURLs.get(selectedOption)));
 					} catch (IOException ioE) {
-						System.err.println("A IOException error occurred.");
+						outputDebugMsg("A IOException error occurred.");
 						ioE.printStackTrace();
 					}
 				} else {
@@ -748,7 +847,7 @@ public class TimeElapseV1 {
 						+ newLabels.get(aComponent.getName()) + "\"";
 				thisComp.setText(newLabels.get(aComponent.getName()));
 			} else {
-				System.err.println("Uncaught component=" + aComponent);
+				outputDebugMsg("Uncaught component=" + aComponent);
 			}
 			outputDebugMsg(debugMsg);
 		} else {
