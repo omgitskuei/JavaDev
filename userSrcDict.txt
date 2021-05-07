@@ -6,3 +6,7 @@ Kuei
 Feng
 omgitskueiparallelizable
 omgitskuei
+collatz
+sweigart
+python
+al
