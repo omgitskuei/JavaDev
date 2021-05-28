@@ -10,7 +10,6 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,9 +27,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class jPortConnector {
 
-	private String APPNAME, VERSION, NEWLINE;
-
-	private SimpleDateFormat TIMESTAMP_FORMAT;
+	private String APPNAME = "jPortConnector";
+	private String VERSION = "2021-05";
 
 	private JFrame FRAME;
 
@@ -57,18 +55,12 @@ public class jPortConnector {
 //	  -- -- -- --> JTextArea (resultTextArea)
 
 	jPortConnector() {
-		APPNAME = "jPortConnector";
-		VERSION = "2021-05";
+		this.FRAME = new JFrame();
 
-		TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-		NEWLINE = System.getProperty("line.separator");
-
-		FRAME = new JFrame();
-
-		componentGBCs = new HashMap<String, GridBagConstraints>();
-		labels = new HashMap<String, JLabel>();
-		textfields = new HashMap<String, JTextField>();
-		buttons = new HashMap<String, JButton>();
+		this.componentGBCs = new HashMap<String, GridBagConstraints>();
+		this.labels = new HashMap<String, JLabel>();
+		this.textfields = new HashMap<String, JTextField>();
+		this.buttons = new HashMap<String, JButton>();
 	}
 
 	public static void main(String[] args) {
@@ -81,7 +73,7 @@ public class jPortConnector {
 		app.createTextfields(app.textfields);
 		app.createButtons(app.buttons);
 
-		app.FRAME.setTitle(app.APPNAME);
+		app.FRAME.setTitle(app.APPNAME + " " + app.VERSION);
 		app.FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		app.FRAME.setAlwaysOnTop(true);
 
@@ -155,7 +147,7 @@ public class jPortConnector {
 						}
 						appTextfields.get("portTextfield").grabFocus();
 					} else {
-						resultTextArea.setText(resultTextArea.getText() + "IP contains invalid characters.\r\n");
+						resultTextArea.setText(resultTextArea.getText() + "IP contains invalid characters." + System.getProperty("line.separator"));
 					}
 				} else {
 					if (appTextfields.get("portTextfield").isEnabled()) {
@@ -178,7 +170,7 @@ public class jPortConnector {
 						}
 						appButtons.get("connBtn").grabFocus();
 					} else {
-						resultTextArea.setText(resultTextArea.getText() + "Port contains invalid characters.\r\n");
+						resultTextArea.setText(resultTextArea.getText() + "Port contains invalid characters." + System.getProperty("line.separator"));
 					}
 				} else {
 					if (appButtons.get("connBtn").isEnabled()) {
@@ -201,20 +193,20 @@ public class jPortConnector {
 				}
 				// Try connecting to the IP:PORT
 				resultTextArea
-						.setText(resultTextArea.getText() + "Attempting to connect [" + ip + ":" + port + "]...\r\n");
+						.setText(resultTextArea.getText() + "Attempting to connect [" + ip + ":" + port + "]..." + System.getProperty("line.separator"));
 
 				Boolean connResult = app.connect(ip, port, resultTextArea);
 
 				if (connResult) {
 					try {
 						resultTextArea.setText(resultTextArea.getText() + "Connection to ["
-								+ InetAddress.getByName(ip).getHostAddress() + ":" + port + "] Success!" + "\r\n");
+								+ InetAddress.getByName(ip).getHostAddress() + ":" + port + "] Success!" + System.getProperty("line.separator"));
 					} catch (UnknownHostException e) {
 						resultTextArea.setText(resultTextArea.getText()
 								+ "UnknownHostException thrown during InetAddress.getByName(ip).getHostAddress()");
 					}
 				} else {
-					resultTextArea.setText(resultTextArea.getText() + "Connection Failed/Rejected." + "\r\n");
+					resultTextArea.setText(resultTextArea.getText() + "Connection Failed/Rejected." + System.getProperty("line.separator"));
 				}
 				// Focus next
 				appButtons.get("clearBtn").grabFocus();
@@ -243,11 +235,11 @@ public class jPortConnector {
 		} catch (ConnectException connE) {
 			return false;
 		} catch (UnknownHostException e) {
-			resultTextArea.setText(resultTextArea.getText() + "Invalid IP." + "\r\n");
+			resultTextArea.setText(resultTextArea.getText() + "Invalid IP." + System.getProperty("line.separator"));
 		} catch (NumberFormatException e) {
-			resultTextArea.setText(resultTextArea.getText() + "Please type Numbers only for Port." + "\r\n");
+			resultTextArea.setText(resultTextArea.getText() + "Please type Numbers only for Port." + System.getProperty("line.separator"));
 		} catch (Exception e) {
-			resultTextArea.setText(resultTextArea.getText() + "Connection Failed with " + e.getClass() + "\r\n");
+			resultTextArea.setText(resultTextArea.getText() + "Connection Failed with " + e.getClass() + System.getProperty("line.separator"));
 		}
 		return false;
 	}
