@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -116,10 +117,19 @@ public class jPortConnector {
 		JScrollPane scrollPane = new JScrollPane(resultTextArea);
 		scrollPane.setPreferredSize(new Dimension(400, 350));
 		appbodyJPanel.add(scrollPane, app.componentGBCs.get("resultTextArea"));
-
+		
 		// Add actionListeners
 		app.addActionListeners(app, app.textfields, app.buttons, resultTextArea);
-
+		
+		// Add default text in resultTextArea, where user IP is displayed
+		try {
+			resultTextArea.setText(resultTextArea.getText() 
+					+ "Current user's IP:[" + InetAddress.getLocalHost() + "]" + System.getProperty("line.separator"));
+		} catch (UnknownHostException e) {
+			resultTextArea.setText(resultTextArea.getText() 
+					+ "Failed to retrieve LocalHost IP!" + System.getProperty("line.separator"));
+		}
+		
 		app.FRAME.pack();
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -296,13 +306,14 @@ public class jPortConnector {
 	private void createLabels(HashMap<String, JLabel> appLabels) {
 		JLabel label;
 
-		label = new JLabel("Enter IP Address: ");
+		label = new JLabel("Enter IP Address: ", JLabel.CENTER);
 		label.setName("ipAddrLabel");
+//		label.setHorizontalAlignment(SwingConstants.LEFT);
 //		label.setHorizontalTextPosition(JLabel.LEFT);
 //		label.setVerticalTextPosition(JLabel.CENTER);
 		appLabels.put("ipAddrLabel", label);
 
-		label = new JLabel("Enter Port: ");
+		label = new JLabel("Enter Port: ", JLabel.CENTER);
 		label.setName("portLabel");
 //		label.setHorizontalTextPosition(JLabel.LEFT);
 //		label.setVerticalTextPosition(JLabel.CENTER);
@@ -313,10 +324,12 @@ public class jPortConnector {
 		GridBagConstraints gbc;
 
 		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-//		gbc.weightx = 1;
-//		gbc.weighty = 1;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
 		appGBCs.put("ipAddrLabel", gbc);
 
 		gbc = new GridBagConstraints();
@@ -330,6 +343,7 @@ public class jPortConnector {
 		appGBCs.put("ipAddrTextfield", gbc);
 
 		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 //		gbc.weightx = 1;

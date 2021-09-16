@@ -1,0 +1,7 @@
+isDebug
+true,false
+true
+
+lang
+english,chinese
+english
