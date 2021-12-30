@@ -1,8 +1,0 @@
-Compiling single-class java applets from CMD
-
-Open CMD.
-cd your way to the .java file.
-"javac YourJavaFile.java" to compile the .java into a .class.
-"java YourJavaFile.class" or "java YourJavaFile" to start it up in CMD.
-
-NOTE: It won't work if you have PACKAGE information on the top of the java file.
