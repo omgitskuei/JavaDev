@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Course>
+   <Name>First</Name>
+   <Sections>
+      <Section>
+         <Name>A</Name>
+         <Students>
+            <Student>Rohan</Student>
+            <Student>Mohan</Student>
+            <Student>Sohan</Student>
+         </Students>
+      </Section>
+      
+      <Section>
+         <Name>B</Name>
+         <Students>
+            <Student>Robert</Student>
+            <Student>Julie</Student>
+            <Student>Kalie</Student>
+            <Student>Michael</Student>
+         </Students>
+      </Section>
+   </Sections>
+</Course>
