@@ -1,0 +1,32 @@
+NOTE:
+Files owners.txt and prizes.txt does not need the file extension ".txt" 
+when creating new File() in Raffle.parseOwners(), Raffle.parsePrizes().
+
+Wanted to implement selecting elements from map using UUID but that
+didn't work out because Collections.shuffle() does not work with Maps.
+Without .shuffle(), would need random index selection of elements.
+
+Wanted to implement the previous version's RandomizerUtils' 
+getRandomNumber(min, maxExcl) to randomize the number of units won per
+ticket of the same type of Prize, say winning 1-3 units of the same prize
+per ticket, but because each Ticket object only contained name, this 
+feature would've required another Collection map that contained 
+PrizeName:RemainingUnits, and another config field "allowMultipleUnits"
+that controlled whether each ticket gets a fixed 1 unit of prize per 
+ticket, or if a ticket can win multiple units.
+And If multiple units is set to true, should we always exhaust the whole
+prize pool by the end, or should we completely randomize the number of
+units, meaning sometimes there could be left over even when allowing 
+multiple winnings per ticket?
+Did not implement this even though it's not difficult because we already
+have another way of solving this problem - by issuing more tickets per 
+owner in the owners.txt file. If the total tickets assigned is equal to
+the total prizes, then all prizes will be distributed. Issuing more tickets
+is not as flexible or random as implementing the two extra config fields 
+Boolean distributeAll, Boolean allowMultipleUnits.
+
+TO-DO:
+Definitely write the console messages into an output txt file instead of
+later having to copy-paste everything - perhaps leave console printing
+messages as if debug is turned on, but the output txt needs to be in
+debug off mode, or make it configurable.

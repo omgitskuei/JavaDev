@@ -1,8 +1,10 @@
-package main.projects.raffle;
+package main.projects.raffle.version1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import main.projects.raffle.RandomizerUtils;
 
 public class Raffle {
 
