@@ -47,7 +47,7 @@ public class Ticket {
 	// Printing Object as String
 	@Override
 	public String toString() {
-		return "Ticket[" + "Owner:\"" + this.getOwner() + ", ID:\"" + this.getID().toString() + "\"" + ", Prize:\""
+		return "Ticket[" + "Owner:\"" + this.getOwner() + "\", ID:\"" + this.getID().toString() + "\"" + ", Prize:\""
 				+ this.getPrize() + "\"" + ", Units:\"" + String.valueOf(this.getUnits()) + "\"]\n";
 	}
 
@@ -55,7 +55,7 @@ public class Ticket {
 		return formatted
 				? (hideID ?
 						"Ticket[" 
-						+ "\n" + "    Owner:\"" + this.getOwner() + ","
+						+ "\n" + "    Owner:\"" + this.getOwner() + "\","
 						+ "\n" + "    Prize:\"" + this.getPrize() + "\"" + ","
 						+ "\n" + "    Units:\""	+ String.valueOf(this.getUnits()) + "\"" + ","
 						+ "\n" + "]" 
