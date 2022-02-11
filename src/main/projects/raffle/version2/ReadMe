@@ -25,6 +25,10 @@ the total prizes, then all prizes will be distributed. Issuing more tickets
 is not as flexible or random as implementing the two extra config fields 
 Boolean distributeAll, Boolean allowMultipleUnits.
 
+Incorporated RandomizerUtils into the RAFFLE V2 project by using it to
+draw random numbers for number of extra shuffles if default Raffle() 
+constructor is used.
+
 TO-DO:
 Definitely write the console messages into an output txt file instead of
 later having to copy-paste everything - perhaps leave console printing

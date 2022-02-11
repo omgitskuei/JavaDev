@@ -5,13 +5,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import main.projects.raffle.RandomizerUtils;
 import main.projects.raffle.version2.models.Prize;
 import main.projects.raffle.version2.models.Ticket;
 
 public class Raffle {
 
 	private RaffleUtils util = new RaffleUtils();
-
+	private RandomizerUtils randomU = new RandomizerUtils();
+	
 	// Config
 	private boolean debug;
 	private int extraShuffles;
@@ -19,7 +21,7 @@ public class Raffle {
 	// Constructor
 	public Raffle() {
 		this.debug = false;
-		this.extraShuffles = 0;
+		this.extraShuffles = randomU.getRandomNumber(1, 6); // random number between 1 & 5
 	}
 
 	public Raffle(Boolean debug, int extraShuffles) {
@@ -29,14 +31,18 @@ public class Raffle {
 
 	public static void main(String[] args) {
 
-		System.out.println("RAFFLE v.2, omgitskuei, Feb 06 2022");
-		System.out.println("-----------------------------------");
-
+		System.out.println("RAFFLE v.2.2, omgitskuei, Feb 11 2022");
+		System.out.println("----------------------------------------------");
+		System.out.println("Change log");
+		System.out.println("v.2.2 - 11/02/2022 - Randomize extra shuffles");
+		System.out.println("v.2.1 - 09/02/2022 - Fixed output typos");
+		System.out.println("v.2.0 - 06/02/2022 - Rewrote RAFFLE completely");
+		System.out.println("----------------------------------------------");
 		// Initialize applet
-		Raffle r = new Raffle(true, 2);
+		Raffle r = new Raffle(true, 5);	// Note: 5 EXTRA shuffles, meaning 6 shuffles total
 		System.out.println("Debug mode is turned " + (r.debug ? "ON" : "OFF") + ".");
 		System.out.println("extraShuffles is set to " + String.valueOf(r.extraShuffles) + ".");
-		System.out.println("-----------------------------------");
+		System.out.println("----------------------------------------------");
 
 		// Parse txt files for all owners' names, and number of tickets each owner
 		HashMap<String, Integer> allOwners = r.parseOwners();
@@ -83,9 +89,9 @@ public class Raffle {
 				System.out.println("Prizes sample > Tickets sample");
 			}
 			// Assign each ticket to a prize
-			// Note, not all prizes will be distributed, since each Ticket
-			// can only match one prize
 			for (Ticket ticket : allTickets) {
+				// Note, not all prizes will be distributed, since each Ticket
+				// can only match one prize
 				Prize p = allPrizes.get(index);
 				ticket.setPrize(p.getName());
 				ticket.setUnits(1);
