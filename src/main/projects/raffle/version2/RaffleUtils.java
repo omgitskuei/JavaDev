@@ -1,13 +1,25 @@
 package main.projects.raffle.version2;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class RaffleUtils {
+	
+	protected Properties readConfig() throws FileNotFoundException, IOException {
+		Properties prop = new Properties();
+		File file = new File(System.getProperty("user.dir") 
+				+ "\\src\\main\\projects\\raffle\\version2\\raffle.config");
+		try (FileInputStream fis = new FileInputStream(file)) {
+		    prop.load(fis);
+		} 
+		return prop;
+	}
 	
 	protected ArrayList<String> readFile(String localFileName) {
 		File file = new File(System.getProperty("user.dir") 

@@ -1,9 +1,11 @@
 package main.projects.raffle.version2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import main.projects.raffle.RandomizerUtils;
 import main.projects.raffle.version2.models.Prize;
@@ -17,31 +19,50 @@ public class Raffle {
 	// Config
 	private boolean debug;
 	private int extraShuffles;
+	private boolean randomizeExtraShuffles;
 
 	// Constructor
 	public Raffle() {
-		this.debug = false;
-		this.extraShuffles = randomU.getRandomNumber(1, 6); // random number between 1 & 5
+		try {
+			Properties prop = util.readConfig();
+			this.debug = Boolean.valueOf(prop.getProperty("debug", "false"));
+			int extraShuffles = Integer.valueOf(prop.getProperty("extraShuffles", "0"));
+			if(Boolean.valueOf(prop.getProperty("randomizeExtraShuffles", "true"))) {
+				this.extraShuffles = randomU.getRandomNumber(1, extraShuffles);
+				this.randomizeExtraShuffles = Boolean.valueOf(prop.getProperty("randomizeExtraShuffles", "false"));
+			} else {
+				this.extraShuffles = Integer.valueOf(prop.getProperty("extraShuffles", "0"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			this.debug = false;
+			this.extraShuffles = 3;
+			this.randomizeExtraShuffles = false;
+		}
 	}
 
 	public Raffle(Boolean debug, int extraShuffles) {
 		this.debug = debug;
 		this.extraShuffles = extraShuffles;
+		this.randomizeExtraShuffles = false;
 	}
 
 	public static void main(String[] args) {
-
 		System.out.println("RAFFLE v.2.2, omgitskuei, Feb 11 2022");
 		System.out.println("----------------------------------------------");
 		System.out.println("Change log");
+		System.out.println("v.2.3 - 16/02/2022 - Added config file support");
 		System.out.println("v.2.2 - 11/02/2022 - Randomize extra shuffles");
 		System.out.println("v.2.1 - 09/02/2022 - Fixed output typos");
 		System.out.println("v.2.0 - 06/02/2022 - Rewrote RAFFLE completely");
 		System.out.println("----------------------------------------------");
 		// Initialize applet
-		Raffle r = new Raffle(true, 5);	// Note: 5 EXTRA shuffles, meaning 6 shuffles total
+//		Raffle r = new Raffle(true, 5);	// Note: 5 EXTRA shuffles, meaning 6 shuffles total
+		Raffle r = new Raffle();
+		System.out.println("Configuration");
 		System.out.println("Debug mode is turned " + (r.debug ? "ON" : "OFF") + ".");
 		System.out.println("extraShuffles is set to " + String.valueOf(r.extraShuffles) + ".");
+		System.out.println("randomizeExtraShuffles is turned " + (r.randomizeExtraShuffles ? "ON" : "OFF") + ".");
 		System.out.println("----------------------------------------------");
 
 		// Parse txt files for all owners' names, and number of tickets each owner
