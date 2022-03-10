@@ -1,0 +1,20 @@
+Project Info
+
+Problem
+-------
+Computer at work will self-lock after an undetermined duration of inactivity.
+Inactivity is defined as no keyboard input as well as no mouse input.
+User finds repeatedly unlocking the computer 'inactivity' frustrating,
+since these gaps could actually be halfway through reading documentation, etc.
+
+Goal
+----
+Design a program that automatically clicks the mouse to break periods of inactivity
+and prevent computer from self-locking. The clicking intervals need to be somewhat 
+random to not arouse suspicion, assuming the computer has employee management software
+installed.
+
+Scope
+-----
+The program should be light weight and configurable.
+No UI is needed to meet user needs, CMDL is fine.

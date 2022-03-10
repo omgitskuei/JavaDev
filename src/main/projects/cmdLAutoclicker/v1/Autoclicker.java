@@ -55,7 +55,7 @@ public class Autoclicker {
 				System.out.println("Maximum rate of clicks (in seconds):");
 				BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 				maxWaitSeconds = Integer.parseInt(in.readLine());
-				if (maxWaitSeconds < minWaitSeconds) {
+				if (maxWaitSeconds <= minWaitSeconds) {
 					maxWaitSeconds = 0;
 					System.out.println("Must be greater than Minimum rate.");
 				}
@@ -89,6 +89,8 @@ public class Autoclicker {
 		doClicks();
 		// print exit message
 		System.out.println("Autoclicker done");
+		// exit program with no errors on termination
+		System.exit(0);
 	}
 
 	
