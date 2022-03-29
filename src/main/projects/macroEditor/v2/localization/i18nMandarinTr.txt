@@ -1,0 +1,10 @@
+menuBar_File,檔案
+menuBar_File_Open,開啟
+menuBar_File_SaveAs,儲存
+menuBar_Help,說明
+menuBar_Help_About,關於ＡＰＰ
+menuBar_Prefs,設定
+menuBar_Prefs_Debug,除錯
+menuBar_Prefs_Lang,語言
+menuBar_Prefs_LangEn,English
+menuBar_Prefs_LangCn,中文

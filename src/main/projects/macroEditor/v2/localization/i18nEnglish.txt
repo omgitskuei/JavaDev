@@ -1,0 +1,10 @@
+menuBar_File,File
+menuBar_File_Open,Open
+menuBar_File_SaveAs,Save As
+menuBar_Help,Help
+menuBar_Help_About,About
+menuBar_Prefs,Preferences
+menuBar_Prefs_Debug,Debug
+menuBar_Prefs_Lang,Languages
+menuBar_Prefs_LangEn,English
+menuBar_Prefs_LangCn,中文

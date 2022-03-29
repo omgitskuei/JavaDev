@@ -12,7 +12,5 @@ public class Compounding {
 		System.out.println("FV = " + String.valueOf(pv) + " * " + "(" + String.valueOf((1+r)) + ")^" + String.valueOf(t));
 		System.out.println("FV = " + String.valueOf(pv) + " * " + String.valueOf(Math.pow((1+r), t)));
 		System.out.println("FV = " + String.valueOf(pv*Math.pow((1+r), t)));
-
 	}
-
 }

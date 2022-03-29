@@ -1,0 +1,34 @@
+Project Info
+
+Problem
+-------
+Guild Wars 2 gameplay drops materials collectively called "T5 trophies" often and clog
+up inventory space. They're made more spatially efficient as well as more valuable if
+promoted from T5 to T6 trophies. The primary reason this isn't done more often by
+players is because the promotion process is a mindless and tedious chore of repetitive
+clicking.
+
+Goal
+----
+Design a program with GUI (graphical user interface) that allows users to intuitively
+create new automation routines related to the mouse. 
+This includes automatically:
+1) moving the mouse, 
+2) clicking the mouse, 
+3) waiting a user specified number of seconds before the next action, if any.
+
+Scope
+-----
+The program should have a number of GUI components that let user add new actions 
+including waits - this may be JButtons & JTextFields.
+The program should have a JTextArea that is Not editable for displaying the current 
+queued actions in the routine.
+The program should have a Clear all actions and/or Remove last action JButton.
+The program should have an Execute routine JButton.
+
+Future design spaces
+--------------------
+The program can be expanded to:
+- Save the routine to a text file (.txt).
+- Open a text file and run the routine from the text file. if it is parsed correctly.
+- Support adding keyboard actions to the routine.

@@ -37,7 +37,7 @@ public class JMenuSaveFile {
 
 		// preferences
 		final Preferences prefs = Preferences
-				.userNodeForPackage(main.projects.macroEditor.MacroEditor.class);
+				.userNodeForPackage(main.projects.macroEditor.v1.MacroEditor.class);
 		prefs.put("isDebug", "true");
 
 		// initMenuBar

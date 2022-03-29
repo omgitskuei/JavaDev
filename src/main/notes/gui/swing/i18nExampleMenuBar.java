@@ -16,7 +16,7 @@ public class i18nExampleMenuBar {
 
 	private static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 	private static final JFrame FRAME = new JFrame();
-	private static final Preferences PREFS = Preferences.userNodeForPackage(main.projects.macroEditor.MacroEditor.class);
+	private static final Preferences PREFS = Preferences.userNodeForPackage(main.projects.macroEditor.v1.MacroEditor.class);
 	private static HashMap<String, String> contribURLs = new HashMap<String, String>();
 	private static HashMap<String, HashMap<String, String>> i18nLabels = new HashMap<String, HashMap<String, String>>();
 	
