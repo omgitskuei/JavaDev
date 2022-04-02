@@ -3,6 +3,7 @@ package main.projects.macroEditor.v2.gui;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
@@ -12,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -31,24 +33,55 @@ public class MacroEditorGUI {
 		return jMenuItem;
 	}
 	
-	private JMenuBar initJMenuBar(HashMap<String, String> labels) {
+	private JRadioButtonMenuItem initRadioMenuItem(String name, String label, ActionListener action) {
+		JRadioButtonMenuItem radio = new JRadioButtonMenuItem(name, true);
+//		radio.setActionCommand(actionCommand);
+		radio.addActionListener(action);
+		radio.setName(name);
+		return radio;
+	}
+	
+	private ImageIcon initIcon(String path, int height, int width) {
+		ImageIcon imageIcon = new ImageIcon(path);
+		Image image = imageIcon.getImage(); // transform it 
+		Image newimg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		imageIcon = new ImageIcon(newimg);  // transform it back
+		return imageIcon;
+	}
+	
+	private JMenuBar initJMenuBar(HashMap<String, String> labels, HashMap<String, String> iconPaths) {
 		JMenuBar menu = new JMenuBar();
 		JMenu file = initJMenu("menuBar_File", labels.get("menuBar_File"));
-		file.add(initJMenuItem("menuBar_File_Open", labels.get("menuBar_File_Open"), null, new ImageIcon(System.getProperty("user.dir") + "\\src\\main\\projects\\macroEditor\\v2\\resources\\fileOpen.png")));
-		//file.add(initJMenuItem("menuBar_File_SaveAs", labels.get("menuBar_File_SaveAs"), null));
+		file.add(initJMenuItem("menuBar_File_Open", labels.get("menuBar_File_Open"), null, initIcon(iconPaths.get("menuBar_File_Open"), 20, 20)));
+		file.add(initJMenuItem("menuBar_File_SaveAs", labels.get("menuBar_File_SaveAs"), null, initIcon(iconPaths.get("menuBar_File_SaveAs"), 20, 20)));
 		menu.add(file);
-		menu.add(initJMenu("menuBar_Help", labels.get("menuBar_Help")));
-		menu.add(initJMenu("menuBar_Prefs", labels.get("menuBar_Prefs")));
+		
+		JMenu help = initJMenu("menuBar_Help", labels.get("menuBar_Help"));
+		help.add(initJMenuItem("menuBar_Help_About", labels.get("menuBar_Help_About"), null, initIcon(iconPaths.get("menuBar_Help_About"), 20, 20)));
+		menu.add(help);
+		
+		JMenu prefs = initJMenu("menuBar_Prefs", labels.get("menuBar_Prefs"));
+		prefs.add(initJMenuItem("menuBar_Prefs_Debug", labels.get("menuBar_Prefs_Debug"), null, initIcon(iconPaths.get("menuBar_Prefs_Debug"), 20, 20)));
+		
+		JMenu langsMenu = initJMenu("menuBar_Prefs_Lang", labels.get("menuBar_Prefs_Lang"));
+		langsMenu.add(initRadioMenuItem("menuBar_Prefs_Lang_En", "English", null));
+		langsMenu.add(initRadioMenuItem("menuBar_Prefs_Lang_Cn", "Chinese", null));
+		
+//		langsMenuItem.add(initJMenuItem("menuBar_Prefs_Lang_En", labels.get("menuBar_Prefs_Lang_En"), null, initIcon(iconPaths.get("menuBar_Prefs_Lang_En"), 20, 20)));
+//		langsMenuItem.add(initJMenuItem("menuBar_Prefs_Lang_Cn", labels.get("menuBar_Prefs_Lang_Cn"), null, initIcon(iconPaths.get("menuBar_Prefs_Lang_Cn"), 20, 20)));
+		prefs.add(langsMenu);
+		menu.add(prefs);
+		
 		return menu;
 	}
 	
-	public JPanel initJMenuPanel(HashMap<String, String> labels) {
+	public JPanel initJMenuPanel(HashMap<String, String> labels, HashMap<String, String> iconPaths) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1;
-		JMenuBar menu = initJMenuBar(labels);
+		JMenuBar menu = initJMenuBar(labels, iconPaths);
 		panel.add(menu, gbc);
 		return panel;
 	}

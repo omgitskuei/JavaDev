@@ -70,8 +70,21 @@ public class MacroEditor {
 		// Create app frame
 		JFrame frame = meGUI.initJFrame("MacroEditor", true, 400, 500);
 
+		// Prepare file paths for MenuItem icons
+		HashMap<String, String> menuIconPaths = new HashMap<String, String>();
+		menuIconPaths.put("menuBar_File_Open", macroEditorV2Path + "\\resources\\fileOpen.png");
+		menuIconPaths.put("menuBar_File_SaveAs", macroEditorV2Path + "\\resources\\fileSaveAs.png");
+		menuIconPaths.put("menuBar_Help_About", macroEditorV2Path + "\\resources\\helpAbout.png");
+		menuIconPaths.put("menuBar_Prefs_Debug", macroEditorV2Path + "\\resources\\prefsDebug.png");
+		menuIconPaths.put("menuBar_Prefs_Lang", macroEditorV2Path + "\\resources\\prefsLang.png");
+		menuIconPaths.put("menuBar_Prefs_Lang_En", macroEditorV2Path + "\\resources\\prefsLangEn.png");
+		menuIconPaths.put("menuBar_Prefs_Lang_Cn", macroEditorV2Path + "\\resources\\prefsLangCn.png");
+		
 		// Create app menu
-		JPanel menuBarPanel = meGUI.initJMenuPanel(me.labels.get(appConfig.get("lang", "english")));
+		JPanel menuBarPanel = meGUI.initJMenuPanel(
+				me.labels.get(appConfig.get("lang", "english")), 
+				menuIconPaths);
+		
 		frame.getContentPane().add(BorderLayout.NORTH, menuBarPanel);
 		
 		
