@@ -15,13 +15,17 @@ explanations.
 ---
 
 ##### Applets
----
 [ClipboardMod v1][link1] - A clipboard modifying applet that removes dashes from copied text!
+
 [CmdLAutoclicker v1][link2] - A command-line that auto-clicks.
-[MacroEditor v2][link3] - A mouse automation applet!   
-[PortConnector v1][link4] - An applet that creates sockets to test if the computer can reach an IP:Port
-[Raffle v2][link5] - A command-line that randomly divides a pot of various prizes to shuffled tickets
-[TimeElapse v3][link6] - An applet that calculates differences between two times within the same day
+
+[MacroEditor v2][link3] - A mouse automation applet!
+
+[PortConnector v1][link4] - An applet that creates sockets to test if the computer can reach an IP:Port.
+
+[Raffle v2][link5] - A command-line that randomly divides a pot of various prizes to shuffled tickets.
+
+[TimeElapse v3][link6] - An applet that calculates differences between two times within the same day.
 
    [link1]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/clipboardMod/v1>
    [link2]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/cmdLAutoclicker/v1>
