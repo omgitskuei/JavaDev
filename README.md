@@ -28,7 +28,7 @@ explanations.
 [TimeElapse v3][link6] - An applet that calculates differences between two times within the same day.
 
 
-### Licence
+### License
 ---
 omgitskuei/JavaDev is licensed under the GNU General Public License v3.0.
 
