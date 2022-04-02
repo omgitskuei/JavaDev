@@ -52,7 +52,7 @@ The program can be expanded to:
 ### Running the program
 ---
 MacroEditor V2 requires JVM and/or Java installed. Java version should be compatible with 8 or newer to work.
-``` 
+```console
 cd [insert path to MacroEditor.java]
 javac MacroEditor.java
 ```
