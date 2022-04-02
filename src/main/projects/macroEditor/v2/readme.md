@@ -53,7 +53,7 @@ The program can be expanded to:
 ---
 MacroEditor V2 requires JVM and/or Java installed. Java version should be compatible with 8 or newer to work.
 ```console
-cd [insert path to MacroEditor.java]
+cd <your path to MacroEditor.java>
 javac MacroEditor.java
 ```
 As of 2022/4/02, note that paths for assets in the /resources folder are hard-coded relative to the 
