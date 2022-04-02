@@ -56,5 +56,5 @@ MacroEditor V2 requires JVM and/or Java installed. Java version should be compat
 cd [insert path to MacroEditor.java]
 javac MacroEditor.java
 ```
-As of 2022/4/02, note that paths for assets in the /resources folder are hard-coded relative position of the 
+As of 2022/4/02, note that paths for assets in the /resources folder are hard-coded relative to the 
 MacroEditor.java file. Moving or renaming files may make the applet unstable.
