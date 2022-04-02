@@ -42,6 +42,7 @@ The program can be expanded to:
 
 ### Change logs
 ---
-2022/04/02 - Added menu bar icons to /resources.
-
-2022/03/29 - Refactored MacroEditor V1 into V2, separated monolith single Java file into helper, util classes.
+| Date | Description |
+| ------ | ------ |
+| 2022/04/02 | Added menu bar icons to /resources. |
+| 2022/03/29 | Refactored MacroEditor V1 into V2, separated monolith single Java file into helper, util classes. |
