@@ -2,7 +2,9 @@
 ---
 An applet with polished GUI written in Java that automates mouse actions with Java Robot.
 > Author: Omgitskuei
+> 
 > Last Updated: 2022/04/01
+> 
 > Status: In development
 
 ### Problem
@@ -46,3 +48,11 @@ The program can be expanded to:
 | ------ | ------ |
 | 2022/04/02 | Added menu bar icons to /resources. |
 | 2022/03/29 | Refactored MacroEditor V1 into V2, separated monolith single Java file into helper, util classes. |
+
+### Running the program
+---
+MacroEditor V2 requires JVM and/or Java installed. Java version should be compatible with 8 or newer to work.
+``` 
+cd [insert path to MacroEditor.java]
+javac MacroEditor.java
+```
