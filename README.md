@@ -27,6 +27,10 @@ explanations.
 
 [TimeElapse v3][link6] - An applet that calculates differences between two times within the same day.
 
+
+### Licence
+GNU General Public License v3.0
+
    [link1]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/clipboardMod/v1>
    [link2]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/cmdLAutoclicker/v1>
    [link3]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/macroEditor/v2>
