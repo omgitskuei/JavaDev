@@ -1,9 +1,9 @@
 # MacroEditor V.2, Project Info
 ---
 An applet with polished GUI written in Java that automates mouse actions with Java Robot.
-Author: Omgitskuei
-Last Updated: 2022/04/01
-Status: In development
+> Author: Omgitskuei
+> Last Updated: 2022/04/01
+> Status: In development
 
 ### Problem
 ---
