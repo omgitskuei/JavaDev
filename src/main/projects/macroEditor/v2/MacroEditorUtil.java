@@ -2,9 +2,11 @@ package main.projects.macroEditor.v2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.prefs.Preferences;
 
 public class MacroEditorUtil {
 	
@@ -30,6 +32,12 @@ public class MacroEditorUtil {
 			}
 		}
 		return fileContent;
+	}
+	
+	protected void logDebug(Preferences appConfig, String log) {
+		if(appConfig.get("isDebug", "false").equals("true")) {
+			System.out.println("[" + new Timestamp(System.currentTimeMillis()) + "]	" + log);
+		}
 	}
 	
 	protected HashMap<String, String> readFileAsMaps(String path) throws FileNotFoundException {
