@@ -5,10 +5,10 @@ import java.util.Date;
 
 import java.time.Instant;
 
-public class SqlTimestamp {
+public class UsingTimestamp {
 	private Timestamp timestamp;
 	public static void main(String[] args) {
-		SqlTimestamp instance = new SqlTimestamp();
+		UsingTimestamp instance = new UsingTimestamp();
 		instance.timestamp = new Timestamp(System.currentTimeMillis());
 		System.out.println(instance.timestamp);		// YYYY-MM-DD HH:mm:ss.fff
 		
