@@ -23,9 +23,11 @@ turns later catches into Dead Code.
 
 ### Catching multiple Exceptions in one catch
 ---
+See MultipleExceptionsInOneCatch.java for more on the syntax for joining Exceptions in the same catch.
+In short, Exceptions are joined with "|" like so; "catch(NullPointerException | NumberFormatException e)".
 When the way in which exceptions are handled are the same across multiple catches, it　is possible to handle multiple exceptions
 with the same catch. This shortens the code and generally improves readability.
-Exceptions in the same catch are joined with "|" like so; "catch(NullPointerException | NumberFormatException e)"
-See MultipleExceptionsInOneCatch.java for more on the syntax.
+
+
 
 
