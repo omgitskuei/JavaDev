@@ -26,18 +26,10 @@ public class Autoclicker {
 		// Prompt user input for minimum interval between clicks
 		while (minWaitSeconds == 0) {
 			minWaitSeconds = promptUserInt("Minimum rate of clicks (in seconds):", false, false);
-			if (minWaitSeconds == -1) {
-				System.out.println(" Exiting Program");
-				System.exit(-1);
-			}
 		}
 		// Prompt user input for maximum interval between clicks
 		while (maxWaitSeconds == 0) {
 			maxWaitSeconds = promptUserInt("Maximum rate of clicks (in seconds):", false, false);
-			if (maxWaitSeconds == -1) {
-				System.out.println(" Exiting Program");
-				System.exit(-1);
-			}
 			if (maxWaitSeconds <= minWaitSeconds && maxWaitSeconds != 0) { // don't show message if == 0, already showing a message
 				System.out.println("Must be greater than Minimum rate. - Please try again.");
 				maxWaitSeconds = 0;
@@ -84,9 +76,11 @@ public class Autoclicker {
 				}
 			}
 		} catch (AWTException e) {
-			e.printStackTrace();
+			System.out.println("AWTException - Exiting Program");
+			System.exit(-1);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println("InterruptedException - Exiting Program");
+			System.exit(-1);
 		}
 		
 		// print exit message
@@ -114,8 +108,8 @@ public class Autoclicker {
 				throw new NumberFormatException();
 			}
 		} catch (IOException e) {
-			System.out.print("IOException Error");
-			variable = -1;
+			System.out.println("IOException - Exiting Program");
+			System.exit(-1);
 		} catch (NumberFormatException ex) {
 			System.out.print("Must enter a");
 			if(!acceptNegatives) {
