@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.chrono.MinguoChronology;
 import java.time.chrono.MinguoDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.util.Locale;
 
 public class UsingMinguoChronology {
 	/*
@@ -39,57 +41,36 @@ public class UsingMinguoChronology {
 	 * html
 	 */
 	
-//	public static final MinguoChronology mgC = MinguoChronology.INSTANCE;
+//	private static final MinguoChronology mgC = MinguoChronology.INSTANCE;
 	
-	
+	// Assuming today's date was 2022-07-10, ...
 	public static void main(String[] args) {
+		// MingGuoChronology mgc = new MinguoChronology();						// cannot declare using 'new'
+		MinguoChronology mgChronology = MinguoChronology.INSTANCE;				// Singleton only
+		System.out.println(mgChronology);
+		// prints "Minguo"
 		
-		// Constructor not visible - cannot declare using 'new'
-		// MingGuoChronology mgc = new MinguoChronology();
+		MinguoDate mdNow1 = MinguoChronology.INSTANCE.dateNow();
+		System.out.println(mdNow1.toString());
+		// "Minguo ROC 111-07-10",
 		
-		// To access MinguoChronology, must use Singleton style
-		MinguoChronology mgC = MinguoChronology.INSTANCE;
+		MinguoDate mdNow2 = mgChronology.dateNow();
 		
-		// Assuming today's date was 2022-07-10, ...
+		MinguoDate md1 = mgChronology.date(111, 01, 01);
+		MinguoDate md2 = mgChronology.dateYearDay(111, 1);	// ORDINAL
+		System.out.println(md1.isEqual(md2));
 		
-		/*
-		 *  Today's Minguo date (YYYY-MM-DD)
-		 */
-		MinguoDate mdNow = mgC.dateNow();
-		System.out.println(mdNow);						// "Minguo ROC 111-07-10", 
-//		System.out.println(mdNow.toString());			// same thing, "Minguo ROC 111-07-10"
+		System.out.println(mgChronology.eras());
+		// [BEFORE_ROC, ROC]
 		
-		System.out.println(mdNow.format(DateTimeFormatter.BASIC_ISO_DATE));			// 20220710
-		System.out.println(mdNow.format(DateTimeFormatter.ISO_LOCAL_DATE));			// 2022-07-10
-		System.out.println(mdNow.format(DateTimeFormatter.ISO_ORDINAL_DATE));		// 2022-191
+		System.out.println(mgChronology.getCalendarType());
+		// roc
 		
-		
-		
-		
-		try {
-			// example ISO_OFFSET_DATE >'2011-12-03+01:00'
-			System.out.println(mdNow.format(DateTimeFormatter.ISO_OFFSET_DATE));
-			// Unsupported field: OffsetSeconds will be thrown
-		} catch (UnsupportedTemporalTypeException e) {
-			System.out.println(e);	// Exception will be thrown, ISO_OFFSET_DATE requires OffsetSeconds.
-			// OffsetSeconds sounds like rare 
-			// war badges which Minguo date can't provide
-		}
-		
-		
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE;
-		String text = mdNow.format(dtf);
-		LocalDate parsedDate = LocalDate.parse(text, dtf);
-		System.out.println(parsedDate);												// "2022-07-10"
-		
-		/*
-		 * Comparing two Minguo Dates
-		 */
-		MinguoDate mdOther = mgC.date(2022, 07, 11);
-		System.out.println(mdNow.isBefore(mdOther));								// true
-		
-		System.out.println(mdNow.isBefore(mgC.date(2022, 07, 11)));
+		System.out.println(mgChronology.isLeapYear(111));	// takes int Minguo years (eg, 2022 (Gregorian) is 111)
+		// false
+		MinguoDate md3 = MinguoDate.of(111, 01, 01);
+		System.out.println(md3.isLeapYear());
+		// false
 	}
 
 }

@@ -1,0 +1,25 @@
+public static MinguoDate now(ZoneId zone)  
+
+public static MinguoDate now(Clock clock)  
+
+public static MinguoDate of(int prolepticYear, int month, int dayOfMonth)
+
+public static MinguoDate from(TemporalAccessor temporal)
+public MinguoChronology getChronology()   
+public MinguoEra getEra()   
+
+public int lengthOfMonth()
+public ValueRange range(TemporalField field)
+public long getLong(TemporalField field)  
+public MinguoDate with(TemporalField field, long newValue)
+public MinguoDate with(TemporalAdjuster adjuster)  
+public MinguoDate plus(TemporalAmount amount)  
+public MinguoDate minus(TemporalAmount amount)  
+public MinguoDate plus(long amountToAdd, TemporalUnit unit)  
+public MinguoDate minus(long amountToAdd, TemporalUnit unit)
+public final ChronoLocalDateTime<MinguoDate> atTime(LocalTime localTime)  
+public long toEpochDay()  
+public ChronoPeriod until(ChronoLocalDate endDate)  
+public long until(Temporal endExclusive, TemporalUnit unit)
+
+Basically, MinguoDate methods are similar to LocalDate methods. You can see the article about the LocalDate class to have more examples:
