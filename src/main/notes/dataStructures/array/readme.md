@@ -26,7 +26,7 @@ My notes/cheat sheet/quick guide/refreshers on Arrays.
 ---
 .java files requires JVM and/or Java installed.
 ```console
-cd <your path to Autoclicker.java>
-javac Autoclicker.java
+cd <your path to [FileName].java>
+javac [FileName].java
 ```
 Or run as java application from an IDE such as Eclipse.
