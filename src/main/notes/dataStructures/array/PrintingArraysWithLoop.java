@@ -1,11 +1,16 @@
 package main.notes.dataStructures.array;
 
-public class PrintingArrays {
+public class PrintingArraysWithLoop {
 
+	/*
+	 * Note: Use Arrays.toString(theArray) instead of writing a loop to print arrays,
+	 * and use Arrays.deepToString(theArray) for nested Arrays Object[][]
+	 */
 	public static void main(String[] args) {
+		
 		String[] anArray = new String[] { "test1", "test2", "test3" };
 		
-		PrintingArrays thisClass = new PrintingArrays();
+		PrintingArraysWithLoop thisClass = new PrintingArraysWithLoop();
 		
 		// both do the same thing
 		System.out.println(thisClass.toString(anArray));

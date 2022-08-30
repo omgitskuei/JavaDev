@@ -1,5 +1,7 @@
 package main.notes.dataStructures.array;
 
+import java.util.Arrays;
+
 public class DeclaringArrays {
 
 	public static void main(String[] args) {
@@ -20,7 +22,7 @@ public class DeclaringArrays {
 		nums[2] = 111;
 		// nums[3] = 1111;						// Try to give 3 as index, throws exception, so is 'size'
 
-		System.out.println(new PrintingArrays().toString(nums));
+		System.out.println(Arrays.toString(nums));
 	}
 
 }

@@ -1,5 +1,7 @@
 package main.notes.dataStructures.array;
 
+import java.util.Arrays;
+
 public class AlteringArrays {
 
 	public static void main(String[] args) {
@@ -12,7 +14,7 @@ public class AlteringArrays {
 		System.out.println(cars.toString());	// [Ljava.lang.String;@53bd815b
 		// ^ Notice the ID remains the same after changing an item
 
-		System.out.println(new PrintingArrays().toString(cars));
+		System.out.println(Arrays.toString(cars));
 	}
 
 }

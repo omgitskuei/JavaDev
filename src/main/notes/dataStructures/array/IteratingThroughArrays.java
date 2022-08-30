@@ -1,5 +1,7 @@
 package main.notes.dataStructures.array;
 
+import java.util.Arrays;
+
 public class IteratingThroughArrays {
 
 	public static void main(String[] args) {
@@ -14,7 +16,7 @@ public class IteratingThroughArrays {
 			eachInt = eachInt + 1;
 		}
 		
-		System.out.println(new PrintingArrays().toString(arrayInt));
+		System.out.println(Arrays.toString(arrayInt));
 		// ^ Ineffective, new data was NOT written into the array
 
 		
@@ -24,7 +26,7 @@ public class IteratingThroughArrays {
 			arrayInt[i] = eachInt + 1;
 		}
 		
-		System.out.println(new PrintingArrays().toString(arrayInt));
+		System.out.println(Arrays.toString(arrayInt));
 		// ^ Note, the array can't be written without knowing the index (i) of the item you want to update
 	}
 
