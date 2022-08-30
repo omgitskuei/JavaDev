@@ -8,7 +8,7 @@ public class regexFindAnyChars {
 
 	/*
 	 * Notice the example String has a Chinese character.
-	 * To pattern match while allowing anything,
+	 * To pattern match while allowing anything, aka skip pattern matching the chinese character,
 	 * use .{min number of any chars, maximum number of any chars}
 	 */
 	public static void main(String[] args) {
