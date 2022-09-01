@@ -14,16 +14,16 @@ public class RaffleUtils {
 	protected Properties readConfig() throws FileNotFoundException, IOException {
 		Properties prop = new Properties();
 		File file = new File(System.getProperty("user.dir") 
-				+ "\\src\\main\\projects\\raffle\\version2\\raffle.config");
+				+ "\\src\\main\\projects\\raffle\\v2\\raffle.config");
 		try (FileInputStream fis = new FileInputStream(file)) {
 		    prop.load(fis);
 		} 
 		return prop;
 	}
 	
-	protected ArrayList<String> readFile(String localFileName) {
+	protected ArrayList<String> readData(String localFileName) {
 		File file = new File(System.getProperty("user.dir") 
-			+ "\\src\\main\\projects\\raffle\\version2\\resources\\" + localFileName);
+			+ "\\src\\main\\projects\\raffle\\v2\\data\\" + localFileName);
 		ArrayList<String> fileContent = new ArrayList<String>();
 		Scanner scanner = null;
 		try {
@@ -45,7 +45,7 @@ public class RaffleUtils {
 	
 	protected File writeFile(String localFileName, ArrayList<String> fileLines) {
 		File file = new File(System.getProperty("user.dir") 
-			+ "\\src\\main\\projects\\raffle\\version2\\output\\" + localFileName);
+			+ "\\src\\main\\projects\\raffle\\v2\\output\\" + localFileName);
 		
 		StringBuilder sb = new StringBuilder();
 		for (String line : fileLines) {

@@ -10,10 +10,11 @@ public class Prize {
 		this.setName(name);
 	}
 	
-	// Accessor Methods
+	// Getter/Setter Methods
 	public String getName() {
 		return name;
 	}
+	
 	public void setName(String owner) {
 		this.name = owner;
 	}
