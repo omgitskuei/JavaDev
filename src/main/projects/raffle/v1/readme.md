@@ -21,7 +21,7 @@ the mistake are indirectly compensated through the raffle for their time.
 The Raffle program has been in effect since 2021 and has distributed prizes twice so far. The total value of 
 the distributed prize so far (as of Sept 2022) is between 78 and 100 gold considering inflation.
 
-The efficacy of this strategy to lower raider turnover is limited in reality, where 8 out of 9 players that  
+The efficacy of this strategy to lower raider turnover is limited in reality, where 8 out of 9 players that 
 left did so regardless of how close to the raffle their retirement is, as of Sept 2022).
 That said, what is very obvious is the positive effect the Raffle program has in dispelling frustrations 
 arising from mistakes, since people will apologize but now also pledge to donate to the prize pool for their 
@@ -49,9 +49,9 @@ The program should be present the result of the distribution in console when run
 ### Future design spaces
 ---
 The program can be expanded to:
-- Take text files so 1) the prize pool, 2) the players pool, may be variable
-- Print results into an output txt file
-- Allow configuration like debug mode, verbose, how much randomization, whether everyone wins, etc
+- Take text files so 1) the prize pool, 2) the players pool, may be variable.
+- Print results into an output txt file.
+- Allow configuration like debug mode, verbose, how much randomization, whether everyone wins, etc.
 
 ### Change logs
 ---
