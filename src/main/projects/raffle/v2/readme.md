@@ -1,13 +1,13 @@
-# Raffle V1, Project Info
+# Raffle V2, Project Info
 ---
-A script written in Java that distributes a prize pool off to players.
+A command-line applet written in Java that distributes a prize pool off to players.
 The prizes should be split as evenly but also randomly as possible.
 
 > Author: Omgitskuei
 > 
 > Last Updated: 2022/02/06
 > 
-> Status: Complete
+> Status: Active Development
 
 ### Problem
 ---
@@ -29,27 +29,28 @@ This way, everyone 'wins' but a few 'lucky' players will 'win' more.
 
 ### Scope
 ---
-The program should present the result of the distribution in console when run.
+The program should present the result of the distribution in console when run, if this config is turned on.
+The program should take text files so the prize pool, the players pool, and configuration may be variable.
+The program should allow configurations like;
+- debug mode, 
+- verbose, 
+- how many extra times will randomization occur, 
+- whether everyone wins, 
+- etc.
 
 ### Future design spaces
 ---
-The program can be expanded to:
-- Take text files so 1) the prize pool, 2) the players pool, may be variable.
-- Print results into an output txt file.
-- Allow configuration like debug mode, verbose, how much randomization, whether everyone wins, etc.
+The program can be expanded from a command-line app to a GUI app.
 
 ### Change logs
 ---
 | Date | Description |
 | ------ | ------ |
-| 2021/12/30 | Created the first version of the program. |
-| 2022/02/05 | Refactored to improve modularity. |
-| 2022/02/08 | Improved the toString of results, so that output is tidier. |
-| 2022/02/16 | Refactored txt support to V2, and sunset development on V1. |
+| 2021/02/06 | Created the first commit of V2. |
 
 ### Running the program
 ---
-Raffle V1 requires JVM and/or Java installed. Java version should be compatible with 9 or newer.
+Raffle V2 requires JVM and/or Java installed. Java version should be compatible with 9 or newer.
 ```console
 cd <your path to Raffle.java>
 javac Raffle.java
