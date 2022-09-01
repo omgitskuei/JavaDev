@@ -41,5 +41,5 @@ Copyright and license notices must be preserved. Contributors provide an express
    [link2]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/cmdLAutoclicker/v1>
    [link3]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/macroEditor/v2>
    [link4]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/portConnector>
-   [link5]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/raffle/version2>
+   [link5]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/raffle/v2>
    [link6]: <https://github.com/omgitskuei/JavaDev/tree/master/src/main/projects/timeElapse>
