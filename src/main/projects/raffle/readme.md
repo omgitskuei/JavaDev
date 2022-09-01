@@ -1,9 +1,5 @@
 # Raffle, Project Info
 ---
-
-### Context
----
-
 Annually, my Guild Wars 2 raiding party holds two raffles for our members. This is an initiative I started to 
 encourage players to play with the raid group long-term, and this applies to both core members of the group as
 well as players that 'fill' (come along and cover squad openings on short notice if core members do not show
