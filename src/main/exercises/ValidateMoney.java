@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Currency;
 
+import main.exercises.string.CheckSubstring;
+
 public class ValidateMoney {
 	// Local fields
 

@@ -1,4 +1,4 @@
-package main.exercises;
+package main.exercises.string;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -16,7 +16,7 @@ public class CheckSubstring {
 		CheckSubstring util = new CheckSubstring();
 		
 		ArrayList<String> test = new ArrayList<String>();
-		test.add("ProductName:?”¥");
+		test.add("ProductName:?ï¿½ï¿½");
 		test.add("ProductID:1");
 		test.add("ProductType:Vegetable");
 		test.add("ProductStock:10");

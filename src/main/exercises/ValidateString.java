@@ -3,6 +3,8 @@ package main.exercises;
 import java.util.ArrayList;
 import java.util.Currency;
 
+import main.exercises.string.CheckSubstring;
+
 public class ValidateString {
 	// Local fields
 	String aString;

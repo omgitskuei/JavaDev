@@ -3,6 +3,8 @@ package main.exercises;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import main.exercises.string.CheckSubstring;
+
 public class TestUtil {
 
 	public static void main(String[] args) {
@@ -15,7 +17,7 @@ public class TestUtil {
 //			cartSliced.add("ProductID");	//0
 //			cartSliced.add("26");
 //			cartSliced.add("ProductName");
-//			cartSliced.add("?”¥");			//3
+//			cartSliced.add("?ï¿½ï¿½");			//3
 //			cartSliced.add("ProductCount");
 //			cartSliced.add("3");			//5
 //			cartSliced.add("ProductPrice");
