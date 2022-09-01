@@ -27,6 +27,7 @@ Because of the Raffle program's goal to be a vehicle that:
 - Encourages players to perform better by penalizing mistakes,
 - Compensates other players for wasted time and reward good plays, 
 - Incentivizes contractor players to fill open slots,
+
 the Raffle program distributes in a way where each player will win some prize, but each player may get 
 different amounts of the prize and may receive prizes of different value from others. This way, everyone 
 'wins' but a few 'lucky' players will 'win' more. 
