@@ -18,23 +18,8 @@ to raid). The Raffle should also motivate players to play better during raids be
 when players commit mistakes. This has the added benefit that when mistakes happen, others who did not commit
 the mistake are indirectly compensated through the raffle for their time.
 
-The Raffle program has been in effect since 2021 and has distributed prizes twice so far. The total value of 
-the distributed prize so far (as of Sept 2022) is between 78 and 100 gold considering inflation.
-
-The efficacy of this strategy to lower raider turnover is limited in reality, where 8 out of 9 players that 
-left did so regardless of how close to the raffle their retirement is, as of Sept 2022).
-That said, what is very obvious is the positive effect the Raffle program has in dispelling frustrations 
-arising from mistakes, since people will apologize but now also pledge to donate to the prize pool for their 
-mistake. This donation mechanism is currently done largely voluntarily, so some people will end up donating 
-more simply because they are more generous not necessarily because they make more mistakes and perform worse.
-An example would be two players making 3 mistakes each - the first player feels the need to donate 3 times, 
-whereas the second player only donated 2 times.
-Whether players donate to the prize pool depends in part also on the nature of the mistake. If the mistake 
-is almost entirely Neglect as opposed to Inexperience or Failure of Execution, then a donation may be even 
-demanded of by the commander, though this Negligence type of mistake is generally rare.
-
-To distribute the prize, this script was written. Every player (fill and core) that are still active on the 
-members ledger should always receive something. The 'something' should be totally random.
+Distributing the prize pool by hand can lead to complications and can be time-consuming. 
+This script will help to distribute the prize quickly and fairly.
 
 ### Goal
 ---

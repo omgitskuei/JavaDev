@@ -1,4 +1,4 @@
-package main.projects.raffle.version2;
+package main.projects.raffle.v2;
 
 import java.io.File;
 import java.io.FileInputStream;

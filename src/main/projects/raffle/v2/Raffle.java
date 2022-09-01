@@ -1,4 +1,4 @@
-package main.projects.raffle.version2;
+package main.projects.raffle.v2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import main.projects.raffle.RandomizerUtils;
-import main.projects.raffle.version2.models.Prize;
-import main.projects.raffle.version2.models.Ticket;
+import main.projects.raffle.v2.models.Prize;
+import main.projects.raffle.v2.models.Ticket;
 
 public class Raffle {
 

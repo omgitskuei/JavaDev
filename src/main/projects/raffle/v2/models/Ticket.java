@@ -1,4 +1,4 @@
-package main.projects.raffle.version2.models;
+package main.projects.raffle.v2.models;
 
 import java.util.UUID;
 
