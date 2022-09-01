@@ -1,4 +1,4 @@
-package main.projects.raffle.version1;
+package main.projects.raffle.v1;
 
 public class Ticket {
 	
