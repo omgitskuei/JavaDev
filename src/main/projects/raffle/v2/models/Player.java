@@ -1,11 +1,12 @@
 package main.projects.raffle.v2.models;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Player {
 	private String username = "";
-	private List<Ticket> tickets = Collections.emptyList();
+	private List<Ticket> tickets = new ArrayList<Ticket>();
 	
 	// Constructor
 	public Player(String username) {

@@ -1,2 +1,2 @@
-MC,30
-Ghostly Infusion,1
+MC,106
+Ghostly Infusion,0

@@ -3,7 +3,7 @@ package main.projects.raffle.v2.models;
 public class Draw {
 	private Ticket ticket = null;
 	private Prize prize = null;
-	private Player winner = null;
+	private String winner = null;
 	private int num = 0;
 	
 	public Ticket getTicket() {
@@ -30,11 +30,11 @@ public class Draw {
 		this.num = num;
 	}
 
-	public Player getWinner() {
+	public String getWinner() {
 		return winner;
 	}
 
-	public void setWinner(Player winner) {
+	public void setWinner(String winner) {
 		this.winner = winner;
 	}
 	

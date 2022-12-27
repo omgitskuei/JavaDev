@@ -15,8 +15,8 @@ public class Prize {
 		return name;
 	}
 	
-	public void setName(String owner) {
-		this.name = owner;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	// Printing Object as String

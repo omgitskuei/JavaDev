@@ -43,14 +43,10 @@ public class RaffleUtils {
 		return fileContent;
 	}
 	
-	protected File writeFile(String localFileName, ArrayList<String> fileLines) {
+	protected File writeFile(String localFileName, String contents) {
 		File file = new File(System.getProperty("user.dir") 
 			+ "\\src\\main\\projects\\raffle\\v2\\output\\" + localFileName);
 		
-		StringBuilder sb = new StringBuilder();
-		for (String line : fileLines) {
-			sb.append(line + "\n");
-		}
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(file);
@@ -58,7 +54,7 @@ public class RaffleUtils {
 			System.out.println("Failed to ..."); //TODO
 		} 
 		try {
-			writer.write(sb.toString());
+			writer.write(contents);
 		} catch(IOException e) {
 			System.out.println("Failed to ..."); //TODO
 		} 

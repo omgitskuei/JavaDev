@@ -6,11 +6,25 @@ public class Ticket {
 
 	// Fields
 	private UUID id = UUID.randomUUID();
+	private String owner = "";
+	
+	// Constructor
+	public Ticket(String owner) {
+		this.setOwner(owner);
+	}
 
 	public UUID getID() {
 		return id;
 	}
 
+	public String getOwner() {
+		return owner;
+	}
+	
+	private void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
 	// Printing Object as String
 	@Override
 	public String toString() {
@@ -21,6 +35,7 @@ public class Ticket {
 		return formatted ? 
 				"Ticket[" + "\n" 
 					+ "ID:   \"" + this.getID().toString() + "\"" + "\n"
+					+ "Owner:   \"" + this.getOwner().toString() + "\"" + "\n"
 					+ "]"
 				: this.toString();
 	}
